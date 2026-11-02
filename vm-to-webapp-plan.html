@@ -564,9 +564,9 @@ const PLAN = {
       parts: [
         ["Daily run", "Starts the bot weekdays at 09:00 and 16:00 CT, NOVA102 then VKU.", "Weekdays 09:00 and 16:00 CT, plus a catch-up at sign-in. NOVA102 then VKU, each slot at most once a day. Since the clock change it likely fires an hour early.", "The webapp's timer, in Chicago time, with the same order and limits. A missed run starts when the webapp is back.", "moves", "Webapp", "the webapp's timer starts it at the same Chicago times."],
         ["The 30-minute morning wait", "Delays the morning run by 30 minutes, a leftover from the client's laptop.", "A leftover from the client's laptop.", "Could be removed, so results arrive 30 minutes earlier. One setting brings it back.", "goes", "Not needed", "removing it gets morning results 30 minutes earlier."],
-        ["Pop-up clicker", "Answers Revit and Navisworks pop-ups so runs don't stall.", "Answers Revit and Navisworks pop-ups so runs don't stall. Its script is not in git.", "Can stay on the VM, with its script saved to a repo first.", "windows", "VM", "it stays on the VM with its script saved to git."],
-        ["Desktop-session keeper", "Keeps the screen session alive for Revit and Navisworks.", "Keeps the screen session alive for Revit and Navisworks. Its script is not in git.", "Can stay on the VM, with its script saved to a repo first.", "windows", "VM", "it stays on the VM with its script saved to git."],
-        ["Claude keep-alive", "Reopens the Claude app and Chrome.", "Reopens the Claude app and Chrome.", "Could be removed. No Claude app or Chrome would be needed on the VM.", "goes", "Not needed", "the Claude app and Chrome won't be on the VM any more."],
+        ["Pop-up clicker", "Answers Revit and Navisworks pop-ups so runs don't stall.", "Answers Revit and Navisworks pop-ups so runs don't stall. Its script is not in git.", "Can stay on the VM, with its script saved to a repo first.", "windows", "VM", "its script gets saved to git."],
+        ["Desktop-session keeper", "Keeps the screen session alive for Revit and Navisworks.", "Keeps the screen session alive for Revit and Navisworks. Its script is not in git.", "Can stay on the VM, with its script saved to a repo first.", "windows", "VM", "its script gets saved to git."],
+        ["Claude keep-alive", "Reopens the Claude app and Chrome.", "Reopens the Claude app and Chrome.", "Could be removed. No Claude app or Chrome would be needed on the VM.", "goes", "Not needed", "the Claude app and Chrome won't be needed."],
         ["Manual runs", "Runs the bot once when the client asks.", "A one-off task, only when the client asks. It counts as that day's most recent run time, or as the 09:00 run if it starts before 09:00.", "From the webapp's chat, with the same rule.", "moves", "Webapp", "started from the webapp's chat, with the same rule."]
       ],
       watch: ["Since the clock change the VM's timer likely fires at 08:00 and 15:00, so the 09:00 run comes late and there is no 16:00 run. Only the client can fix it on the VM. That late run also skips the Navisworks morning step, which only runs before 13:00."]
@@ -577,9 +577,9 @@ const PLAN = {
       today: "Each run opens NOVA102's 3 models and VKU's 1 model in Revit, one at a time, read only. Each morning Navisworks loads NOVA102 - Triad.nwf (54 models), runs 69 clash tests, exports the clash report, applies approved 4D changes and saves the NWF and NWD.",
       plan: "The same Revit reading and Navisworks steps, on the VM. The webapp sends the jobs over the private link and gets the results back. Navisworks has no online version, so it can only run there.",
       parts: [
-        ["Bot's Revit reading", "Opens NOVA102's 3 models and VKU's 1 in Revit, read only.", "NOVA102's 3 models and VKU's 1, opened one at a time in Revit 2025 and 2026, read only.", "No change needed. Stays on the VM.", "same", "VM", "reading the models needs Revit, which stays on the VM."],
-        ["Chat's live Revit", "Lets chats ask the open Revit model through conduit.", "Chats ask the open model through conduit.", "No change needed. The same Revit on the VM, asked from the webapp's chat.", "same", "VM", "live questions need an open Revit, which stays on the VM."],
-        ["Navisworks morning step", "Runs 69 clash tests each morning, applies approved 4D changes and saves the files.", "Each morning on the VM: 69 clash tests, the clash report, approved 4D changes, and the NWF and NWD saved.", "No change needed. Stays on the VM.", "same", "VM", "Navisworks has no online version, so it stays on the VM."]
+        ["Bot's Revit reading", "Opens NOVA102's 3 models and VKU's 1 in Revit, read only.", "NOVA102's 3 models and VKU's 1, opened one at a time in Revit 2025 and 2026, read only.", "No change needed. Stays on the VM.", "same", "VM", "reading the models needs Revit, a desktop program."],
+        ["Chat's live Revit", "Lets chats ask the open Revit model through conduit.", "Chats ask the open model through conduit.", "No change needed. The same Revit on the VM, asked from the webapp's chat.", "same", "VM", "live questions need an open Revit."],
+        ["Navisworks morning step", "Runs 69 clash tests each morning, applies approved 4D changes and saves the files.", "Each morning on the VM: 69 clash tests, the clash report, approved 4D changes, and the NWF and NWD saved.", "No change needed. Stays on the VM.", "same", "VM", "Navisworks has no online version."]
       ],
       options: {
         title: "Where the bot reads Revit, as weighed",
@@ -601,7 +601,7 @@ const PLAN = {
       plan: "The same conduit on the VM, with a small network mode or bridge so the webapp's Claude and bot can reach it. It answers only inside the private link, never on the internet.",
       parts: [
         ["Revit add-in and tool", "Lets the bot and chats open and read Revit models.", "The bot opens and reads the models through it. Chats in the Claude app on the VM use it too.", "Reached by the webapp's bot and chat over the private link.", "windows", "VM", "the webapp reaches it over a private link."],
-        ["Navisworks bridge", "Lets the bot's morning step drive Navisworks.", "Lets the bot's morning step drive Navisworks. The VM runs a newer build than the repo.", "Stays as it is, with its source saved to a repo.", "windows", "VM", "the newer build on the VM gets its source saved to git."],
+        ["Navisworks bridge", "Lets the bot's morning step drive Navisworks.", "Lets the bot's morning step drive Navisworks. The VM runs a newer build than the repo.", "Stays as it is, with its source saved to a repo.", "windows", "VM", "its newest source gets saved to git."],
         ["Point cloud and fabrication tools", "Used by chats for point clouds and fabrication.", "Used by chats.", "Reached from the webapp over the private link.", "windows", "VM", "chats in the webapp reach them over a private link."]
       ],
       needs: ["The client's OK to run conduit on the new computer with a network mode.", "The Navisworks bridge's newest source from the VM."]
@@ -630,14 +630,14 @@ const PLAN = {
       today: "A Python program on the VM. Each run reads the models, matches drawings to work packages, updates spreadsheets and pages, builds the clash, issue and 4D feeds, and holds risky results for the client.",
       plan: "The webapp runs the same code on Chicago time, sends model jobs to the VM over the private link and gets the results back. Its memory (orchestrator.db) and settings (runner.json) move with the same values.",
       parts: [
-        ["Revit reading and Navisworks step", "Runs the bot's Revit and Navisworks work on the VM.", "On the VM.", "No change needed. Stays on the VM.", "same", "VM", "Revit and Navisworks stay on the VM."],
+        ["Revit reading and Navisworks step", "Runs the bot's Revit and Navisworks work on the VM.", "On the VM.", "No change needed. Stays on the VM.", "same", "VM", "it needs Revit and Navisworks, both desktop programs."],
         ["Matching, register plan, workbooks, feeds", "Matches model changes, plans register updates and builds workbooks and page feeds.", "On the VM.", "In the webapp, same code.", "moves", "Webapp", "the same code runs in the webapp."],
         ["Memory and settings", "The bot's memory and settings files, kept on the VM.", "orchestrator.db and runner.json on the VM.", "In the webapp, same values.", "moves", "Webapp", "moved into the webapp with the same values."],
         ["Held items", "Released by commands run on the VM from chat.", "Released by commands run on the VM from chat.", "Released by the webapp, from chat.", "moves", "Webapp", "released by the webapp when asked in chat."],
         ["File dates", "Taken from the files synced to the VM.", "From the synced files.", "From ACC through the API.", "moves", "Webapp", "read from ACC through Autodesk's API, not the synced files."],
         ["Clock", "Uses the VM's clock, set to Chicago time.", "The VM runs on Chicago time.", "The bot's work runs on Chicago time.", "moves", "Webapp", "the webapp runs the bot on Chicago time."],
         ["The bot's code", "The VM runs its own copy, with one file missing from GitHub.", "The VM runs its own copy, with one file that is not in GitHub (the clash export step).", "The webapp runs the same code from GitHub, once that file is saved there.", "moves", "Webapp", "the webapp runs it from GitHub, once the missing file is saved."],
-        ["OpenGuard", "Fixes TEMP-POWER's error, only in the run's session.", "Fixes TEMP-POWER's error, in the run's session only.", "No change needed. Stays on the VM.", "same", "VM", "it works inside Revit, so it stays on the VM."]
+        ["OpenGuard", "Fixes TEMP-POWER's error, only in the run's session.", "Fixes TEMP-POWER's error, in the run's session only.", "No change needed. Stays on the VM.", "same", "VM", "it works inside Revit."]
       ],
       watch: ["The clash export step was never saved to GitHub. Copy it from the VM first (missing item 1)."]
     },
@@ -647,11 +647,11 @@ const PLAN = {
       today: "When a new scan lands, the bot exports the conduits from Revit, compares the scan with them on a 1.5 cm grid, and holds the result for the client. The 4D viewer and the 5D quantity workbook refresh after each run.",
       plan: "The VM exports the conduits. The webapp gets the scan from ACC through the API and runs the same comparison. The Scan Tracker page stays a by-hand step after approval.",
       parts: [
-        ["Conduit export", "Exports the model's conduits from Revit for the scan check.", "Revit on the VM.", "No change needed. Stays on the VM.", "same", "VM", "the export needs Revit, which stays on the VM."],
+        ["Conduit export", "Exports the model's conduits from Revit for the scan check.", "Revit on the VM.", "No change needed. Stays on the VM.", "same", "VM", "the export needs Revit."],
         ["Scan comparison", "Compares laser scans with the model, in Python on the VM.", "Python on the VM.", "The same code in the webapp, on a worker sized for the biggest scan.", "moves", "Webapp", "the same code runs in the webapp, sized for the biggest scan."],
         ["Held scan result and its release", "Holds each scan result on the VM until it is released.", "On the VM.", "In the webapp.", "moves", "Webapp", "held and released in the webapp."],
         ["4D viewer, 4D progress, 5D workbook", "Rebuilt on the VM after each run.", "After each run, on the VM.", "In the webapp, same code and times.", "moves", "Webapp", "the same code builds them in the webapp, at the same times."],
-        ["Timeline snapshot", "Navisworks saves a snapshot of the 4D timeline each morning.", "Navisworks, each morning.", "No change needed. Stays on the VM.", "same", "VM", "the snapshot needs Navisworks, which stays on the VM."]
+        ["Timeline snapshot", "Navisworks saves a snapshot of the 4D timeline each morning.", "Navisworks, each morning.", "No change needed. Stays on the VM.", "same", "VM", "the snapshot needs Navisworks."]
       ],
       watch: ["Scan files are big. Measure peak memory before sizing the webapp's worker."]
     },
@@ -690,7 +690,7 @@ const PLAN = {
       parts: [
         ["Publishing to 7 pages", "Pushes fresh data for 7 pages to GitHub from the VM.", "Git pushes from the VM.", "From the webapp, with its own GitHub access.", "moves", "Webapp", "the webapp publishes with its own GitHub access."],
         ["Live check", "Checks each Impact Dashboard is live after an update.", "After each Impact Dashboard update, the NOVA102 page is opened with a key and checked. The VKU page has no key, so its GitHub build status is checked instead.", "The same checks, from the webapp.", "moves", "Webapp", "the webapp runs the same checks."],
-        ["The pages themselves", "Hosted on Cloudflare.", "On Cloudflare.", "No change needed: same addresses, look, sign-in and data.", "same", "", "the pages stay on Cloudflare as they are."]
+        ["The pages themselves", "Hosted on Cloudflare.", "On Cloudflare.", "No change needed: same addresses, look, sign-in and data.", "same", "", "the pages stay on Cloudflare."]
       ]
     },
     DAVID: {
@@ -708,7 +708,7 @@ const PLAN = {
       today: "Puts each page online and checks who may open it. Holds the pages' 4 small databases, including the Task Board, and 1 scan file bucket.",
       plan: "Unchanged. The live-check key moves to the webapp.",
       parts: [
-        ["Hosting, sign-in, databases, file bucket", "Cloudflare hosts the pages, sign-in, databases and files.", "Cloudflare.", "No change needed.", "same", "", "Cloudflare keeps hosting everything as it is."],
+        ["Hosting, sign-in, databases, file bucket", "Cloudflare hosts the pages, sign-in, databases and files.", "Cloudflare.", "No change needed.", "same", "", "Cloudflare keeps hosting everything."],
         ["Live-check key", "The live check's key, kept on the VM.", "On the VM.", "In the webapp's secure settings.", "moves", "Webapp", "kept in the webapp's secure settings."],
         ["Page libraries", "Some pages load code from public sites like jsDelivr and cdnjs.", "Some pages load code from public sites (jsDelivr, cdnjs).", "No change needed.", "same", "", "the pages load them the same way."]
       ]

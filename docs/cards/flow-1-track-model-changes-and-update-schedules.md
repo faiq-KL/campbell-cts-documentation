@@ -23,9 +23,9 @@ Windows Task Scheduler. A manual re-run (only when the client asks) uses a one-o
 |---|---|---|---|---|
 | Daily run | Weekdays 09:00 and 16:00 CT, plus a catch-up at sign-in. NOVA102 then VKU, each slot at most once a day. Since the clock change it likely fires an hour early. | Yes, the webapp's timer starts it at the same Chicago times. | The webapp's timer, in Chicago time, with the same order and limits. A missed run starts when the webapp is back. | Webapp |
 | The 30-minute morning wait | A leftover from the client's laptop. | Yes, removing it gets morning results 30 minutes earlier. | Could be removed, so results arrive 30 minutes earlier. One setting brings it back. | Not needed |
-| Pop-up clicker | Answers Revit and Navisworks pop-ups so runs don't stall. Its script is not in git. | Yes, it stays on the VM with its script saved to git. | Can stay on the VM, with its script saved to a repo first. | VM |
-| Desktop-session keeper | Keeps the screen session alive for Revit and Navisworks. Its script is not in git. | Yes, it stays on the VM with its script saved to git. | Can stay on the VM, with its script saved to a repo first. | VM |
-| Claude keep-alive | Reopens the Claude app and Chrome. | Yes, the Claude app and Chrome won't be on the VM any more. | Could be removed. No Claude app or Chrome would be needed on the VM. | Not needed |
+| Pop-up clicker | Answers Revit and Navisworks pop-ups so runs don't stall. Its script is not in git. | Yes, its script gets saved to git. | Can stay on the VM, with its script saved to a repo first. | VM |
+| Desktop-session keeper | Keeps the screen session alive for Revit and Navisworks. Its script is not in git. | Yes, its script gets saved to git. | Can stay on the VM, with its script saved to a repo first. | VM |
+| Claude keep-alive | Reopens the Claude app and Chrome. | Yes, the Claude app and Chrome won't be needed. | Could be removed. No Claude app or Chrome would be needed on the VM. | Not needed |
 | Manual runs | A one-off task, only when the client asks. It counts as that day's most recent run time, or as the 09:00 run if it starts before 09:00. | Yes, started from the webapp's chat, with the same rule. | From the webapp's chat, with the same rule. | Webapp |
 
 **Watch out:**
@@ -46,9 +46,9 @@ The NOVA102 and VKU electrical models in Revit and Navisworks, opened one at a t
 
 | Part | Currently | Can be optimized | Suggestion | Tag |
 |---|---|---|---|---|
-| Bot's Revit reading | NOVA102's 3 models and VKU's 1, opened one at a time in Revit 2025 and 2026, read only. | No, reading the models needs Revit, which stays on the VM. | No change needed. Stays on the VM. | VM |
-| Chat's live Revit | Chats ask the open model through conduit. | No, live questions need an open Revit, which stays on the VM. | No change needed. The same Revit on the VM, asked from the webapp's chat. | VM |
-| Navisworks morning step | Each morning on the VM: 69 clash tests, the clash report, approved 4D changes, and the NWF and NWD saved. | No, Navisworks has no online version, so it stays on the VM. | No change needed. Stays on the VM. | VM |
+| Bot's Revit reading | NOVA102's 3 models and VKU's 1, opened one at a time in Revit 2025 and 2026, read only. | No, reading the models needs Revit, a desktop program. | No change needed. Stays on the VM. | VM |
+| Chat's live Revit | Chats ask the open model through conduit. | No, live questions need an open Revit. | No change needed. The same Revit on the VM, asked from the webapp's chat. | VM |
+| Navisworks morning step | Each morning on the VM: 69 clash tests, the clash report, approved 4D changes, and the NWF and NWD saved. | No, Navisworks has no online version. | No change needed. Stays on the VM. | VM |
 
 **Where the bot reads Revit, as weighed**
 
@@ -85,7 +85,7 @@ The company's software that lets the bot (and the AI) open and read Revit and Na
 | Part | Currently | Can be optimized | Suggestion | Tag |
 |---|---|---|---|---|
 | Revit add-in and tool | The bot opens and reads the models through it. Chats in the Claude app on the VM use it too. | Yes, the webapp reaches it over a private link. | Reached by the webapp's bot and chat over the private link. | VM |
-| Navisworks bridge | Lets the bot's morning step drive Navisworks. The VM runs a newer build than the repo. | Yes, the newer build on the VM gets its source saved to git. | Stays as it is, with its source saved to a repo. | VM |
+| Navisworks bridge | Lets the bot's morning step drive Navisworks. The VM runs a newer build than the repo. | Yes, its newest source gets saved to git. | Stays as it is, with its source saved to a repo. | VM |
 | Point cloud and fabrication tools | Used by chats. | Yes, chats in the webapp reach them over a private link. | Reached from the webapp over the private link. | VM |
 
 **What we need:**
@@ -149,14 +149,14 @@ A Python program. For each project it finds what changed in the model, matches d
 
 | Part | Currently | Can be optimized | Suggestion | Tag |
 |---|---|---|---|---|
-| Revit reading and Navisworks step | On the VM. | No, Revit and Navisworks stay on the VM. | No change needed. Stays on the VM. | VM |
+| Revit reading and Navisworks step | On the VM. | No, it needs Revit and Navisworks, both desktop programs. | No change needed. Stays on the VM. | VM |
 | Matching, register plan, workbooks, feeds | On the VM. | Yes, the same code runs in the webapp. | In the webapp, same code. | Webapp |
 | Memory and settings | orchestrator.db and runner.json on the VM. | Yes, moved into the webapp with the same values. | In the webapp, same values. | Webapp |
 | Held items | Released by commands run on the VM from chat. | Yes, released by the webapp when asked in chat. | Released by the webapp, from chat. | Webapp |
 | File dates | From the synced files. | Yes, read from ACC through Autodesk's API, not the synced files. | From ACC through the API. | Webapp |
 | Clock | The VM runs on Chicago time. | Yes, the webapp runs the bot on Chicago time. | The bot's work runs on Chicago time. | Webapp |
 | The bot's code | The VM runs its own copy, with one file that is not in GitHub (the clash export step). | Yes, the webapp runs it from GitHub, once the missing file is saved. | The webapp runs the same code from GitHub, once that file is saved there. | Webapp |
-| OpenGuard | Fixes TEMP-POWER's error, in the run's session only. | No, it works inside Revit, so it stays on the VM. | No change needed. Stays on the VM. | VM |
+| OpenGuard | Fixes TEMP-POWER's error, in the run's session only. | No, it works inside Revit. | No change needed. Stays on the VM. | VM |
 
 **Watch out:**
 
@@ -178,11 +178,11 @@ The bot's last two steps: a 4D timeline snapshot, and the 4D refresh, which also
 
 | Part | Currently | Can be optimized | Suggestion | Tag |
 |---|---|---|---|---|
-| Conduit export | Revit on the VM. | No, the export needs Revit, which stays on the VM. | No change needed. Stays on the VM. | VM |
+| Conduit export | Revit on the VM. | No, the export needs Revit. | No change needed. Stays on the VM. | VM |
 | Scan comparison | Python on the VM. | Yes, the same code runs in the webapp, sized for the biggest scan. | The same code in the webapp, on a worker sized for the biggest scan. | Webapp |
 | Held scan result and its release | On the VM. | Yes, held and released in the webapp. | In the webapp. | Webapp |
 | 4D viewer, 4D progress, 5D workbook | After each run, on the VM. | Yes, the same code builds them in the webapp, at the same times. | In the webapp, same code and times. | Webapp |
-| Timeline snapshot | Navisworks, each morning. | No, the snapshot needs Navisworks, which stays on the VM. | No change needed. Stays on the VM. | VM |
+| Timeline snapshot | Navisworks, each morning. | No, the snapshot needs Navisworks. | No change needed. Stays on the VM. | VM |
 
 **Watch out:**
 
@@ -278,7 +278,7 @@ Each page is its own repo. New data saved to its main branch goes live within mi
 |---|---|---|---|---|
 | Publishing to 7 pages | Git pushes from the VM. | Yes, the webapp publishes with its own GitHub access. | From the webapp, with its own GitHub access. | Webapp |
 | Live check | After each Impact Dashboard update, the NOVA102 page is opened with a key and checked. The VKU page has no key, so its GitHub build status is checked instead. | Yes, the webapp runs the same checks. | The same checks, from the webapp. | Webapp |
-| The pages themselves | On Cloudflare. | No, the pages stay on Cloudflare as they are. | No change needed: same addresses, look, sign-in and data. |  |
+| The pages themselves | On Cloudflare. | No, the pages stay on Cloudflare. | No change needed: same addresses, look, sign-in and data. |  |
 
 ## Receive alerts and decide
 
@@ -315,7 +315,7 @@ Puts each page online and checks who may open it (emailed code or Microsoft logi
 
 | Part | Currently | Can be optimized | Suggestion | Tag |
 |---|---|---|---|---|
-| Hosting, sign-in, databases, file bucket | Cloudflare. | No, Cloudflare keeps hosting everything as it is. | No change needed. |  |
+| Hosting, sign-in, databases, file bucket | Cloudflare. | No, Cloudflare keeps hosting everything. | No change needed. |  |
 | Live-check key | On the VM. | Yes, kept in the webapp's secure settings. | In the webapp's secure settings. | Webapp |
 | Page libraries | Some pages load code from public sites (jsDelivr, cdnjs). | No, the pages load them the same way. | No change needed. |  |
 
