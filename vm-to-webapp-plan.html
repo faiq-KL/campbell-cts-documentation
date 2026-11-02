@@ -1439,7 +1439,7 @@ function stats() {
   document.getElementById('stats').innerHTML =
     '<div><h3>Nodes in flows 1 to 4</h3><div class="tiles">' + tile(cards.length, 'in total') +
     PLACES.map(([v, t]) => tile(cards.filter(p => p.verdict === v).length, t)).join('') + '</div></div>' +
-    '<div><h3>Priorities</h3><div class="tiles">' +
+    '<div><h3>Points that can be optimized</h3><div class="tiles">' + tile(OPTIMIZABLE.length, 'in total') +
     [...PRIORITIES.slice(1), PRIORITIES[0]].map(([v, t]) => tile(set.filter(x => x === v).length, t.toLowerCase())).join('') + '</div></div>';
 }
 stats();
