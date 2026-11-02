@@ -1,6 +1,6 @@
 # How it works today
 
-Each flow step by step, as production runs now. The [plan page](https://faiq-kl.github.io/campbell-cts-documentation/vm-to-webapp-plan.html) shows each flow's diagram.
+Each flow step by step, as production runs now. The [plan page](https://faiq-kl.github.io/campbell-cts-documentation/vm-to-webapp-plan.html) shows each flow's diagram, and [Words used](words-used.md) explains the terms.
 
 ## Flow 1: Update project data
 

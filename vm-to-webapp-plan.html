@@ -149,7 +149,8 @@ code { background: var(--chip); }
 .node .go { font: 500 12px var(--sans); color: var(--c-ext); margin-top: 3px; }
 .node:hover .go { text-decoration: underline; }
 .wrap { grid-template-columns: minmax(0, 1fr); gap: 14px; }
-details.sec, details.flow, details.words, details.missing { display: block; border-top: 1px solid var(--node-line); padding-top: 14px; }
+details.sec, details.flow, details.missing { display: block; border-top: 1px solid var(--node-line); padding-top: 14px; }
+#howto .legend { margin-top: 10px; }
 details > summary { cursor: pointer; list-style: none; display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; }
 details > summary::-webkit-details-marker { display: none; }
 details > summary::before { content: "\25B8"; color: var(--muted); font-size: 14px; width: 12px; }
@@ -226,6 +227,7 @@ details.flow[open] > * + *, details.missing[open] > * + * { margin-top: 14px; }
 
   <details class="sec" id="howto">
     <summary><h2>How to read this page</h2></summary>
+    <p class="muted">Click any card to open its details. Hover over a card to highlight its links.</p>
     <div class="legend">
       <span><i style="background:var(--c-sched)"></i>Scheduler (timer)</span>
       <span><i style="background:var(--c-repo)"></i>Repo (code on GitHub)</span>
@@ -235,37 +237,6 @@ details.flow[open] > * + *, details.missing[open] > * + * { margin-top: 14px; }
       <span><i style="background:var(--c-people)"></i>People</span>
       <span>Solid line: sends. Dashed line: reads, or happens rarely.</span>
     </div>
-  </details>
-
-  <details class="words" id="words">
-    <summary><h2>Words used on this page</h2></summary>
-    <dl class="gloss">
-      <div><dt>NOVA102, VKU</dt> <dd>The two construction projects. NOVA102, a data-centre building, is the main one.</dd></div>
-      <div><dt>HCG</dt> <dd>The team that keeps the electrical 3D model and the project paperwork up to date.</dd></div>
-      <div><dt>Lead, deputy</dt> <dd>The lead makes the project decisions. The deputy is a teammate who stands in when the lead is away.</dd></div>
-      <div><dt>ARCO, Triad, BES, CMMC</dt> <dd>ARCO is the general contractor and Triad the electrical contractor. BES and CMMC are design firms.</dd></div>
-      <div><dt>Revit, Navisworks</dt> <dd>Revit holds the electrical 3D model. Navisworks combines every trade's model to find clashes and play the schedule.</dd></div>
-      <div><dt>NWF, NWD</dt> <dd>Navisworks files. The NWF lists the models, clash checks and 4D timeline. The NWD is a full snapshot.</dd></div>
-      <div><dt>Clash</dt> <dd>Two things in the combined model hitting each other, like a pipe through a beam.</dd></div>
-      <div><dt>conduit</dt> <dd>A pipe that carries cables. Also the company's software that lets programs and AI work inside Revit and Navisworks.</dd></div>
-      <div><dt>ACC, Forma</dt> <dd>Autodesk's online project folder and issue list. A Forma issue is a tracked problem, like a ticket. Desktop Connector syncs a copy to the VM.</dd></div>
-      <div><dt>Procore</dt> <dd>ARCO's project website for questions, approvals and schedules.</dd></div>
-      <div><dt>RFI, submittal</dt> <dd>An RFI is a formal question to the designers. A submittal is product or drawing detail sent for approval.</dd></div>
-      <div><dt>Work package, Coordination Schedule</dt> <dd>A work package is one chunk of construction work. The Coordination Schedule is the master spreadsheet of them.</dd></div>
-      <div><dt>P6, Lookahead</dt> <dd>P6 is ARCO's master schedule. The Lookahead is its next 6 to 12 weeks.</dd></div>
-      <div><dt>4D, 5D</dt> <dd>4D links the model to the schedule to show the build over time. 5D adds quantities.</dd></div>
-      <div><dt>Laser scan</dt> <dd>A 3D scan of what is built, compared with the model to measure progress.</dd></div>
-      <div><dt>VM</dt> <dd>The rented Windows computer in Amazon's cloud where production runs today. Times are US Central (CT).</dd></div>
-      <div><dt>Bot</dt> <dd>Our Python program (hcg-bim-assistant) that updates project files and pages twice a day. It doesn't use AI.</dd></div>
-      <div><dt>Repo, main branch</dt> <dd>A folder of code on GitHub. Saving to its main branch makes a change live.</dd></div>
-      <div><dt>Scheduled task, skill, Claude Project</dt> <dd>An AI job on a timer, a set of instructions the AI loads, and a shared space of notes the AI reads and writes.</dd></div>
-      <div><dt>Webapp</dt> <dd>Our app on our own server. It will run the bot, Claude and the notes.</dd></div>
-      <div><dt>Windows computer</dt> <dd>A smaller cloud computer that replaces the VM, only for Revit, Navisworks, conduit and the file helper. Nobody needs to open it.</dd></div>
-      <div><dt>Private link</dt> <dd>A connection between the webapp and the Windows computer, closed to the internet.</dd></div>
-      <div><dt>File helper</dt> <dd>Moves Navisworks' files to and from ACC through Autodesk's API, in place of Desktop Connector.</dd></div>
-      <div><dt>Agent SDK</dt> <dd>Anthropic's engine behind Claude Code. It runs Claude inside the webapp.</dd></div>
-      <div><dt>API, tool server</dt> <dd>An API lets our app talk to another system directly. A tool server (MCP) is a standard way to give Claude tools.</dd></div>
-    </dl>
   </details>
 
   <details class="flow" id="flow-robot">
