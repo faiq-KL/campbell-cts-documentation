@@ -24,14 +24,14 @@ Unusual results the bot or AI did not write. Listed in run summaries, notes and 
 
 | Part | Currently | Can be optimized | Suggestion | Tag |
 |---|---|---|---|---|
-| Register rows | A work package's drawing status would go down, it would lose a drawing sheet, or a run would change far more rows than usual. Held and listed for the client in the run summary and emails. | Yes | Held the same way, shown in the webapp's run status and emails. | Webapp |
-| Scan results | Progress measured from a new scan. Held until the client approves it. | Yes | Held the same way, shown in the webapp's run status. | Webapp |
-| Broken page data | For example, zero Forma issues. Held until the client approves it. Big jumps are published with a warning instead (a rule the client set). | Yes | The same checks and rule, in the webapp. | Webapp |
-| Finish dates with no PDF yet | The bot waits until the drawing PDF is in Forma, then writes the date itself. | Yes | The same wait. The date could come from Forma's own upload date, read through the API, if the client agrees. | Webapp |
-| TimeLiner re-dates | Proposed by the sweep, approved by the client in chat. | Yes | Proposed by the webapp's sweep, approved in the webapp's chat. | Webapp |
-| Proposed Forma issues | Suggested in meeting follow-up emails, created in chat after the client approves. | Yes | Suggested the same way, created through Autodesk's Issues API after approval. | Webapp |
-| Flags marked for the client | Raised in the project diary for the client to decide. | Yes | The same flags in the notes, answered by the client in the webapp's chat. | Webapp |
-| Schedule links to re-check | When an ARCO schedule update reuses or removes activity numbers, links the sweep cannot match are marked for re-check and listed in its email for the client. | Yes | Listed the same way by the webapp's sweep, answered by the client in the webapp's chat. | Webapp |
+| Register rows | A work package's drawing status would go down, it would lose a drawing sheet, or a run would change far more rows than usual. Held and listed for the client in the run summary and emails. | Yes, shown in the webapp's run status. | Held the same way, shown in the webapp's run status and emails. | Webapp |
+| Scan results | Progress measured from a new scan. Held until the client approves it. | Yes, shown in the webapp's run status. | Held the same way, shown in the webapp's run status. | Webapp |
+| Broken page data | For example, zero Forma issues. Held until the client approves it. Big jumps are published with a warning instead (a rule the client set). | Yes, the webapp runs the checks. | The same checks and rule, in the webapp. | Webapp |
+| Finish dates with no PDF yet | The bot waits until the drawing PDF is in Forma, then writes the date itself. | Yes, the date comes from Forma. | The same wait. The date could come from Forma's own upload date, read through the API, if the client agrees. | Webapp |
+| TimeLiner re-dates | Proposed by the sweep, approved by the client in chat. | Yes, approved in the webapp's chat. | Proposed by the webapp's sweep, approved in the webapp's chat. | Webapp |
+| Proposed Forma issues | Suggested in meeting follow-up emails, created in chat after the client approves. | Yes, created through Autodesk's API. | Suggested the same way, created through Autodesk's Issues API after approval. | Webapp |
+| Flags marked for the client | Raised in the project diary for the client to decide. | Yes, answered in the webapp's chat. | The same flags in the notes, answered by the client in the webapp's chat. | Webapp |
+| Schedule links to re-check | When an ARCO schedule update reuses or removes activity numbers, links the sweep cannot match are marked for re-check and listed in its email for the client. | Yes, answered in the webapp's chat. | Listed the same way by the webapp's sweep, answered by the client in the webapp's chat. | Webapp |
 
 ## Make the project decisions
 
@@ -47,7 +47,7 @@ The client decides (the deputy has stood in). VKU has its own small team.
 
 | Part | Currently | Can be optimized | Suggestion | Tag |
 |---|---|---|---|---|
-| Stand-in | A written note from the client, kept in the project notes. | Yes | The same note, kept with the notes in git. The webapp follows it, so only the client or the stand-in can approve. | Webapp |
+| Stand-in | A written note from the client, kept in the project notes. | Yes, the webapp checks who may approve. | The same note, kept with the notes in git. The webapp follows it, so only the client or the stand-in can approve. | Webapp |
 
 ## Sign off schedule cards
 
@@ -63,7 +63,7 @@ Six people at Triad who approve, change or reject schedule cards.
 
 | Part | Currently | Can be optimized | Suggestion | Tag |
 |---|---|---|---|---|
-| Triad signers | The sign-off page. | No | No change needed. |  |
+| Triad signers | The sign-off page. | No, they keep their sign-off page. | No change needed. |  |
 
 ## Queue decisions for the client
 
@@ -83,8 +83,8 @@ One page listing every decision waiting for the client. The client approves, cha
 
 | Part | Currently | Can be optimized | Suggestion | Tag |
 |---|---|---|---|---|
-| lead/seed.json | Filled by hand. | No | No change needed. |  |
-| Lead Queue page | A page in the Action Hub listing 137 decisions. The client marks each one approve, change, hold or close, and every choice is logged. Claude acts on approvals given in chat. | No | No change needed. |  |
+| lead/seed.json | Filled by hand. | No, it's still filled by hand. | No change needed. |  |
+| Lead Queue page | A page in the Action Hub listing 137 decisions. The client marks each one approve, change, hold or close, and every choice is logged. Claude acts on approvals given in chat. | No, the page stays on Cloudflare. | No change needed. |  |
 
 ## Record Triad's sign-offs
 
@@ -102,8 +102,8 @@ Saves each Triad decision with the signer's email. It never changes the schedule
 
 | Part | Currently | Can be optimized | Suggestion | Tag |
 |---|---|---|---|---|
-| Applying sign-offs | By Claude in chat, after the client approves. | Yes | The same, in the webapp's chat. | Webapp |
-| Sign-off board page | Saves each Triad decision with the signer's email. It never changes the schedule. | No | No change needed. |  |
+| Applying sign-offs | By Claude in chat, after the client approves. | Yes, applied from the webapp's chat. | The same, in the webapp's chat. | Webapp |
+| Sign-off board page | Saves each Triad decision with the signer's email. It never changes the schedule. | No, the page stays on Cloudflare. | No change needed. |  |
 
 ## Do work when asked
 
@@ -127,8 +127,8 @@ Not daily. Started on request, each following its rule-book procedure.
 
 | Part | Currently | Can be optimized | Suggestion | Tag |
 |---|---|---|---|---|
-| 4D builds, clash reviews and quantities (BIM-11, BIM-12, BIM-13) | Navisworks and Revit on the VM, through conduit. | No | No change needed. Stays on the VM, reached from the webapp's chat through conduit. | VM |
-| BIM-04, BIM-08, BIM-10, Forma correspondence | Chats working through the VM. | Yes | Autodesk's, Procore's and Trello's APIs. | Webapp |
+| 4D builds, clash reviews and quantities (BIM-11, BIM-12, BIM-13) | Navisworks and Revit on the VM, through conduit. | No, it needs Revit and Navisworks. | No change needed. Stays on the VM, reached from the webapp's chat through conduit. | VM |
+| BIM-04, BIM-08, BIM-10, Forma correspondence | Chats working through the VM. | Yes, done through Autodesk's, Procore's and Trello's APIs. | Autodesk's, Procore's and Trello's APIs. | Webapp |
 
 **Watch out:**
 
@@ -155,14 +155,14 @@ People working with Claude in the Nova BIM Schedule and VKU projects. Shared cha
 
 | Part | Currently | Can be optimized | Suggestion | Tag |
 |---|---|---|---|---|
-| Start my tasks for the day | In the Claude app, reading the run log through the VM. | Yes | In the webapp's chat. | Webapp |
-| Approvals | Typed in chat. Claude then carries out the exact approved action through the VM, such as the bot's commands. | Yes | Typed in the webapp's chat and recorded with name and time. Only the client or the stand-in can approve. The webapp carries them out. | Webapp |
-| Manual runs | Only when the client asks. | Yes | From the webapp's chat, same rule. | Webapp |
-| The deputy and teammates | Their own Claude, on their own computers. | Yes | Their own sign-in to the webapp. They keep their own Claude for other work. | Webapp |
-| Claude app extras (phone app, voice, artifacts) | In the Claude app. | Yes | Suggested: the webapp's chat works in a phone's browser, takes files and images, and shows what Claude makes. Voice is added only if the client uses it. | Webapp |
-| Task Board claims | Before changing a shared file, the task is claimed on the Task Board, through a browser signed in as a person, or by a person by hand. | Yes | Claude claims it through the portal's API, with its own sign-in. Needs a small portal change. | Webapp |
-| Other chat work | Issue drafts for the client to approve. | Yes | The same work in the webapp's chat. | Webapp |
-| Run-time rule | Shared changes are kept out of the bot's run times (09:00 to 10:15 and 16:00 to 17:15). | Yes | The same rule, checked by the webapp before any shared write. | Webapp |
+| Start my tasks for the day | In the Claude app, reading the run log through the VM. | Yes, started from the webapp's chat. | In the webapp's chat. | Webapp |
+| Approvals | Typed in chat. Claude then carries out the exact approved action through the VM, such as the bot's commands. | Yes, the webapp records and carries them out. | Typed in the webapp's chat and recorded with name and time. Only the client or the stand-in can approve. The webapp carries them out. | Webapp |
+| Manual runs | Only when the client asks. | Yes, started from the webapp's chat. | From the webapp's chat, same rule. | Webapp |
+| The deputy and teammates | Their own Claude, on their own computers. | Yes, they sign in to the webapp. | Their own sign-in to the webapp. They keep their own Claude for other work. | Webapp |
+| Claude app extras (phone app, voice, artifacts) | In the Claude app. | Yes, the webapp's chat works on phones and takes files. | Suggested: the webapp's chat works in a phone's browser, takes files and images, and shows what Claude makes. Voice is added only if the client uses it. | Webapp |
+| Task Board claims | Before changing a shared file, the task is claimed on the Task Board, through a browser signed in as a person, or by a person by hand. | Yes, Claude claims it through the portal's API. | Claude claims it through the portal's API, with its own sign-in. Needs a small portal change. | Webapp |
+| Other chat work | Issue drafts for the client to approve. | Yes, done in the webapp's chat. | The same work in the webapp's chat. | Webapp |
+| Run-time rule | Shared changes are kept out of the bot's run times (09:00 to 10:15 and 16:00 to 17:15). | Yes, the webapp checks it before every shared change. | The same rule, checked by the webapp before any shared write. | Webapp |
 
 **Chat options, as weighed**
 
@@ -194,11 +194,11 @@ Only what was approved is written.
 
 | Part | Currently | Can be optimized | Suggestion | Tag |
 |---|---|---|---|---|
-| Coordination Schedule changes | From chats using the VM. | Yes | From the webapp's chat, through the API. | Webapp |
-| 4D approval files | On the VM. | Yes | Written by the webapp's chat, sent with the morning Navisworks job. | Webapp |
-| Tracker shared state | Saved with tracker_sync_cf.py on the VM. A copy is on a side branch of the bot's repo, not in its main code. | Yes | The same script, checked against the VM's copy and merged into the bot's repo, run by the webapp. | Webapp |
-| Forma issues | Made in Forma in the browser. Clash issues start in the 3D viewer, questions to Triad in the issue form. Each stays a draft until a person publishes it. | Yes | Autodesk's Issues API, still created as drafts. | Webapp |
-| Replies to BES, ARCO, CMMC, Triad | Drafted by Claude, sent by the client after checking. | Yes | The same, drafted in the webapp's chat and sent by the client after checking. | Webapp |
+| Coordination Schedule changes | From chats using the VM. | Yes, written through Autodesk's API. | From the webapp's chat, through the API. | Webapp |
+| 4D approval files | On the VM. | Yes, the webapp's chat writes them. | Written by the webapp's chat, sent with the morning Navisworks job. | Webapp |
+| Tracker shared state | Saved with tracker_sync_cf.py on the VM. A copy is on a side branch of the bot's repo, not in its main code. | Yes, the webapp runs the script from GitHub. | The same script, checked against the VM's copy and merged into the bot's repo, run by the webapp. | Webapp |
+| Forma issues | Made in Forma in the browser. Clash issues start in the 3D viewer, questions to Triad in the issue form. Each stays a draft until a person publishes it. | Yes, created through Autodesk's API. | Autodesk's Issues API, still created as drafts. | Webapp |
+| Replies to BES, ARCO, CMMC, Triad | Drafted by Claude, sent by the client after checking. | Yes, drafted in the webapp's chat. | The same, drafted in the webapp's chat and sent by the client after checking. | Webapp |
 
 **Watch out:**
 
@@ -221,9 +221,9 @@ Commands that publish what the bot held, once approved.
 
 | Part | Currently | Can be optimized | Suggestion | Tag |
 |---|---|---|---|---|
-| Release a held register change (approve-regression) | Run on the VM from chat. It records the approval, and the next run writes the change. | Yes | Run by the webapp from chat. The next run writes the change, as today. | Webapp |
-| Release held page data (site-feed-approve) | On the VM. | Yes | In the webapp. | Webapp |
-| Release a held scan result (scan-approve) | On the VM. | Yes | In the webapp. | Webapp |
+| Release a held register change (approve-regression) | Run on the VM from chat. It records the approval, and the next run writes the change. | Yes, the webapp runs it from chat. | Run by the webapp from chat. The next run writes the change, as today. | Webapp |
+| Release held page data (site-feed-approve) | On the VM. | Yes, the webapp runs it from chat. | In the webapp. | Webapp |
+| Release a held scan result (scan-approve) | On the VM. | Yes, the webapp runs it from chat. | In the webapp. | Webapp |
 
 ## Update pages by hand
 
@@ -245,8 +245,8 @@ Pages, or parts of pages, the bot does not update.
 
 | Part | Currently | Can be optimized | Suggestion | Tag |
 |---|---|---|---|---|
-| Hand updates and their scripts | Done by the client in Claude coding sessions, not from the VM. The Scan Tracker tools are also set up on the VM. | Yes | Could be done from the webapp's chat. | Webapp |
-| RFI Sweep | From the client's PC. | No | No change needed. |  |
+| Hand updates and their scripts | Done by the client in Claude coding sessions, not from the VM. The Scan Tracker tools are also set up on the VM. | Yes, done from the webapp's chat. | Could be done from the webapp's chat. | Webapp |
+| RFI Sweep | From the client's PC. | No, it stays on the client's PC. | No change needed. |  |
 
 ## Change the rules
 
@@ -266,5 +266,5 @@ The client's rulings update the rule book, then the skills and workbooks are reb
 
 | Part | Currently | Can be optimized | Suggestion | Tag |
 |---|---|---|---|---|
-| Rule changes | Claude proposes the rule-book change in chat. The client approves, and the rule book is updated. | Yes | The same, proposed in the webapp's chat. | Webapp |
-| Project instructions | New text is drafted in chat. The client pastes it into the Claude Project. | Yes | Could be kept in git with the notes and changed from the webapp's chat after the client approves. | Webapp |
+| Rule changes | Claude proposes the rule-book change in chat. The client approves, and the rule book is updated. | Yes, proposed in the webapp's chat. | The same, proposed in the webapp's chat. | Webapp |
+| Project instructions | New text is drafted in chat. The client pastes it into the Claude Project. | Yes, kept on GitHub and changed from the webapp's chat. | Could be kept in git with the notes and changed from the webapp's chat after the client approves. | Webapp |

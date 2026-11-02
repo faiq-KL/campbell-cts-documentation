@@ -18,9 +18,9 @@ Every HCG procedure in plain English. The client's rulings are written here firs
 
 | Part | Currently | Can be optimized | Suggestion | Tag |
 |---|---|---|---|---|
-| Rule book | Procedures and the client's rulings. | No | No change needed. |  |
-| kb.py build | Run by hand: builds the ClickUp workbooks and flowcharts. | No | No change needed. |  |
-| Skills rebuild (kb.py plugin) | By hand, then uploaded by the client. | Yes | Suggested: rebuilt from the rule book whenever it changes, once the starter folder is in git. | Webapp |
+| Rule book | Procedures and the client's rulings. | No, it already lives on GitHub. | No change needed. |  |
+| kb.py build | Run by hand: builds the ClickUp workbooks and flowcharts. | No, it stays a by-hand tool. | No change needed. |  |
+| Skills rebuild (kb.py plugin) | By hand, then uploaded by the client. | Yes, rebuilt automatically when the rule book changes. | Suggested: rebuilt from the rule book whenever it changes, once the starter folder is in git. | Webapp |
 
 ## Run jobs that change project files
 
@@ -40,9 +40,9 @@ Timers that start the AI on these jobs. They write to real project files.
 
 | Part | Currently | Can be optimized | Suggestion | Tag |
 |---|---|---|---|---|
-| RFI and submittal sweep (weekdays 08:24) | Procore through Chrome with the deputy's login, where its only action is asking for cover PDFs. Files into ACC, loads ARCO's schedule updates, writes the sweep note, emails the client and the deputy. | Yes | Procore's and Autodesk's APIs. The same note and email. | Webapp |
-| Project Memory and flags (weekdays 10:45) | Outlook, Teams, Fireflies and Procore, then the memory files in ACC and the Claude Project. Emails the flags to the client and the deputy. | Yes | Microsoft's, Fireflies' and Procore's APIs. The memory files still go to ACC. The same flags email. | Webapp |
-| VKU check (:25 in the run windows) | Checks VKU's run in Newtron's ACC, the bot's records on the VM and the page builds on GitHub. Appends VKU's change log, emails the client. | Yes | Reads the run in the webapp, ACC and GitHub through their APIs. The same change log and email. | Webapp |
+| RFI and submittal sweep (weekdays 08:24) | Procore through Chrome with the deputy's login, where its only action is asking for cover PDFs. Files into ACC, loads ARCO's schedule updates, writes the sweep note, emails the client and the deputy. | Yes, it uses Procore's and Autodesk's APIs. | Procore's and Autodesk's APIs. The same note and email. | Webapp |
+| Project Memory and flags (weekdays 10:45) | Outlook, Teams, Fireflies and Procore, then the memory files in ACC and the Claude Project. Emails the flags to the client and the deputy. | Yes, it uses Microsoft's, Fireflies' and Procore's APIs. | Microsoft's, Fireflies' and Procore's APIs. The memory files still go to ACC. The same flags email. | Webapp |
+| VKU check (:25 in the run windows) | Checks VKU's run in Newtron's ACC, the bot's records on the VM and the page builds on GitHub. Appends VKU's change log, emails the client. | Yes, it checks the run through the webapp and APIs. | Reads the run in the webapp, ACC and GitHub through their APIs. The same change log and email. | Webapp |
 
 **Watch out:**
 
@@ -65,8 +65,8 @@ Timers for two jobs that write notes and send emails.
 
 | Part | Currently | Can be optimized | Suggestion | Tag |
 |---|---|---|---|---|
-| Change log (:20, 10:20 to 12:20 and 17:20 to 19:20) | Reads the run log, the bot's database, today's log and the VM's timer, writes into the Claude Project. | Yes | Reads the bot's status in the webapp, writes the same note to the webapp's notes. | Webapp |
-| Meeting prep and follow-up (weekdays, hourly 06:45 to 17:45) | Calendar, Outlook, Teams, Fireflies and project notes. Emails the client, plus the deputy when they attend. Saves each follow-up's proposed issues as a note in the Claude Project. | Yes | Microsoft's and Fireflies' APIs. The same emails, and the same follow-up notes in the webapp's notes. | Webapp |
+| Change log (:20, 10:20 to 12:20 and 17:20 to 19:20) | Reads the run log, the bot's database, today's log and the VM's timer, writes into the Claude Project. | Yes, it reads the webapp's run status and writes to its notes. | Reads the bot's status in the webapp, writes the same note to the webapp's notes. | Webapp |
+| Meeting prep and follow-up (weekdays, hourly 06:45 to 17:45) | Calendar, Outlook, Teams, Fireflies and project notes. Emails the client, plus the deputy when they attend. Saves each follow-up's proposed issues as a note in the Claude Project. | Yes, it uses Microsoft's and Fireflies' APIs. | Microsoft's and Fireflies' APIs. The same emails, and the same follow-up notes in the webapp's notes. | Webapp |
 
 ## Check that every job ran
 
@@ -86,9 +86,9 @@ Timers for three checks. They raise an alarm by email or phone push if something
 
 | Part | Currently | Can be optimized | Suggestion | Tag |
 |---|---|---|---|---|
-| Sweep watchdog (09:05) | Checks the sweep's run in Claude's task list, its files on the VM and its note in the Claude Project. Emails the client only if something is wrong. | Yes | The same checks, in the webapp. | Webapp |
-| Run watchdog (11:40 and 17:40) | Reads the run log, the portal's GitHub history and the VM's timer. Emails the client only if something is wrong. | Yes | The same, with the webapp's schedule in place of the timer. | Webapp |
-| Heartbeat (12:35 and 19:35) | In Claude's cloud. Checks that the VM's jobs still fire and that the change-log note has the bot's run summary. Sends the result to the client by push and email. | Yes | Suggested: a small task in the client's Claude account that checks the webapp's status page, with the same push and email. |  |
+| Sweep watchdog (09:05) | Checks the sweep's run in Claude's task list, its files on the VM and its note in the Claude Project. Emails the client only if something is wrong. | Yes, the webapp runs it. | The same checks, in the webapp. | Webapp |
+| Run watchdog (11:40 and 17:40) | Reads the run log, the portal's GitHub history and the VM's timer. Emails the client only if something is wrong. | Yes, the webapp runs it and checks its own schedule. | The same, with the webapp's schedule in place of the timer. | Webapp |
+| Heartbeat (12:35 and 19:35) | In Claude's cloud. Checks that the VM's jobs still fire and that the change-log note has the bot's run summary. Sends the result to the client by push and email. | Yes, it checks the webapp's status page. | Suggested: a small task in the client's Claude account that checks the webapp's status page, with the same push and email. |  |
 
 **Watch out:**
 
@@ -116,12 +116,12 @@ All read only.
 
 | Part | Currently | Can be optimized | Suggestion | Tag |
 |---|---|---|---|---|
-| Procore | Chrome on the VM, the deputy's login. | Yes | Procore's API, once ARCO's Procore admin connects our app. | Webapp |
-| Outlook, Teams, calendar | Claude's Microsoft 365 connector, read only. | Yes | Microsoft's API, with the client's consent. | Webapp |
-| Fireflies | Claude's connector. | Yes | Fireflies' official tool server, with the client's key. Never for VKU. | Webapp |
-| GitHub | Signed in as hcg-bim-runner on the VM. | Yes | GitHub's API, with the webapp's own access. | Webapp |
-| conduit tools | The Navisworks model, read through conduit on the VM. | Yes | Through conduit on the VM, over the private link. | VM |
-| Claude's task list | The watchers check in it that the other jobs ran. | Yes | The webapp's own job records. | Webapp |
+| Procore | Chrome on the VM, the deputy's login. | Yes, read through Procore's API. | Procore's API, once ARCO's Procore admin connects our app. | Webapp |
+| Outlook, Teams, calendar | Claude's Microsoft 365 connector, read only. | Yes, read through Microsoft's API. | Microsoft's API, with the client's consent. | Webapp |
+| Fireflies | Claude's connector. | Yes, read through Fireflies' own tool server. | Fireflies' official tool server, with the client's key. Never for VKU. | Webapp |
+| GitHub | Signed in as hcg-bim-runner on the VM. | Yes, read through GitHub's API. | GitHub's API, with the webapp's own access. | Webapp |
+| conduit tools | The Navisworks model, read through conduit on the VM. | Yes, the webapp connects through a private link. | Through conduit on the VM, over the private link. | VM |
+| Claude's task list | The watchers check in it that the other jobs ran. | Yes, the webapp keeps its own job records. | The webapp's own job records. | Webapp |
 
 **Watch out:**
 
@@ -146,9 +146,9 @@ Instruction packs the AI loads, so every job follows the same procedure.
 
 | Part | Currently | Can be optimized | Suggestion | Tag |
 |---|---|---|---|---|
-| Playbook (13 skills) | Uploaded by hand to the client's Claude account. | Yes | Loaded by the webapp from git. | Webapp |
-| conduit-aec (5 skills) | From the company's plugin store. | Yes | Loaded by the webapp. | Webapp |
-| whats-on-my-plate | Only in the client's Claude account. | Yes | Copied into git, then loaded by the webapp. | Webapp |
+| Playbook (13 skills) | Uploaded by hand to the client's Claude account. | Yes, the webapp loads them from GitHub. | Loaded by the webapp from git. | Webapp |
+| conduit-aec (5 skills) | From the company's plugin store. | Yes, the webapp loads them. | Loaded by the webapp. | Webapp |
+| whats-on-my-plate | Only in the client's Claude account. | Yes, saved to GitHub and loaded by the webapp. | Copied into git, then loaded by the webapp. | Webapp |
 
 ## Run Claude on the VM
 
@@ -169,10 +169,10 @@ Claude, signed in as the client. Seven jobs run in the Claude app on the VM, the
 
 | Part | Currently | Can be optimized | Suggestion | Tag |
 |---|---|---|---|---|
-| Claude app and keep-alive | On the VM. | Yes | Could be removed. Claude would run in the webapp on Anthropic's Agent SDK. | Not needed |
-| The jobs' send logs and saved state | On the VM. | Yes | Copied into the webapp, so no job starts fresh and sends duplicates. | Webapp |
-| Windows-MCP | Lets Claude run commands on the VM: read files, logs and Task Scheduler, run Python and the email script, and use git. | Yes | Could be removed. The webapp's own code and tools do the same work, with no open access to a computer. | Not needed |
-| Project Manifest | The project's map of folders and files. Chats and the sweep and memory procedures look up paths in it. Read from the VM's synced folder. | Yes | The same file, read from ACC through the API. | Webapp |
+| Claude app and keep-alive | On the VM. | Yes, Claude runs in the webapp. | Could be removed. Claude would run in the webapp on Anthropic's Agent SDK. | Not needed |
+| The jobs' send logs and saved state | On the VM. | Yes, copied to the webapp so nothing is sent twice. | Copied into the webapp, so no job starts fresh and sends duplicates. | Webapp |
+| Windows-MCP | Lets Claude run commands on the VM: read files, logs and Task Scheduler, run Python and the email script, and use git. | Yes, the webapp's own tools do this work. | Could be removed. The webapp's own code and tools do the same work, with no open access to a computer. | Not needed |
+| Project Manifest | The project's map of folders and files. Chats and the sweep and memory procedures look up paths in it. Read from the VM's synced folder. | Yes, read through Autodesk's API. | The same file, read from ACC through the API. | Webapp |
 
 **Where Claude runs, as weighed**
 
@@ -202,7 +202,7 @@ The real project folder (as in Flow 1). The jobs file documents here.
 
 | Part | Currently | Can be optimized | Suggestion | Tag |
 |---|---|---|---|---|
-| Filing and reading PDFs | The VM's synced folders. | Yes | Autodesk's API. | Webapp |
+| Filing and reading PDFs | The VM's synced folders. | Yes, done through Autodesk's API. | Autodesk's API. | Webapp |
 
 ## Update the tracker page
 
@@ -220,7 +220,7 @@ Only when ARCO renumbers its schedule: the sweep updates this page's schedule se
 
 | Part | Currently | Can be optimized | Suggestion | Tag |
 |---|---|---|---|---|
-| Tracker page schedule section | When ARCO renumbers its schedule, the section is re-linked and pushed with git. The sweep's procedure covers it, but so far it was done in Claude coding sessions under the client's name. | Yes | Edited and pushed from the webapp. | Webapp |
+| Tracker page schedule section | When ARCO renumbers its schedule, the section is re-linked and pushed with git. The sweep's procedure covers it, but so far it was done in Claude coding sessions under the client's name. | Yes, the webapp edits and publishes it. | Edited and pushed from the webapp. | Webapp |
 
 ## Keep the project notes
 
@@ -238,12 +238,12 @@ The AI's shared notebook: instructions plus 357 files (sweep results, diary, cha
 
 | Part | Currently | Can be optimized | Suggestion | Tag |
 |---|---|---|---|---|
-| Nova BIM Schedule notes (357) | In the Claude Project. | Yes | In git, same names. | Webapp |
-| VKU Project notes | In a separate VKU Claude Project. | Yes | In git. | Webapp |
-| Claude's own project memory | In the client's account. | Yes | Copied once into a memory file. | Webapp |
-| Chat history | In the client's account. | Yes | In the webapp, searchable. | Webapp |
-| Project instructions | The Claude Project's instructions, loaded into every chat and job. | Yes | The same text, kept with the notes and loaded by the webapp. | Webapp |
-| Finding notes | Chats use Claude's built-in project search. Jobs open notes by name. | Yes | Claude opens notes by name and searches inside them. A meaning-based search only if a test shows misses. | Webapp |
+| Nova BIM Schedule notes (357) | In the Claude Project. | Yes, kept as files on GitHub. | In git, same names. | Webapp |
+| VKU Project notes | In a separate VKU Claude Project. | Yes, kept as files on GitHub. | In git. | Webapp |
+| Claude's own project memory | In the client's account. | Yes, copied once into a file. | Copied once into a memory file. | Webapp |
+| Chat history | In the client's account. | Yes, kept in the webapp, searchable. | In the webapp, searchable. | Webapp |
+| Project instructions | The Claude Project's instructions, loaded into every chat and job. | Yes, kept with the notes and loaded by the webapp. | The same text, kept with the notes and loaded by the webapp. | Webapp |
+| Finding notes | Chats use Claude's built-in project search. Jobs open notes by name. | Yes, Claude opens notes by name and searches them. | Claude opens notes by name and searches inside them. A meaning-based search only if a test shows misses. | Webapp |
 
 **Watch out:**
 
@@ -265,7 +265,7 @@ Script on the VM that sends the jobs' emails through Amazon. Only to the client 
 
 | Part | Currently | Can be optimized | Suggestion | Tag |
 |---|---|---|---|---|
-| Email script (ses_send.py) | On the VM, not in git. | Yes | Saved to a repo. The webapp sends the same emails. | Webapp |
+| Email script (ses_send.py) | On the VM, not in git. | Yes, the webapp sends the emails. | Saved to a repo. The webapp sends the same emails. | Webapp |
 
 ## Receive summaries and alerts
 
@@ -281,5 +281,5 @@ Get the summaries and alerts by email, plus a phone push from the heartbeat.
 
 | Part | Currently | Can be optimized | Suggestion | Tag |
 |---|---|---|---|---|
-| Emails and push | Summaries and alerts by email, plus a phone push from the heartbeat. | No | No change needed. |  |
-| Job notices | Claude sends the client each job's closing message as a notice by email. The heartbeat's notice is its alert, by push and email. | Yes | Suggested: a webapp notification for each job's closing message, on phone or browser. The heartbeat keeps Claude's push and email. | Webapp |
+| Emails and push | Summaries and alerts by email, plus a phone push from the heartbeat. | No, they arrive the same way. | No change needed. |  |
+| Job notices | Claude sends the client each job's closing message as a notice by email. The heartbeat's notice is its alert, by push and email. | Yes, a phone or browser notification replaces it. | Suggested: a webapp notification for each job's closing message, on phone or browser. The heartbeat keeps Claude's push and email. | Webapp |

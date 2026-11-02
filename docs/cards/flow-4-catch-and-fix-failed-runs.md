@@ -22,11 +22,11 @@ They only report. None of them fixes anything.
 
 | Part | Currently | Can be optimized | Suggestion | Tag |
 |---|---|---|---|---|
-| AI watchers | In Claude, using the VM. | Yes | In the webapp. | Webapp |
-| The bot's alert emails | From the VM. | Yes | From the webapp. | Webapp |
-| Heartbeat | In Claude's cloud. | Yes | Suggested: a small task in the client's Claude account that checks the webapp's status page, with the same push and email. |  |
-| The bot's pop-ups | On the VM's screen, during each run. | Yes | Suggested: a webapp notification on phone or browser. | Webapp |
-| What-to-do lines in the alarms | Each watcher's email says what to do, such as remote desktop into the VM, read the progress log, or start the VM in Amazon's console. | Yes | Could point to the webapp instead of the VM. The client checks the new wording. | Webapp |
+| AI watchers | In Claude, using the VM. | Yes, the webapp runs them. | In the webapp. | Webapp |
+| The bot's alert emails | From the VM. | Yes, the webapp sends them. | From the webapp. | Webapp |
+| Heartbeat | In Claude's cloud. | Yes, it checks the webapp's status page. | Suggested: a small task in the client's Claude account that checks the webapp's status page, with the same push and email. |  |
+| The bot's pop-ups | On the VM's screen, during each run. | Yes, a phone or browser notification replaces them. | Suggested: a webapp notification on phone or browser. | Webapp |
+| What-to-do lines in the alarms | Each watcher's email says what to do, such as remote desktop into the VM, read the progress log, or start the VM in Amazon's console. | Yes, they point to the webapp. | Could point to the webapp instead of the VM. The client checks the new wording. | Webapp |
 
 ## Decide what to do
 
@@ -42,7 +42,7 @@ Reads the alert and decides what to do.
 
 | Part | Currently | Can be optimized | Suggestion | Tag |
 |---|---|---|---|---|
-| Who decides | The client or the stand-in. | No | No change needed. |  |
+| Who decides | The client or the stand-in. | No, the client or the stand-in still decides. | No change needed. |  |
 
 ## Fix it on the VM
 
@@ -64,11 +64,11 @@ Remote desktop into the VM, then check:
 
 | Part | Currently | Can be optimized | Suggestion | Tag |
 |---|---|---|---|---|
-| Progress log | A file on the VM. | Yes | The webapp's run status. | Webapp |
-| Claude app and its jobs | On the VM. | Yes | Could be removed, with the jobs in the webapp. | Not needed |
-| Revit and Navisworks checks | The client checks that Revit 2025 and 2026 answer and restarts them, or closes a file left open in Navisworks. | Yes | On the VM, fixed by us when needed. | VM |
-| Procore and Forma sign-ins | Chrome on the VM, and the Claude app's browser for Procore. | Yes | Could be removed. Forma through Autodesk's API, and Procore through its API once ARCO's Procore admin connects our app. | Not needed |
-| Re-run a job | The client runs the sweep again from its task page in Claude, after fixing the cause. | Yes | Could be started again from the webapp's chat, only when the client asks. | Webapp |
+| Progress log | A file on the VM. | Yes, the webapp shows the run's progress. | The webapp's run status. | Webapp |
+| Claude app and its jobs | On the VM. | Yes, the jobs run in the webapp. | Could be removed, with the jobs in the webapp. | Not needed |
+| Revit and Navisworks checks | The client checks that Revit 2025 and 2026 answer and restarts them, or closes a file left open in Navisworks. | Yes, we fix them when needed. | On the VM, fixed by us when needed. | VM |
+| Procore and Forma sign-ins | Chrome on the VM, and the Claude app's browser for Procore. | Yes, the APIs replace them. | Could be removed. Forma through Autodesk's API, and Procore through its API once ARCO's Procore admin connects our app. | Not needed |
+| Re-run a job | The client runs the sweep again from its task page in Claude, after fixing the cause. | Yes, started again from the webapp's chat. | Could be started again from the webapp's chat, only when the client asks. | Webapp |
 
 ## Restart the VM
 
@@ -84,7 +84,7 @@ Amazon's control panel. Starts or reboots the VM if it is stopped or frozen (reg
 
 | Part | Currently | Can be optimized | Suggestion | Tag |
 |---|---|---|---|---|
-| Restarting the VM | The client starts or reboots the VM in Amazon's console, by hand. | Yes | Suggested: a 'Restart' button in the webapp for the VM, for the client and us, logged. The webapp itself is restarted from its hosting console. | Webapp |
+| Restarting the VM | The client starts or reboots the VM in Amazon's console, by hand. | Yes, a restart button in the webapp. | Suggested: a 'Restart' button in the webapp for the VM, for the client and us, logged. The webapp itself is restarted from its hosting console. | Webapp |
 
 ## Fall back to the client's PC
 
@@ -100,7 +100,7 @@ Last resort: switch on the PC's Daily run task and paused job copies. Never both
 
 | Part | Currently | Can be optimized | Suggestion | Tag |
 |---|---|---|---|---|
-| The PC's bot and its paused job copies | Kept as the last resort. | Yes | Suggested: remove it, and rely on the hosting's backups and a quick restore. | Not needed |
+| The PC's bot and its paused job copies | Kept as the last resort. | Yes, the hosting's backups replace it. | Suggested: remove it, and rely on the hosting's backups and a quick restore. | Not needed |
 
 ## Re-run a step
 
@@ -118,4 +118,4 @@ Only when the client asks, outside run times, through a one-off task. Each step 
 
 | Part | Currently | Can be optimized | Suggestion | Tag |
 |---|---|---|---|---|
-| Re-run a step | A one-off task on the VM. | Yes | From the webapp's chat. | Webapp |
+| Re-run a step | A one-off task on the VM. | Yes, started from the webapp's chat. | From the webapp's chat. | Webapp |
