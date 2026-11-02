@@ -88,7 +88,7 @@ Timers for three checks. They raise an alarm by email or phone push if something
 |---|---|---|---|---|
 | Sweep watchdog (09:05) | Checks the sweep's run in Claude's task list, its files on the VM and its note in the Claude Project. Emails the client only if something is wrong. | Yes, the webapp runs it. | The same checks, in the webapp. | Webapp |
 | Run watchdog (11:40 and 17:40) | Reads the run log, the portal's GitHub history and the VM's timer. Emails the client only if something is wrong. | Yes, the webapp runs it and checks its own schedule. | The same, with the webapp's schedule in place of the timer. | Webapp |
-| Heartbeat (12:35 and 19:35) | In Claude's cloud. Checks that the VM's jobs still fire and that the change-log note has the bot's run summary. Sends the result to the client by push and email. | Yes, it checks the webapp's status page. | Suggested: a small task in the client's Claude account that checks the webapp's status page, with the same push and email. |  |
+| Heartbeat (12:35 and 19:35) | In Claude's cloud. Checks that the VM's jobs still fire and that the change-log note has the bot's run summary. Sends the result to the client by push and email. | Yes, it checks the webapp's status page. | Suggested: a small task in the client's Claude account that checks the webapp's status page, with the same alerts. |  |
 
 **Watch out:**
 
@@ -277,9 +277,9 @@ Get the summaries and alerts by email, plus a phone push from the heartbeat.
 
 **Today:** Summaries and alerts by email, plus a phone push from the heartbeat.
 
-**What could change:** The client and their teammate get the same emails, plus the heartbeat's push. Unchanged.
+**What could change:** The client and their teammate get the same emails and the heartbeat's alerts. Unchanged.
 
 | Part | Currently | Can be optimized | Suggestion | Tag |
 |---|---|---|---|---|
 | Emails and push | Summaries and alerts by email, plus a phone push from the heartbeat. | No, they arrive the same way. | No change needed. |  |
-| Job notices | Claude sends the client each job's closing message as a notice by email. The heartbeat's notice is its alert, by push and email. | Yes, a phone or browser notification replaces it. | Suggested: a webapp notification for each job's closing message, on phone or browser. The heartbeat keeps Claude's push and email. | Webapp |
+| Job notices | Claude sends the client each job's closing message as a notice by email. The heartbeat's notice is its alert, by push and email. | Yes, an email or browser notification replaces it. | Suggested: an email or browser notification from the webapp for each job's closing message. The heartbeat keeps its own alerts. | Webapp |

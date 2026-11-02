@@ -244,7 +244,7 @@ Progress and problems, during each run.
 | Part | Currently | Can be optimized | Suggestion | Tag |
 |---|---|---|---|---|
 | Alert emails | When a run is blocked, slow, gives up, fails or finishes: an email from the bot email address to the client. | Yes, the webapp sends them. | The same emails, sent by the webapp. | Webapp |
-| Windows pop-ups | On the VM's screen when a run is blocked, slow, gives up, fails or finishes. A click on the finished one opens the summary. | Yes, a phone or browser notification replaces it. | Suggested: a webapp notification on phone or browser. The finished one opens the summary. | Webapp |
+| Windows pop-ups | On the VM's screen when a run is blocked, slow, gives up, fails or finishes. A click on the finished one opens the summary. | Yes, an email or browser notification replaces it. | Suggested: an email or browser notification from the webapp. The finished one opens the summary. | Webapp |
 | Progress lines | A file on the VM. | Yes, the webapp shows the run's progress. | The webapp's run status. | Webapp |
 
 **What we need:**

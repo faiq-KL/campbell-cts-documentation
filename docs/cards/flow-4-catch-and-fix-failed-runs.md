@@ -24,8 +24,8 @@ They only report. None of them fixes anything.
 |---|---|---|---|---|
 | AI watchers | In Claude, using the VM. | Yes, the webapp runs them. | In the webapp. | Webapp |
 | The bot's alert emails | From the VM. | Yes, the webapp sends them. | From the webapp. | Webapp |
-| Heartbeat | In Claude's cloud. | Yes, it checks the webapp's status page. | Suggested: a small task in the client's Claude account that checks the webapp's status page, with the same push and email. |  |
-| The bot's pop-ups | On the VM's screen, during each run. | Yes, a phone or browser notification replaces them. | Suggested: a webapp notification on phone or browser. | Webapp |
+| Heartbeat | In Claude's cloud. | Yes, it checks the webapp's status page. | Suggested: a small task in the client's Claude account that checks the webapp's status page, with the same alerts. |  |
+| The bot's pop-ups | On the VM's screen, during each run. | Yes, an email or browser notification replaces them. | Suggested: an email or browser notification from the webapp. | Webapp |
 | What-to-do lines in the alarms | Each watcher's email says what to do, such as remote desktop into the VM, read the progress log, or start the VM in Amazon's console. | Yes, they point to the webapp. | Could point to the webapp instead of the VM. The client checks the new wording. | Webapp |
 
 ## Decide what to do

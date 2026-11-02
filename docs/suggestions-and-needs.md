@@ -40,7 +40,7 @@ For later: the bot's Revit reading could move to Autodesk's online Revit (Automa
 
 - **Engine:** Claude runs in the webapp on Anthropic's Agent SDK, the engine behind Claude Code, with an API key. It is paid first from the API credit in the client's Claude plan. There is no Claude app on any computer, so the keep-alive goes.
 - **Jobs:** the 7 timed jobs that use the VM run in the webapp with the same AI, instructions, timing, notes and emails: the RFI and submittal sweep, Project Memory and flags, the change log, the VKU check, meeting prep, and the sweep and run watchdogs.
-- **Heartbeat:** stays outside the webapp, because a watcher must never run on the thing it watches. Suggested: a small task in the client's Claude account that checks the webapp's status page, with the same push and email.
+- **Heartbeat:** stays outside the webapp, because a watcher must never run on the thing it watches. Suggested: a small task in the client's Claude account that checks the webapp's status page, with the same alerts.
 - **Connections:** official APIs or official tool servers for Procore, Autodesk, Microsoft 365, Fireflies (never for VKU) and GitHub. Claude's own connectors only work inside claude.ai.
 - **Notes:** the 357 project files and the VKU notes become plain files in a private git repo, with the same names, so no instruction changes. Claude's project memory is copied in once, and chat history is kept in the webapp. Claude opens notes by name and searches inside them. A meaning-based search is added only if a test shows misses.
 - **Skills and rule book:** the same skills, loaded by the webapp from git. The rule book stays as it is.

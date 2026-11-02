@@ -677,7 +677,7 @@ const PLAN = {
       plan: "The same emails through Amazon's email, from the same sender to the same person. In the suggested setup nobody opens the VM, so the pop-up's job moves to the webapp.",
       parts: [
         ["Alert emails", "Emails the client when a run is blocked, slow, gives up, fails or finishes.", "When a run is blocked, slow, gives up, fails or finishes: an email from the bot email address to the client.", "The same emails, sent by the webapp.", "moves", "Webapp", "the webapp sends them."],
-        ["Windows pop-ups", "Shows each alert as a pop-up on the VM's screen.", "On the VM's screen when a run is blocked, slow, gives up, fails or finishes. A click on the finished one opens the summary.", "Suggested: a webapp notification on phone or browser. The finished one opens the summary.", "open", "Webapp", "a phone or browser notification replaces it."],
+        ["Windows pop-ups", "Shows each alert as a pop-up on the VM's screen.", "On the VM's screen when a run is blocked, slow, gives up, fails or finishes. A click on the finished one opens the summary.", "Suggested: an email or browser notification from the webapp. The finished one opens the summary.", "open", "Webapp", "an email or browser notification replaces it."],
         ["Progress lines", "Written to a file on the VM during each run.", "A file on the VM.", "The webapp's run status.", "moves", "Webapp", "the webapp shows the run's progress."]
       ],
       needs: ["Amazon email access for the webapp."]
@@ -766,7 +766,7 @@ const PLAN = {
       parts: [
         ["Sweep watchdog (09:05)", "Checks the morning sweep ran and emails the client if not.", "Checks the sweep's run in Claude's task list, its files on the VM and its note in the Claude Project. Emails the client only if something is wrong.", "The same checks, in the webapp.", "moves", "Webapp", "the webapp runs it."],
         ["Run watchdog (11:40 and 17:40)", "Checks the bot's runs and emails the client if something is wrong.", "Reads the run log, the portal's GitHub history and the VM's timer. Emails the client only if something is wrong.", "The same, with the webapp's schedule in place of the timer.", "moves", "Webapp", "the webapp runs it and checks its own schedule."],
-        ["Heartbeat (12:35 and 19:35)", "From Claude's cloud, checks the VM's jobs still fire and alerts the client.", "In Claude's cloud. Checks that the VM's jobs still fire and that the change-log note has the bot's run summary. Sends the result to the client by push and email.", "Suggested: a small task in the client's Claude account that checks the webapp's status page, with the same push and email.", "open", "", "it checks the webapp's status page."]
+        ["Heartbeat (12:35 and 19:35)", "From Claude's cloud, checks the VM's jobs still fire and alerts the client.", "In Claude's cloud. Checks that the VM's jobs still fire and that the change-log note has the bot's run summary. Sends the result to the client by push and email.", "Suggested: a small task in the client's Claude account that checks the webapp's status page, with the same alerts.", "open", "", "it checks the webapp's status page."]
       ],
       watch: ["A watcher must never live on the thing it watches (the lesson of the VM outage)."]
     },
@@ -863,12 +863,12 @@ const PLAN = {
     },
     DAVID: {
       verdict: "same", size: "S", where: "As today",
-      lead: "The client and their teammate get the same emails, plus the heartbeat's push.",
+      lead: "The client and their teammate get the same emails and the heartbeat's alerts.",
       today: "Summaries and alerts by email, plus a phone push from the heartbeat.",
       plan: "Unchanged.",
       parts: [
         ["Emails and push", "Summaries and alerts by email, plus a phone push from the heartbeat.", "Summaries and alerts by email, plus a phone push from the heartbeat.", "No change needed.", "same", "", "they arrive the same way."],
-        ["Job notices", "Claude emails the client each job's closing message.", "Claude sends the client each job's closing message as a notice by email. The heartbeat's notice is its alert, by push and email.", "Suggested: a webapp notification for each job's closing message, on phone or browser. The heartbeat keeps Claude's push and email.", "open", "Webapp", "a phone or browser notification replaces it."]
+        ["Job notices", "Claude emails the client each job's closing message.", "Claude sends the client each job's closing message as a notice by email. The heartbeat's notice is its alert, by push and email.", "Suggested: an email or browser notification from the webapp for each job's closing message. The heartbeat keeps its own alerts.", "open", "Webapp", "an email or browser notification replaces it."]
       ]
     }
   },
@@ -1021,8 +1021,8 @@ const PLAN = {
       parts: [
         ["AI watchers", "Watch the jobs from Claude, using the VM.", "In Claude, using the VM.", "In the webapp.", "moves", "Webapp", "the webapp runs them."],
         ["The bot's alert emails", "Sent from the VM.", "From the VM.", "From the webapp.", "moves", "Webapp", "the webapp sends them."],
-        ["Heartbeat", "Checks from Claude's cloud that the jobs still run.", "In Claude's cloud.", "Suggested: a small task in the client's Claude account that checks the webapp's status page, with the same push and email.", "open", "", "it checks the webapp's status page."],
-        ["The bot's pop-ups", "Show on the VM's screen during each run.", "On the VM's screen, during each run.", "Suggested: a webapp notification on phone or browser.", "open", "Webapp", "a phone or browser notification replaces them."],
+        ["Heartbeat", "Checks from Claude's cloud that the jobs still run.", "In Claude's cloud.", "Suggested: a small task in the client's Claude account that checks the webapp's status page, with the same alerts.", "open", "", "it checks the webapp's status page."],
+        ["The bot's pop-ups", "Show on the VM's screen during each run.", "On the VM's screen, during each run.", "Suggested: an email or browser notification from the webapp.", "open", "Webapp", "an email or browser notification replaces them."],
         ["What-to-do lines in the alarms", "Each alarm email says what to do on the VM.", "Each watcher's email says what to do, such as remote desktop into the VM, read the progress log, or start the VM in Amazon's console.", "Could point to the webapp instead of the VM. The client checks the new wording.", "moves", "Webapp", "they point to the webapp."]
       ]
     },
