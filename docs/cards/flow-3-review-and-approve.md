@@ -1,0 +1,239 @@
+# Flow 3: Review and approve
+
+Every card in this flow, in full. The [plan page](https://faiq-kl.github.io/campbell-cts-documentation/vm-to-webapp-plan.html) shows the diagram.
+
+## Held for a person
+
+*Waiting, Run log + notes*
+
+Unusual results the bot or AI did not write. Listed in run summaries, notes and emails. Nothing is written until someone decides.
+
+- `Register rows`: a drawing status went down, or a revision disappeared
+- `Scan results`: progress measured from new scans
+- `Broken page data`: for example, zero Forma issues. Big jumps are published with a warning instead (a rule the lead set)
+- `Finish dates with no PDF yet`: the model shows the package issued, but its drawing PDF isn't in Forma. Once it is, the bot writes the date itself
+- `TimeLiner re-dates`: 4D schedule dates to change, from the sweep
+- `Proposed Forma issues`: from meeting follow-ups
+- `Flags marked "Decision: lead"`: from the project diary
+
+**Today:** Register rows that would go backwards, page data that fails its checks, and scan results are held for the lead.
+
+**What could change:** Held items work as today. The lead approves in the webapp's chat and the webapp releases them. The lead approves in chat, as today. The webapp runs the same release commands and records who approved and when.
+
+| Part | Currently | Can be optimized |
+|---|---|---|
+| Release a held register change (approve-regression) | Run on the VM. | Run by the webapp. |
+| Release held page data (site-feed-approve) | Run on the VM. | Run by the webapp. |
+| Release a held scan result (scan-approve) | Run on the VM. | Run by the webapp. |
+
+## Project Lead and team
+
+*People*
+
+The lead decides (the deputy has stood in). VKU has its own small team.
+
+**Today:** The lead decides. The deputy has stood in through a written note. VKU has its own small team.
+
+**What could change:** The same people decide in the same way. Unchanged. A stand-in is still set by a written note. Each person signs in to the webapp, so only the lead or the stand-in can approve.
+
+| Part | Currently | Can be optimized |
+|---|---|---|
+| Stand-in lead | A written note. | No change needed. |
+| A stand-in role set for a date range | Not done today. | Not suggested. |
+
+## Triad signers
+
+*People*
+
+Six people at Triad who approve, change or reject schedule cards.
+
+**Today:** Six people at Triad approve, change or mark schedule cards Not ours.
+
+**What could change:** The six Triad signers keep using the same sign-off page. Unchanged.
+
+| Part | Currently | Can be optimized |
+|---|---|---|
+| Triad signers | The sign-off page. | No change needed. |
+
+## Lead Queue
+
+*Repo page, In git*
+
+One page listing every decision waiting for the lead. The lead approves, changes, holds or passes on each. The AI then carries it out in chat.
+
+- `Nova102-Action-Hub`: page /lead
+- `lead/seed.json`: the list, filled by hand from project notes
+- `LEAD_SYNC_CLIENT_ID`: key for the AI to read it directly: not set up yet
+
+**Today:** A page listing every decision waiting for the lead (137 items), filled by hand into lead/seed.json. A click does not count as approval yet.
+
+**What could change:** The Lead Queue stays as it is, filled by hand. Unchanged, filled from the webapp's chat.
+
+| Part | Currently | Can be optimized |
+|---|---|---|
+| lead/seed.json | Filled by hand. | No change needed. |
+| Filling it automatically | Not done today. | Not suggested. |
+
+## Sign-off board
+
+*Repo, In git*
+
+Saves each Triad decision with the signer's email. It never changes the schedule. The AI applies sign-offs in chat.
+
+- `Nova102-Action-Hub`: page /triad-board
+
+**Today:** Saves each Triad decision with the signer's email. Claude applies validated cards in chat after the lead approves.
+
+**What could change:** The sign-off board stays as it is. Sign-offs are applied only after the lead approves. Unchanged, applied from the webapp's chat.
+
+| Part | Currently | Can be optimized |
+|---|---|---|
+| Applying sign-offs | By Claude in chat, after the lead approves. | The same, in the webapp's chat. |
+
+## Work done when asked
+
+*Procedures, Git + Claude account*
+
+Not daily. Started on request, each following its rule-book procedure.
+
+- `BIM-10 prefab and field`: prefab checks, shop schedules, the supplier's Trello board
+- `BIM-12 clash and issues`: clash reviews, filing the lead's clash report, clash issues in Forma (hidden until a person publishes them)
+- `BIM-13 field BOM`: material quantities from Navisworks
+- `BIM-11 4D builds`: 4D model rebuilds, with a person watching
+- `BIM-04 document control`: drawings in hand, and publishing drawings to Forma
+- `BIM-08 RFI and submittal questions`: answers about RFIs and submittals
+- `Forma correspondence`: filing emails and letters in Forma (including a catch-up batch)
+
+**Today:** 4D builds (BIM-11), clash reviews (BIM-12), quantities (BIM-13), document control (BIM-04), RFI questions (BIM-08), Forma correspondence, and prefab and Trello work (BIM-10), in chats using the VM.
+
+**What could change:** Work done when asked runs in the webapp's chat. Revit and Navisworks work reaches the Windows computer through conduit. The same procedures from the webapp's chat, through conduit and the official APIs.
+
+| Part | Currently | Can be optimized |
+|---|---|---|
+| BIM-11, BIM-12, BIM-13 | Navisworks and Revit on the VM, through conduit. | Through conduit on the Windows computer. |
+| BIM-04, BIM-08, BIM-10, Forma correspondence | Chats working through the VM. | Autodesk's, Procore's and Trello's APIs. |
+
+**Watch out:**
+
+- 4D builds are watched by a person today. The webapp needs a way to show Navisworks' view.
+
+## AI chat sessions
+
+*AI in chat, Claude account*
+
+People working with Claude in the Nova BIM Schedule and VKU projects. Shared changes are claimed on the Task Board first, and kept out of the bot's run times (09:00 to 10:15 and 16:00 to 17:15).
+
+- `"Start my tasks for the day"`: a teammate's first message: run summary and QC checklist
+- `Decisions and approvals`: The lead approves exact changes
+- `Task Board, issue drafts, Monday expectation gap check`: other chat work
+- `Manual run steps`: only when the lead asks
+- `Teammates' own Claude`: with the company skills
+- `Claude's sandbox`: some tools ran on uploaded copies, not real files
+
+**Today:** People chat with Claude in the Nova BIM Schedule and VKU projects. The lead's chats work through the VM. The deputy approved in their own Claude, in the shared project.
+
+**What could change:** Chat moves into the webapp for the lead, the deputy and the teammates. A chat page in the webapp, on the same engine as the jobs, with the same words and procedures, such as 'start my tasks for the day' and 'Approve' with the item's number. Each person signs in. Approvals are recorded with name and time.
+
+| Part | Currently | Can be optimized |
+|---|---|---|
+| Start my tasks for the day | In the Claude app. | In the webapp's chat. |
+| Approvals | Typed in chat, then Claude runs the bot's commands on the VM. | Typed in the webapp's chat, then the webapp carries them out. |
+| Manual runs | Only when the lead asks. | From the webapp's chat, same rule. |
+| The deputy and teammates | Their own Claude, on their own computers. | Their own sign-in to the webapp. They keep their own Claude for other work. |
+| Claude app extras (phone app, voice, artifacts) | In the Claude app. | The lead lists what they use, so the webapp can match it. |
+
+**Chat options, as weighed**
+
+| Option | What it means | Finding |
+|---|---|---|
+| Our own chat in the webapp | A chat page built on the same engine as the jobs. | Suggested. |
+| As today, on the Windows computer | The Claude app working through that computer. | Not suggested. It keeps the app and the lead's sign-in on that computer. |
+| Claude app plus a connector | Claude reaches the webapp through a list of tools. | Not suggested. Chat would stay in the Claude app, not in our webapp. |
+
+Suggested so that nobody needs a computer with the Claude app.
+
+## Approved changes, issues and replies
+
+*Service, Outside*
+
+Only what was approved is written.
+
+- `Coordination Schedule`: finish dates, held rows, Triad-approved cards
+- `4D approval files`: applied by the next morning's bot run
+- `Tracker shared state`: page data, saved with tracker_sync_cf.py on the VM
+- `Forma issues`: clash issues stay hidden until a person publishes them. Questions to Triad go out open
+- `Replies to BES, ARCO, CMMC, Triad`: drafted by the AI, sent after the lead checks the evidence
+
+**Today:** Coordination Schedule changes, 4D approval files, tracker notes, Forma issues and reply drafts, written from chats using the VM.
+
+**What could change:** Approved changes are written from the webapp, only after approval, outside run times, with the same safety steps. The same changes from the webapp's chat, through Autodesk's API.
+
+| Part | Currently | Can be optimized |
+|---|---|---|
+| Coordination Schedule changes | From chats using the VM. | From the webapp's chat, through the API. |
+| 4D approval files | On the VM. | Written by the webapp's chat, sent with the morning Navisworks job. |
+| Tracker shared notes | tracker_sync_cf.py on the VM. | The rescued script, run by the webapp. |
+| Forma issues | Clicked in Forma's 3D viewer, then edited with a copied sign-in token. | Autodesk's Issues API, still created as drafts. |
+| Replies to BES, ARCO, CMMC, Triad | Drafted by Claude, sent by the lead after checking. | No change needed. |
+
+**Watch out:**
+
+- Today's clash-issue method copies a sign-in token from the browser, against the rule 'never capture auth tokens'. The API removes the need.
+
+## Release held items
+
+*Repo commands, In git*
+
+Commands that publish what the bot held, once approved.
+
+- `python -m orchestrator site-feed-approve`: held page data
+- `python -m orchestrator scan-approve`: held scan results
+
+**Today:** site-feed-approve and scan-approve, run on the VM.
+
+**What could change:** The two release commands run in the webapp. The same commands, run by the webapp from chat.
+
+| Part | Currently | Can be optimized |
+|---|---|---|
+| Release held page data (site-feed-approve) | On the VM. | In the webapp. |
+| Release a held scan result (scan-approve) | On the VM. | In the webapp. |
+
+## Pages kept by hand
+
+*Repos, In git*
+
+Pages, or parts of pages, the bot does not update.
+
+- `Nova102-RFI-Sweep`: from the lead's PC (it holds the search index)
+- `Nova102-Scan-Tracker`: after a scan is approved
+- `Nova102-Impact-Dashboard`: punch list, open items, expectation gaps
+- `Nova102-Action-Hub`: main to-do list and Lead Queue items
+- `HCG-Portfolio-Dashboard`: decisions and highlights
+
+**Today:** Action Hub, Scan Tracker, and parts of the dashboards and the portfolio, with their own scripts. The RFI Sweep is updated from the lead's PC, which holds its search index.
+
+**What could change:** Pages kept by hand stay by hand. Their scripts run in the webapp. The same pages, kept by hand from the webapp's chat. The RFI Sweep stays on the lead's PC.
+
+| Part | Currently | Can be optimized |
+|---|---|---|
+| Scripts for the pages kept by hand | On the VM. | In the webapp. |
+| RFI Sweep | From the lead's PC. | No change needed. |
+| RFI Sweep's index on our server | Not done today. | Not suggested. |
+
+## Rule changes
+
+*Repo, In git*
+
+The lead's rulings update the rule book, then the skills and workbooks are rebuilt.
+
+- `Rule book`: the repo
+- `kb.py build`: ClickUp workbooks and flowcharts
+- `kb.py plugin`: the playbook skills
+
+**Today:** Claude proposes the rule-book change in chat. The lead approves, and the rule book is updated.
+
+**What could change:** Rule changes go into the rule book as today. The same, from the webapp's chat.
+
+| Part | Currently | Can be optimized |
+|---|---|---|
+| Rule changes | Claude proposes the rule-book change in chat. The lead approves, and the rule book is updated. | No change needed. |

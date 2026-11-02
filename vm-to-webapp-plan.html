@@ -110,44 +110,26 @@ ol.mlist .w code { font: 12px var(--mono); color: var(--fg); overflow-wrap: anyw
   ol.mlist li { grid-template-columns: 28px minmax(0, 1fr); }
 }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
-/* Plan page additions: light and dark themes, dropdowns, and the details screen. */
-:root { --ok: #8fe3b0; --ok-line: #2f7a52; --ok-bg: #13291d; --win: #c4b8ff; --win-line: #5b4fa8; --win-bg: #1e1a33;
-  --warn: #f5c46b; --warn-line: #8a6420; --warn-bg: #2a2010; --info: #9cc8f2; --info-line: #2f5f8f; --info-bg: #142334;
-  --gray: #c3c9d0; --gray-line: #59616b; --gray-bg: #24282d; --risk: #f3b1a8; --risk-line: #6b3a35;
-  --chip: rgba(255, 255, 255, .05); --shadow: rgba(0, 0, 0, .35); }
+/* Plan page additions: light and dark themes, dropdowns, and the card dialog. */
+:root { --risk: #f3b1a8; --risk-line: #6b3a35; --chip: rgba(255, 255, 255, .05); --shadow: rgba(0, 0, 0, .35); }
 @media (prefers-color-scheme: light) { :root:not([data-theme="dark"]) { --bg: #f5f6f8; --panel: #ffffff; --node: #ffffff; --node-line: #d3d8de; --fg: #1c2026; --muted: #5b6470; --dot: #d8dde3;
   --c-repo: #17784f; --c-sched: #9a5800; --c-skill: #5f4fd0; --c-ext: #2468b4; --c-vm: #b93d31; --c-people: #9a3f9a;
-  --ok: #17663f; --ok-line: #8fd0aa; --ok-bg: #e7f6ed; --win: #4a3d9e; --win-line: #b8b0ee; --win-bg: #efedfc;
-  --warn: #8a5300; --warn-line: #e2bd73; --warn-bg: #fdf4e3; --info: #1d5a93; --info-line: #a7c6e8; --info-bg: #e9f2fb;
-  --gray: #4a525c; --gray-line: #c6ccd3; --gray-bg: #eef0f3; --risk: #b3261e; --risk-line: #ebb9b3;
-  --chip: rgba(0, 0, 0, .045); --shadow: rgba(0, 0, 0, .08); color-scheme: light; } }
+  --risk: #b3261e; --risk-line: #ebb9b3; --chip: rgba(0, 0, 0, .045); --shadow: rgba(0, 0, 0, .12); color-scheme: light; } }
 :root[data-theme="light"] { --bg: #f5f6f8; --panel: #ffffff; --node: #ffffff; --node-line: #d3d8de; --fg: #1c2026; --muted: #5b6470; --dot: #d8dde3;
   --c-repo: #17784f; --c-sched: #9a5800; --c-skill: #5f4fd0; --c-ext: #2468b4; --c-vm: #b93d31; --c-people: #9a3f9a;
-  --ok: #17663f; --ok-line: #8fd0aa; --ok-bg: #e7f6ed; --win: #4a3d9e; --win-line: #b8b0ee; --win-bg: #efedfc;
-  --warn: #8a5300; --warn-line: #e2bd73; --warn-bg: #fdf4e3; --info: #1d5a93; --info-line: #a7c6e8; --info-bg: #e9f2fb;
-  --gray: #4a525c; --gray-line: #c6ccd3; --gray-bg: #eef0f3; --risk: #b3261e; --risk-line: #ebb9b3;
-  --chip: rgba(0, 0, 0, .045); --shadow: rgba(0, 0, 0, .08); color-scheme: light; }
+  --risk: #b3261e; --risk-line: #ebb9b3; --chip: rgba(0, 0, 0, .045); --shadow: rgba(0, 0, 0, .12); color-scheme: light; }
 code { background: var(--chip); }
 .node { box-shadow: 0 2px 12px var(--shadow); }
 .node .wh.risk { color: var(--risk); border-color: var(--risk-line); }
 .node li { background: var(--chip); }
-[hidden] { display: none !important; }
+.node .go { font: 500 12px var(--sans); color: var(--c-ext); margin-top: 3px; }
+.node:hover .go { text-decoration: underline; }
 .top { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; justify-content: space-between; }
 .theme { display: inline-flex; border: 1px solid var(--node-line); border-radius: 8px; overflow: hidden; }
 .theme button { font: 500 14px var(--sans); color: var(--muted); background: var(--panel); border: 0; padding: 7px 14px; cursor: pointer; }
 .theme button + button { border-left: 1px solid var(--node-line); }
 .theme button[aria-pressed="true"] { color: var(--bg); background: var(--fg); }
 .theme button:focus-visible { outline: 2px solid var(--c-ext); outline-offset: -2px; }
-.vd { font: 700 10.5px/1.7 var(--mono); letter-spacing: .05em; text-transform: uppercase; padding: 0 7px; border-radius: 99px; border: 1px solid; white-space: nowrap; }
-.v-moves { color: var(--ok); border-color: var(--ok-line); background: var(--ok-bg); }
-.v-windows { color: var(--win); border-color: var(--win-line); background: var(--win-bg); }
-.v-open { color: var(--warn); border-color: var(--warn-line); background: var(--warn-bg); }
-.v-same { color: var(--info); border-color: var(--info-line); background: var(--info-bg); }
-.v-goes { color: var(--gray); border-color: var(--gray-line); background: var(--gray-bg); }
-.v-parked, .v-dropped, .v-unused { color: var(--muted); border-color: var(--node-line); background: var(--bg); }
-.v-parked { border-style: dashed; }
-.node .go { font: 500 12px var(--sans); color: var(--c-ext); margin-top: 3px; }
-.node:hover .go { text-decoration: underline; }
 .wrap { grid-template-columns: minmax(0, 1fr); gap: 14px; }
 details.sec, details.flow, details.missing { display: block; border-top: 1px solid var(--node-line); padding-top: 14px; }
 #howto .legend { margin-top: 10px; }
@@ -161,67 +143,32 @@ details > summary:focus-visible { outline: 2px solid var(--c-ext); outline-offse
 details.flow[open] > * + *, details.missing[open] > * + * { margin-top: 14px; }
 .what { max-width: 100ch; }
 .flow-head > .zoom { display: flex; gap: 6px; align-items: center; }
-.notes { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 12px; }
-.note { border: 1px solid var(--node-line); border-radius: 8px; padding: 12px 14px; display: grid; gap: 6px; align-content: start; background: var(--panel); }
-.note h3, .note h4 { margin: 0; font: 600 12px var(--mono); letter-spacing: .08em; text-transform: uppercase; }
-.note ul, .note ol { margin: 0; padding-left: 20px; display: grid; gap: 4px; font-size: 14px; }
-.note.watch { border-color: var(--warn-line); } .note.watch h3 { color: var(--warn); }
-.note.need { border-color: var(--info-line); } .note.need h3, .note.need h4 { color: var(--info); }
-.note.ask { border-color: var(--win-line); } .note.ask h3, .note.ask h4 { color: var(--win); }
-.detail { max-width: 1160px; margin: 0 auto; display: grid; gap: 22px; }
-.dnav { display: flex; flex-wrap: wrap; gap: 8px; justify-content: space-between; align-items: center; }
-.dnav .pn { display: flex; flex-wrap: wrap; gap: 8px; min-width: 0; }
-.btn { font: 500 14px var(--sans); color: var(--fg); background: var(--panel); border: 1px solid var(--node-line); border-radius: 8px; padding: 8px 14px; cursor: pointer; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.btn:hover:not([disabled]) { border-color: var(--muted); }
+.btn { font: 500 14px var(--sans); color: var(--fg); background: var(--panel); border: 1px solid var(--node-line); border-radius: 8px; padding: 6px 12px; cursor: pointer; }
+.btn:hover { border-color: var(--muted); }
 .btn:focus-visible { outline: 2px solid var(--c-ext); outline-offset: 2px; }
-.btn[disabled] { opacity: .4; cursor: default; }
-.dhead { display: grid; gap: 6px; }
-.dhead h1:focus { outline: none; }
-.dhead .chips { display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center; }
-.lead { font-size: 17px; max-width: 85ch; }
-.cmp { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-.box { background: var(--panel); border: 1px solid var(--node-line); border-radius: 10px; padding: 14px 16px; display: grid; gap: 8px; align-content: start; }
-.box h3, .part h2 { margin: 0; font: 600 12px var(--mono); letter-spacing: .08em; text-transform: uppercase; }
-.box.today h3, .part h2 { color: var(--muted); }
-.box.ours { border-color: var(--ok-line); }
-.box.ours h3 { color: var(--ok); }
-.box.pending { border-style: dashed; }
-.lives { font: 12px var(--mono); color: var(--muted); }
-.orig { background: var(--node); border: 1px solid var(--node-line); border-radius: 10px; padding: 14px 16px; display: grid; gap: 10px; }
-.orig .oh { display: flex; align-items: center; gap: 8px; }
-.orig .ic { width: 26px; height: 26px; border-radius: 6px; display: grid; place-items: center; flex: none; }
-.orig .ic svg { width: 15px; height: 15px; }
-.orig .ty { font: 600 11px var(--mono); letter-spacing: .07em; text-transform: uppercase; }
-.orig .wh { margin-left: auto; font: 11px var(--mono); color: var(--muted); border: 1px solid var(--node-line); border-radius: 99px; padding: 1px 8px; white-space: nowrap; }
-.orig > p { max-width: 90ch; }
-.orig ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
-.orig li { font: 13px var(--mono); background: var(--chip); border-radius: 6px; padding: 7px 10px; display: grid; gap: 2px; overflow-wrap: anywhere; }
-.orig li b { font-weight: 500; }
-.orig li small { font: 12px var(--mono); color: var(--c-sched); }
-.orig li em { font: normal 14px/1.45 var(--sans); color: var(--muted); }
-.part { display: grid; gap: 10px; }
-.parts { display: grid; border: 1px solid var(--node-line); border-radius: 10px; overflow: hidden; }
-.prow { display: grid; grid-template-columns: minmax(150px, 1fr) 1.5fr 1.8fr 116px; gap: 14px; padding: 11px 14px; border-bottom: 1px solid var(--node-line); background: var(--panel); font-size: 14px; line-height: 1.45; }
-.opts .prow { grid-template-columns: minmax(150px, 1fr) 1.4fr 1.6fr; }
-.prow:last-child { border-bottom: 0; }
-.prow.ph { background: transparent; font: 600 11px var(--mono); letter-spacing: .07em; text-transform: uppercase; color: var(--muted); }
-.prow b { font-weight: 600; }
-.prow > span:nth-child(2) { color: var(--muted); }
-.prow .lbl { display: none; font-style: normal; }
-@media (max-width: 760px) {
-  .cmp { grid-template-columns: 1fr; }
-  .prow, .opts .prow { grid-template-columns: 1fr; gap: 4px; }
-  .prow.ph { display: none; }
-  .prow .lbl { display: block; font: 600 10.5px var(--mono); letter-spacing: .07em; text-transform: uppercase; color: var(--muted); }
-  .dnav .pn { width: 100%; }
-  .dnav .pn .btn { flex: 1 1 0; min-width: 0; }
-}
+dialog#card { width: min(1000px, calc(100% - 32px)); max-height: calc(100vh - 48px); overflow: auto; padding: 0; border: 1px solid var(--node-line); border-radius: 12px; background: var(--panel); color: var(--fg); box-shadow: 0 16px 48px var(--shadow); }
+dialog#card::backdrop { background: rgba(0, 0, 0, .55); }
+.dbody { padding: 18px 20px 22px; display: grid; gap: 14px; }
+.dh { display: flex; gap: 12px; align-items: start; justify-content: space-between; }
+.dh h2 { font-size: 22px; margin-top: 4px; }
+.tw { overflow-x: auto; border: 1px solid var(--node-line); border-radius: 10px; }
+.tw table { width: 100%; min-width: 620px; border-collapse: collapse; font-size: 14px; line-height: 1.45; }
+.tw th { text-align: left; font: 600 11px var(--mono); letter-spacing: .07em; text-transform: uppercase; color: var(--muted); padding: 10px 12px; border-bottom: 1px solid var(--node-line); }
+.tw td { padding: 10px 12px; border-top: 1px solid var(--node-line); vertical-align: top; }
+.tw tbody tr:first-child td { border-top: 0; }
+.tw td:nth-child(1) { width: 46%; color: var(--muted); }
+.tw td:nth-child(1) b { color: var(--fg); font-weight: 600; }
+.tw td:nth-child(3) { width: 1%; }
+.tw select { font: 500 13px var(--sans); color: var(--fg); background: var(--bg); border: 1px solid var(--node-line); border-radius: 6px; padding: 5px 8px; }
+.dbody h3 { margin: 0; font: 600 12px var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.refs { margin: 0; padding-left: 20px; display: grid; gap: 4px; }
+.refs a { color: var(--c-ext); }
 </style>
 
-<div class="wrap" id="main">
+<div class="wrap">
   <header style="display:grid;gap:12px">
     <div class="top"><h1>VM to Webapp Plan</h1><div class="theme" role="group" aria-label="Colour theme"><button type="button" data-pick="light">Light</button><button type="button" data-pick="dark">Dark</button></div></div>
-    <p class="muted">How production works today, and where each part goes in the new setup.</p>
+    <p class="muted">How production works today, and what could be optimized.</p>
     
   </header>
 
@@ -378,7 +325,7 @@ details.flow[open] > * + *, details.missing[open] > * + * { margin-top: 14px; }
 
 </div>
 
-<div id="detail" class="detail" hidden></div>
+<dialog id="card" aria-labelledby="card-title"></dialog>
 
 <script>
 const ICONS = {
@@ -582,10 +529,10 @@ const FLOWS = {
 };
 
 
-// The decision for each card, by flow, as taken with the user.
+// What we found for each card, by flow, with the user. Discovery wording: no decision words.
 // One design (no switch-over day), API first, Rule 1 (no functionality changes).
 // A card with no entry here is not worked out yet.
-// verdict: a key of VERDICTS. parts: [part, today, in the new design, verdict]. options: an extra table with its own columns.
+// verdict: a key of VERDICTS. parts: [part, currently, can be optimized, verdict]. options: an extra table with its own columns.
 const VERDICTS = {
   moves: ["Webapp", "moves to the webapp"],
   windows: ["Windows computer", "runs on the Windows computer, which nobody needs to open"],
@@ -607,12 +554,12 @@ const PLAN = {
       plan: "The webapp starts each run at 09:00 and 16:00 Chicago time on weekdays, holidays included, NOVA102 then VKU, at most once per run time, with the same time limits. It uses Chicago wall-clock time, so a clock change can't shift it. A missed run starts when the webapp is back. Manual runs come from the webapp's chat, only when the lead asks.",
       parts: [
         ["Daily run", "Weekdays 09:00 and 16:00 CT on the VM. Since the clock change it likely fires an hour early.", "The webapp's timer, in Chicago time.", "moves"],
-        ["The 30-minute morning wait", "A leftover from the lead's laptop.", "Dropped. Results arrive 30 minutes earlier. One setting brings it back.", "goes"],
-        ["Pop-up clicker", "Answers Revit and Navisworks pop-ups so runs don't stall.", "Stays on the Windows computer.", "windows"],
-        ["Desktop-session keeper", "Keeps the screen session alive for Revit and Navisworks.", "Stays on the Windows computer.", "windows"],
-        ["Claude keep-alive", "Reopens the Claude app and Chrome.", "Goes. No Claude app or Chrome on the Windows computer.", "goes"],
+        ["The 30-minute morning wait", "A leftover from the lead's laptop.", "Could be dropped, so results arrive 30 minutes earlier. One setting brings it back.", "goes"],
+        ["Pop-up clicker", "Answers Revit and Navisworks pop-ups so runs don't stall.", "Can stay on the Windows computer.", "windows"],
+        ["Desktop-session keeper", "Keeps the screen session alive for Revit and Navisworks.", "Can stay on the Windows computer.", "windows"],
+        ["Claude keep-alive", "Reopens the Claude app and Chrome.", "Could be removed. No Claude app or Chrome would be needed on the Windows computer.", "goes"],
         ["Manual runs", "A one-off task, only when the lead asks. It counts as the next run time.", "From the webapp's chat, with the same rule.", "moves"],
-        ["Run now button", "Does not exist.", "Dropped for now. Manual runs come from chat.", "parked"]
+        ["Run now button", "Does not exist.", "Not needed for now. Manual runs can come from chat.", "parked"]
       ],
       watch: ["Since the clock change the VM's timer likely fires at 08:00 and 15:00, so the 09:00 run comes late and there is no 16:00 run. Only the lead can fix it on the VM."]
     },
@@ -625,15 +572,15 @@ const PLAN = {
         ["Bot's Revit reading", "Desktop Revit on the VM.", "Desktop Revit on the Windows computer.", "windows"],
         ["Chat's live Revit", "Chats ask the open model through conduit.", "The same Revit, asked from the webapp's chat.", "windows"],
         ["Navisworks morning step", "On the VM.", "On the Windows computer.", "windows"],
-        ["Clash checking in ACC instead of Navisworks", "Not used.", "Parked. Different clash results, no 4D, no quantities.", "parked"]
+        ["Clash checking in ACC instead of Navisworks", "Not used.", "Possible later, but clash results differ and there is no 4D or quantities.", "parked"]
       ],
       options: {
         title: "Where the bot reads Revit, as weighed",
-        head: ["Option", "What it means", "Decision"],
+        head: ["Option", "What it means", "Finding"],
         rows: [
-          ["Desktop Revit on the Windows computer", "As today, next to chat's Revit.", "Chosen."],
+          ["Desktop Revit on the Windows computer", "As today, next to chat's Revit.", "Suggested."],
           ["Autodesk's online Revit (Automation API)", "The bot's reading runs in Autodesk's cloud. Revit 2025, 2026 and cloud models are supported. Paid in Autodesk credits, about 2 Flex tokens per processing hour.", "Noted as possible. Needs a reading package without a screen and a side-by-side test."],
-          ["Autodesk's free data service", "Parts lists from published model versions only.", "Dropped."]
+          ["Autodesk's free data service", "Parts lists from published model versions only.", "Not suggested."]
         ],
         note: "Revit must stay on the Windows computer for chat anyway, so the online option would not remove it."
       },
@@ -695,7 +642,7 @@ const PLAN = {
         ["Conduit export", "Revit on the VM.", "Revit on the Windows computer.", "windows"],
         ["Scan comparison", "Python on the VM.", "The same code in the webapp, on a worker sized for the biggest scan.", "moves"],
         ["Held scan result and its release", "On the VM.", "In the webapp.", "moves"],
-        ["Scan Tracker page", "Rebuilt by hand after approval.", "Still by hand after approval.", "same"],
+        ["Scan Tracker page", "Rebuilt by hand after approval.", "Can stay by hand after approval.", "same"],
         ["4D viewer, 4D progress, 5D workbook", "After each run, on the VM.", "In the webapp, same code and times.", "moves"],
         ["Timeline snapshot", "Navisworks, each morning.", "Navisworks on the Windows computer.", "windows"]
       ],
@@ -708,10 +655,10 @@ const PLAN = {
       plan: "The webapp downloads the file, checks it, writes a scratch copy, confirms ACC still has the version it downloaded, uploads, and checks the upload. Backups stay. The NWF and NWD are uploaded by the file helper on the Windows computer.",
       parts: [
         ["Coordination Schedule", "6 safety steps.", "The same 6 steps, through the API.", "moves"],
-        ["Backups", "Copies before every write.", "Kept.", "same"],
+        ["Backups", "Copies before every write.", "Keep as they are.", "same"],
         ["Workbooks, inventories, clash report, 5D, run log", "The synced folder.", "Through the API.", "moves"],
         ["NWF and NWD", "Saved by Navisworks, uploaded by Desktop Connector.", "Saved by Navisworks, uploaded by the file helper through the API.", "windows"],
-        ["Desktop Connector", "Syncs whole project folders on the VM.", "Goes. The file helper moves only Navisworks' files.", "goes"]
+        ["Desktop Connector", "Syncs whole project folders on the VM.", "Could be removed. A file helper would move only Navisworks' files.", "goes"]
       ],
       watch: ["ACC's version history will show our app's account as the author."],
       needs: ["Write rights for our app only where the bot writes today."]
@@ -724,7 +671,7 @@ const PLAN = {
       parts: [
         ["Alert emails", "From the bot email address to the lead.", "The same, from the webapp.", "moves"],
         ["Run-finished pop-up", "On the VM's screen. A click opens the summary.", "Suggested: a webapp notification on phone or browser that opens the summary.", "open"],
-        ["Teams", "Switched off.", "Stays off.", "unused"],
+        ["Teams", "Switched off.", "Can stay off.", "unused"],
         ["Progress lines", "A file on the VM.", "The webapp's run status.", "moves"]
       ],
       needs: ["Amazon email access for the webapp."]
@@ -737,9 +684,9 @@ const PLAN = {
       parts: [
         ["Publishing to 7 pages", "Git pushes from the VM.", "From the webapp, with its own GitHub access.", "moves"],
         ["Live check", "Build status, then the page opened with a key.", "The same, from the webapp.", "moves"],
-        ["The pages themselves", "On Cloudflare.", "Unchanged: same addresses, look, sign-in and data.", "same"],
-        ["Pages kept by hand", "Action Hub, Scan Tracker, parts of the dashboards, RFI Sweep (the lead's PC).", "Still by hand, now from the webapp's chat. RFI Sweep stays on the lead's PC.", "same"],
-        ["One app replacing the 10 pages", "Not today.", "Dropped for good.", "dropped"]
+        ["The pages themselves", "On Cloudflare.", "No change needed: same addresses, look, sign-in and data.", "same"],
+        ["Pages kept by hand", "Action Hub, Scan Tracker, parts of the dashboards, RFI Sweep (the lead's PC).", "Can stay by hand, from the webapp's chat. The RFI Sweep can stay on the lead's PC.", "same"],
+        ["One app replacing the 10 pages", "Not done today.", "Not suggested.", "dropped"]
       ]
     },
     DAVID: {
@@ -748,7 +695,7 @@ const PLAN = {
       today: "The only person on the bot's alert list.",
       plan: "The same, now sent by the webapp.",
       parts: [
-        ["Alert list", "The lead only.", "The lead only.", "same"]
+        ["Alert list", "The lead only.", "No change: the lead only.", "same"]
       ]
     },
     CF: {
@@ -757,7 +704,7 @@ const PLAN = {
       today: "Puts each page online and checks who may open it. Holds the pages' 4 small databases, including the Task Board, and 1 scan file bucket.",
       plan: "Unchanged. The live-check key and the tracker sync script move to the webapp. The BIM Assistant claims tasks on the Task Board through the portal's own API, with its own sign-in.",
       parts: [
-        ["Hosting, sign-in, databases, file bucket", "Cloudflare.", "Unchanged.", "same"],
+        ["Hosting, sign-in, databases, file bucket", "Cloudflare.", "No change needed.", "same"],
         ["Live-check key", "On the VM.", "In the webapp's secure settings.", "moves"],
         ["Tracker sync script (tracker_sync_cf.py)", "Only on the VM, not in a repo.", "Rescued into a repo, run by the webapp.", "moves"],
         ["Task Board claims by Claude", "Through a signed-in browser, or by hand.", "Through the portal's API, with the BIM Assistant's own sign-in. Needs a small portal change.", "moves"]
@@ -769,7 +716,7 @@ const PLAN = {
       today: "HCG's team and leadership, plus BES and Triad, who see their own items only.",
       plan: "The same pages, addresses, sign-in and data.",
       parts: [
-        ["Page users", "As today.", "As today.", "same"]
+        ["Page users", "HCG's team and leadership, plus BES and Triad, who see their own items only.", "No change needed.", "same"]
       ]
     }
   },
@@ -781,8 +728,8 @@ const PLAN = {
       today: "Every HCG procedure in plain English, in its own repo. kb.py builds the ClickUp workbooks and flowcharts. Its plugin command rebuilds the 13 playbook skills by hand, from a starter folder that isn't in git, and the lead uploads them.",
       plan: "Unchanged rule book. The webapp loads the skills from git. Whether they rebuild by themselves when the rule book changes is still open.",
       parts: [
-        ["Rule book", "Procedures and the lead's rulings.", "Unchanged.", "same"],
-        ["kb.py build", "ClickUp workbooks and flowcharts.", "Unchanged.", "same"],
+        ["Rule book", "Procedures and the lead's rulings.", "No change needed.", "same"],
+        ["kb.py build", "ClickUp workbooks and flowcharts.", "No change needed.", "same"],
         ["Skills rebuild (kb.py plugin)", "By hand, then uploaded by the lead.", "Suggested: rebuilt from the rule book whenever it changes, once the starter folder is in git.", "open"]
       ]
     },
@@ -851,21 +798,21 @@ const PLAN = {
       today: "The Claude app on the VM, signed in as the lead. Seven jobs work through the VM, the heartbeat runs in Claude's cloud, and a keep-alive reopens the app.",
       plan: "The webapp runs Anthropic's Agent SDK, the engine behind Claude Code, with an API key. It is paid first from the API credit included in the lead's plan. Tools are standard tool servers, so the engine could be swapped later. It reaches the Windows computer only through the private link.",
       parts: [
-        ["Claude app and keep-alive", "On the VM.", "Goes.", "goes"],
+        ["Claude app and keep-alive", "On the VM.", "Could be removed.", "goes"],
         ["The jobs' send logs and saved state", "On the VM.", "Copied into the webapp, so no job starts fresh and sends duplicates.", "moves"],
-        ["Finished jobs (2 acting-lead digests, 3 one-offs)", "Listed, not running.", "Not carried over. Their text is kept on record.", "goes"],
-        ["8 paused job copies on the lead's PC", "The emergency backup.", "Depends on the PC backup decision (Flow 4).", "open"]
+        ["Finished jobs (2 acting-lead digests, 3 one-offs)", "Listed, not running.", "No need to carry them over. Their text is kept on record.", "goes"],
+        ["8 paused job copies on the lead's PC", "The emergency backup.", "Depends on what happens with the PC backup (Flow 4).", "open"]
       ],
       options: {
         title: "Where Claude runs, as weighed",
-        head: ["Option", "What it means", "Decision"],
+        head: ["Option", "What it means", "Finding"],
         rows: [
-          ["Agent SDK in the webapp", "Claude Code's engine on our own server.", "Chosen."],
-          ["Managed Agents", "Anthropic hosts the engine.", "Not taken. Beta, can't reach the Windows computer directly, notes limited to 100 kB per file."],
-          ["Claude app on a computer", "As today.", "Not taken. It keeps the app and the lead's sign-in on a computer."],
-          ["Plain API calls", "Our code does the steps, Claude only writes.", "Not taken. Behaviour would change."]
+          ["Agent SDK in the webapp", "Claude Code's engine on our own server.", "Suggested."],
+          ["Managed Agents", "Anthropic hosts the engine.", "Not suggested. Beta, can't reach the Windows computer directly, notes limited to 100 kB per file."],
+          ["Claude app on a computer", "As today.", "Not suggested. It keeps the app and the lead's sign-in on a computer."],
+          ["Plain API calls", "Our code does the steps, Claude only writes.", "Not suggested. Behaviour would change."]
         ],
-        note: "Chosen because it reaches the Windows computer privately and keeps the notes as plain files."
+        note: "Suggested because it reaches the Windows computer privately and keeps the notes as plain files."
       }
     },
     ACC: {
@@ -915,7 +862,7 @@ const PLAN = {
       today: "Summaries and alerts by email, plus a phone push from the heartbeat.",
       plan: "Unchanged.",
       parts: [
-        ["Emails and push", "As today.", "As today.", "same"]
+        ["Emails and push", "Summaries and alerts by email, plus a phone push from the heartbeat.", "No change needed.", "same"]
       ]
     }
   },
@@ -938,8 +885,8 @@ const PLAN = {
       today: "The lead decides. The deputy has stood in through a written note. VKU has its own small team.",
       plan: "Unchanged. A stand-in is still set by a written note. Each person signs in to the webapp, so only the lead or the stand-in can approve.",
       parts: [
-        ["Stand-in lead", "A written note.", "The same.", "same"],
-        ["A stand-in role set for a date range", "Not today.", "Dropped.", "dropped"]
+        ["Stand-in lead", "A written note.", "No change needed.", "same"],
+        ["A stand-in role set for a date range", "Not done today.", "Not suggested.", "dropped"]
       ]
     },
     TRIAD: {
@@ -948,7 +895,7 @@ const PLAN = {
       today: "Six people at Triad approve, change or mark schedule cards Not ours.",
       plan: "Unchanged.",
       parts: [
-        ["Triad signers", "The sign-off page.", "Unchanged.", "same"]
+        ["Triad signers", "The sign-off page.", "No change needed.", "same"]
       ]
     },
     LQ: {
@@ -957,8 +904,8 @@ const PLAN = {
       today: "A page listing every decision waiting for the lead (137 items), filled by hand into lead/seed.json. A click does not count as approval yet.",
       plan: "Unchanged, filled from the webapp's chat.",
       parts: [
-        ["lead/seed.json", "Filled by hand.", "Unchanged.", "same"],
-        ["Filling it automatically", "Not today.", "Dropped.", "dropped"]
+        ["lead/seed.json", "Filled by hand.", "No change needed.", "same"],
+        ["Filling it automatically", "Not done today.", "Not suggested.", "dropped"]
       ]
     },
     HUBD: {
@@ -995,13 +942,13 @@ const PLAN = {
       ],
       options: {
         title: "Chat options, as weighed",
-        head: ["Option", "What it means", "Decision"],
+        head: ["Option", "What it means", "Finding"],
         rows: [
-          ["Our own chat in the webapp", "A chat page built on the same engine as the jobs.", "Chosen."],
-          ["As today, on the Windows computer", "The Claude app working through that computer.", "Not taken. It keeps the app and the lead's sign-in on that computer."],
-          ["Claude app plus a connector", "Claude reaches the webapp through a list of tools.", "Not taken. Chat would stay in the Claude app, not in our webapp."]
+          ["Our own chat in the webapp", "A chat page built on the same engine as the jobs.", "Suggested."],
+          ["As today, on the Windows computer", "The Claude app working through that computer.", "Not suggested. It keeps the app and the lead's sign-in on that computer."],
+          ["Claude app plus a connector", "Claude reaches the webapp through a list of tools.", "Not suggested. Chat would stay in the Claude app, not in our webapp."]
         ],
-        note: "Chosen so that nobody needs a computer with the Claude app."
+        note: "Suggested so that nobody needs a computer with the Claude app."
       }
     },
     OUT1: {
@@ -1014,7 +961,7 @@ const PLAN = {
         ["4D approval files", "On the VM.", "Written by the webapp's chat, sent with the morning Navisworks job.", "moves"],
         ["Tracker shared notes", "tracker_sync_cf.py on the VM.", "The rescued script, run by the webapp.", "moves"],
         ["Forma issues", "Clicked in Forma's 3D viewer, then edited with a copied sign-in token.", "Autodesk's Issues API, still created as drafts.", "moves"],
-        ["Replies to BES, ARCO, CMMC, Triad", "Drafted by Claude, sent by the lead after checking.", "The same.", "same"]
+        ["Replies to BES, ARCO, CMMC, Triad", "Drafted by Claude, sent by the lead after checking.", "No change needed.", "same"]
       ],
       watch: ["Today's clash-issue method copies a sign-in token from the browser, against the rule 'never capture auth tokens'. The API removes the need."]
     },
@@ -1035,8 +982,8 @@ const PLAN = {
       plan: "The same pages, kept by hand from the webapp's chat. The RFI Sweep stays on the lead's PC.",
       parts: [
         ["Scripts for the pages kept by hand", "On the VM.", "In the webapp.", "moves"],
-        ["RFI Sweep", "From the lead's PC.", "Unchanged.", "same"],
-        ["RFI Sweep's index on our server", "Not today.", "Dropped.", "dropped"]
+        ["RFI Sweep", "From the lead's PC.", "No change needed.", "same"],
+        ["RFI Sweep's index on our server", "Not done today.", "Not suggested.", "dropped"]
       ]
     },
     OUT4: {
@@ -1045,7 +992,7 @@ const PLAN = {
       today: "Claude proposes the rule-book change in chat. The lead approves, and the rule book is updated.",
       plan: "The same, from the webapp's chat.",
       parts: [
-        ["Rule changes", "As today.", "As today.", "same"]
+        ["Rule changes", "Claude proposes the rule-book change in chat. The lead approves, and the rule book is updated.", "No change needed.", "same"]
       ]
     }
   },
@@ -1068,7 +1015,7 @@ const PLAN = {
       today: "Reads the alert and decides what to do.",
       plan: "Unchanged.",
       parts: [
-        ["Who decides", "The lead or the stand-in.", "Unchanged.", "same"]
+        ["Who decides", "The lead or the stand-in.", "No change needed.", "same"]
       ]
     },
     FIX: {
@@ -1078,9 +1025,9 @@ const PLAN = {
       plan: "Run status, logs and job results are in the webapp. Procore and Forma sign-ins are gone. Only rare Revit, Navisworks or Windows problems need someone on the Windows computer, and that is us, not the lead.",
       parts: [
         ["Progress log", "A file on the VM.", "The webapp's run status.", "moves"],
-        ["Claude app and its jobs", "On the VM.", "Gone. The jobs are in the webapp.", "goes"],
+        ["Claude app and its jobs", "On the VM.", "Could be removed, with the jobs in the webapp.", "goes"],
         ["Revit and Navisworks problems", "On the VM.", "On the Windows computer, fixed by us when needed.", "windows"],
-        ["Procore and Forma sign-ins", "Chrome on the VM.", "Gone. Both are APIs.", "goes"]
+        ["Procore and Forma sign-ins", "Chrome on the VM.", "Could be removed, since both have APIs.", "goes"]
       ]
     },
     AWS: {
@@ -1115,15 +1062,12 @@ const PLAN = {
 const svgNS = 'http://www.w3.org/2000/svg';
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const bez = (p0, c1, c2, p3) => ({ x: (p0.x + 3 * c1.x + 3 * c2.x + p3.x) / 8, y: (p0.y + 3 * c1.y + 3 * c2.y + p3.y) / 8 });
-const chip = v => '<span class="vd v-' + v + '">' + esc(VERDICTS[v][0]) + '</span>';
-const chips = p => chip(p.verdict) + (p.ab ? chip('ab') : '');
 // Cards here show only their name, so they are much shorter than on the original map, whose card
 // heights set the y positions. Scaling y keeps every card's column and order, and settle() keeps them apart.
 const COMPACT = 0.45;
 
 function diagram(section, flow) {
   const key = section.id.slice(5);
-  const plan = PLAN[key] || {};
   const vp = section.querySelector('.viewport');
   const sizer = section.querySelector('.sizer');
   const canvas = section.querySelector('.canvas');
@@ -1147,14 +1091,13 @@ function diagram(section, flow) {
     el.tabIndex = 0;
     el.setAttribute('role', 'button');
     const se = (flow.start || []).includes(n.id) ? 'START' : (flow.end || []).includes(n.id) ? 'END' : '';
-    const p = plan[n.id];
     el.setAttribute('aria-label', n.title + ', ' + n.tl + (se ? ', ' + se.toLowerCase() : '') + '. Opens its details');
     const risky = /not in git|claude account|on the vm/i.test(n.where || '');
     el.innerHTML = (se ? '<span class="se se-' + se.toLowerCase() + '">' + se + '</span>' : '') +
       '<div class="nh"><span class="ic">' + ICONS[n.type] + '</span><span class="ty">' + esc(n.tl) + '</span>' +
       (n.where ? '<span class="wh' + (risky ? ' risk' : '') + '">' + esc(n.where) + '</span>' : '') + '</div>' +
       '<div class="nt">' + esc(n.title) + '</div>' +
-      '<div class="go">' + (p ? 'Details and the decision' : 'Details') + ' ›</div>';
+      '<div class="go">Details ›</div>';
     canvas.appendChild(el);
     n.el = el;
     byId[n.id] = n;
@@ -1321,103 +1264,72 @@ function diagram(section, flow) {
   return layout;
 }
 
-// ---- The details screen: one card, today next to the decision. Its address is #card/<flow>/<card>.
-const main = document.getElementById('main');
-const detail = document.getElementById('detail');
-let fromMap = false, lastY = 0, stale = false;
+// ---- A card's dialog: each point as it is now next to how it could be optimized, with a priority,
+// then references to the detailed docs. Its address is #card/<flow>/<card>, so links and Back work.
+const dlg = document.getElementById('card');
+const DOCS = 'https://github.com/faiq-KL/campbell-cts-documentation/blob/main/docs/';
+// GitHub's heading anchors: lower case, punctuation removed, each space a hyphen.
+const slug = t => t.toLowerCase().replace(/[^\p{L}\p{N} _-]/gu, '').replace(/ /g, '-');
+const PRIORITIES = [['', 'None'], ['high', 'High'], ['medium', 'Medium'], ['low', 'Low']];
+// ponytail: priorities are kept in this browser only. Sharing them needs a backend or the docs.
+let fromMap = false, priorities = {};
+try { priorities = JSON.parse(localStorage.getItem('priorities')) || {}; } catch (e) {}
 
 function openFromMap(key, id) {
-  lastY = window.scrollY;
   fromMap = true;
   location.hash = 'card/' + key + '/' + id;
 }
 
-function backToMap(key) {
-  if (fromMap) { history.back(); return; }
-  lastY = null;
-  location.hash = 'flow-' + key;
+// A card's points: [part, now, could]. Cards in flows not explored yet show their description, then each
+// item that says something beyond its name.
+function points(key, n) {
+  const p = (PLAN[key] || {})[n.id];
+  if (p) return p.parts.map(r => r.slice(0, 3));
+  const sched = n.type === 'sched';
+  const items = (n.items || []).map(([a, b, c]) => [a, sched ? [b, c].filter(Boolean).join('. ') : b || '']).filter(r => r[1]);
+  return [['Overview', n.desc], ...items].map(r => [...r, 'Not explored yet.']);
 }
-
-const ordered = key => FLOWS[key].nodes.slice().sort((a, b) => a.x - b.x || a.y - b.y);
-const grid = (cls, head, rows, cell) => '<div class="' + cls + '" role="table">' +
-  '<div class="prow ph" role="row">' + head.map(h => '<span role="columnheader">' + esc(h) + '</span>').join('') + '</div>' +
-  rows.map(r => '<div class="prow" role="row">' + r.map((c, i) => '<span role="cell">' + cell(c, i, head[i]) + '</span>').join('') + '</div>').join('') + '</div>';
-const labelled = (c, i, h) => (i ? '<i class="lbl">' + esc(h) + '</i>' : '') + (i ? esc(c) : '<b>' + esc(c) + '</b>');
-const noteBox = (cls, title, list) => list && list.length ?
-  '<section class="note ' + cls + '"><h3>' + title + '</h3><ul>' + list.map(t => '<li>' + esc(t) + '</li>').join('') + '</ul></section>' : '';
 
 function render(key, id) {
   const n = FLOWS[key].nodes.find(m => m.id === id);
-  const p = (PLAN[key] || {})[id];
   const sec = document.getElementById('flow-' + key);
-  const list = ordered(key), i = list.indexOf(n);
-  const prev = list[i - 1], next = list[i + 1];
-  const step = (c, text, cls) => '<button type="button" class="btn ' + cls + '" data-go="' + (c ? c.id : '') + '"' + (c ? '' : ' disabled') + '>' + text + '</button>';
-  // The card's own text, word for word as on the original map: description, then items
-  // ([name, note], or for schedulers [name, time, what it does]).
-  const sched = n.type === 'sched';
-  const items = (n.items || []).map(([a, b, c]) => '<li><b>' + esc(a) + '</b>' + (sched && b ? '<small>' + esc(b) + '</small>' : '') +
-    ((sched ? c : b) ? '<em>' + esc(sched ? c : b) + '</em>' : '') + '</li>').join('');
-  const details = '<section class="part"><h2>Details, as on the original map</h2><div class="orig t-' + n.type + '">' +
-    '<div class="oh"><span class="ic">' + ICONS[n.type] + '</span><span class="ty">' + esc(n.tl) + '</span>' +
-    (n.where ? '<span class="wh">' + esc(n.where) + '</span>' : '') + '</div>' +
-    '<p>' + esc(n.desc) + '</p>' + (items ? '<ul>' + items + '</ul>' : '') + '</div></section>';
-  const lives = w => w ? '<p class="lives">Where: ' + esc(w) + '</p>' : '';
-
-  let h = '<nav class="dnav" aria-label="Card navigation">' +
-    '<button type="button" class="btn" data-go="back">‹ Back to the map</button>' +
-    '<span class="pn">' + step(prev, '‹ ' + (prev ? esc(prev.title) : 'Previous'), 'prev') + step(next, (next ? esc(next.title) : 'Next') + ' ›', 'next') + '</span></nav>' +
-    '<header class="dhead"><span class="tag">' + esc(sec.querySelector('.tag').textContent) + ' · card ' + (i + 1) + ' of ' + list.length + '</span>' +
-    '<p class="muted">' + esc(sec.querySelector('h2').textContent) + '</p>' +
-    '<h1 tabindex="-1">' + esc(n.title) + '</h1>' +
-    (p ? '<div class="chips">' + chips(p) + '</div>' : '') + '</header>';
-
-  if (p) {
-    h += details +
-      '<section class="part"><h2>Today and what we decided</h2><p class="lead">' + esc(p.lead) + '</p>' +
-      '<div class="cmp">' +
-      '<div class="box today"><h3>Today</h3><p>' + esc(p.today) + '</p>' + lives(n.where) + '</div>' +
-      '<div class="box ours"><h3>Decided</h3><p>' + esc(p.plan) + '</p>' + lives(p.where) + '</div></div></section>' +
-      '<section class="part"><h2>Part by part</h2>' +
-      grid('parts', ['Part', 'Today', 'In the new design', 'Verdict'], p.parts,
-        (c, i, hd) => i === 3 ? chip(c) : labelled(c, i, hd)) + '</section>' +
-      (p.options ? '<section class="part"><h2>' + esc(p.options.title) + '</h2>' +
-        grid('parts opts', p.options.head, p.options.rows, labelled) +
-        '<p class="muted">' + esc(p.options.note) + '</p></section>' : '') +
-      '<div class="notes">' + noteBox('watch', 'Watch out', p.watch) + noteBox('need', 'What we need', p.needs) + noteBox('ask', 'Ask the lead', p.ask) + '</div>';
-  } else {
-    h += details + '<section class="part"><h2>The decision</h2>' +
-      '<div class="box pending"><p>Not worked out yet. We go through the flows one by one.</p></div></section>';
-  }
-  detail.innerHTML = h;
-  detail.querySelectorAll('[data-go]').forEach(b => b.addEventListener('click', () => {
-    if (b.dataset.go === 'back') backToMap(key);
-    else location.replace('#card/' + key + '/' + b.dataset.go);
-  }));
+  const flow = sec.querySelector('.tag').textContent + ': ' + sec.querySelector('h2').textContent;
+  const rows = points(key, n).map(([part, now, could]) => {
+    const pk = key + '/' + id + '/' + part;
+    return '<tr><td><b>' + esc(part) + '</b>' + (now ? '<br>' + esc(now) : '') + '</td><td>' + esc(could) + '</td>' +
+      '<td><select data-pk="' + esc(pk) + '" aria-label="Priority for ' + esc(part) + '">' +
+      PRIORITIES.map(([v, t]) => '<option value="' + v + '"' + ((priorities[pk] || '') === v ? ' selected' : '') + '>' + t + '</option>').join('') +
+      '</select></td></tr>';
+  }).join('');
+  const refs = [['Card details', 'cards/' + slug(flow) + '.md#' + slug(n.title)], ['How it works today', 'how-it-works-today.md#' + slug(flow)]]
+    .concat(PLAN[key] ? [['Suggestions and needs', 'suggestions-and-needs.md#' + slug(flow)]] : []);
+  dlg.innerHTML = '<div class="dbody"><header class="dh"><div><span class="tag">' + esc(flow) + '</span><h2 id="card-title">' + esc(n.title) + '</h2></div>' +
+    '<button type="button" class="btn" data-close aria-label="Close">✕</button></header>' +
+    '<div class="tw"><table><thead><tr><th>Currently</th><th>Can be optimized</th><th>Priority</th></tr></thead><tbody>' + rows + '</tbody></table></div>' +
+    '<h3>References</h3><ul class="refs">' + refs.map(([t, u]) => '<li><a href="' + DOCS + u + '" target="_blank" rel="noopener">' + t + '</a></li>').join('') + '</ul></div>';
+  dlg.querySelector('[data-close]').onclick = () => dlg.close();
+  dlg.querySelectorAll('select').forEach(sel => sel.onchange = () => {
+    if (sel.value) priorities[sel.dataset.pk] = sel.value; else delete priorities[sel.dataset.pk];
+    try { localStorage.setItem('priorities', JSON.stringify(priorities)); } catch (e) {}
+  });
 }
 
 function route() {
   const m = /^#card\/(\w+)\/(\w+)$/.exec(location.hash);
   if (m && FLOWS[m[1]] && FLOWS[m[1]].nodes.some(n => n.id === m[2])) {
+    openTo(document.getElementById('flow-' + m[1]));
     render(m[1], m[2]);
-    main.hidden = true;
-    detail.hidden = false;
-    window.scrollTo(0, 0);
-    detail.querySelector('h1').focus({ preventScroll: true });
-  } else if (!detail.hidden) {
-    detail.hidden = true;
-    main.hidden = false;
-    fromMap = false;
-    if (stale) { stale = false; relayouts.forEach(f => f()); }
-    const target = lastY === null && document.getElementById(location.hash.slice(1));
-    openTo(target);
-    if (target) target.scrollIntoView(); else window.scrollTo(0, lastY || 0);
-  }
+    if (!dlg.open) dlg.showModal();
+  } else if (dlg.open) dlg.close();
 }
-detail.addEventListener('keydown', ev => {
+// Closing (the ✕, Esc or a click outside) leaves the card's address: back to where the reader was,
+// or, for a card opened from a link, to its flow.
+dlg.addEventListener('close', () => {
   const m = /^#card\/(\w+)\//.exec(location.hash);
-  if (ev.key === 'Escape' && m) backToMap(m[1]);
+  if (m) { if (fromMap) history.back(); else history.replaceState(null, '', '#flow-' + m[1]); }
+  fromMap = false;
 });
+dlg.addEventListener('click', ev => { if (ev.target === dlg) dlg.close(); });
 
 const relayouts = ['robot', 'ai', 'people', 'change', 'biz', 'setup', 'break'].map(k => diagram(document.getElementById('flow-' + k), FLOWS[k]));
 // Sections are dropdowns. A closed flow can't be measured, so it is laid out again each time it opens,
@@ -1431,8 +1343,8 @@ function openTo(el) {
 }
 window.addEventListener('hashchange', () => openTo(document.getElementById(location.hash.slice(1))));
 openTo(document.getElementById(location.hash.slice(1)));
-// A hidden map can't be measured, so a late font load while a card is open re-lays it out on the way back.
-if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { if (main.hidden) stale = true; else relayouts.forEach(f => f()); });
+// A late font load changes card sizes, so the open diagrams are laid out again.
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => relayouts.forEach(f => f()));
 window.addEventListener('hashchange', route);
 route();
 

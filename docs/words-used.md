@@ -21,9 +21,9 @@ Plain meanings of the terms on the [plan page](https://faiq-kl.github.io/campbel
 - **Bot:** Our Python program (hcg-bim-assistant) that updates project files and pages twice a day. It doesn't use AI.
 - **Repo, main branch:** A folder of code on GitHub. Saving to its main branch makes a change live.
 - **Scheduled task, skill, Claude Project:** An AI job on a timer, a set of instructions the AI loads, and a shared space of notes the AI reads and writes.
-- **Webapp:** Our app on our own server. It will run the bot, Claude and the notes.
-- **Windows computer:** A smaller cloud computer that replaces the VM, only for Revit, Navisworks, conduit and the file helper. Nobody needs to open it.
+- **Webapp:** Our app on our own server. It could run the bot, Claude and the notes.
+- **Windows computer:** A smaller cloud computer that could replace the VM, only for Revit, Navisworks, conduit and the file helper. Nobody would need to open it.
 - **Private link:** A connection between the webapp and the Windows computer, closed to the internet.
-- **File helper:** Moves Navisworks' files to and from ACC through Autodesk's API, in place of Desktop Connector.
-- **Agent SDK:** Anthropic's engine behind Claude Code. It runs Claude inside the webapp.
+- **File helper:** A small program that would move Navisworks' files to and from ACC through Autodesk's API, in place of Desktop Connector.
+- **Agent SDK:** Anthropic's engine behind Claude Code. It could run Claude inside the webapp.
 - **API, tool server:** An API lets our app talk to another system directly. A tool server (MCP) is a standard way to give Claude tools.
