@@ -19,9 +19,9 @@ Windows Task Scheduler. A manual re-run (only when the lead asks) uses a one-off
 
 | Part | Currently | Runs on now | Can be optimized | Would run on |
 |---|---|---|---|---|
-| Daily run | Weekdays 09:00 and 16:00 CT on the VM. Since the clock change it likely fires an hour early. | VM | The webapp's timer, in Chicago time. | Webapp |
+| Daily run | Weekdays 09:00 and 16:00 CT, plus a catch-up at sign-in. NOVA102 then VKU, each slot at most once a day. Since the clock change it likely fires an hour early. | VM | The webapp's timer, in Chicago time, with the same order and limits. A missed run starts when the webapp is back. | Webapp |
 | The 30-minute morning wait | A leftover from the lead's laptop. | VM | Could be dropped, so results arrive 30 minutes earlier. One setting brings it back. | Not needed |
-| Pop-up clicker | Answers Revit and Navisworks pop-ups so runs don't stall. | VM | Can stay on the Windows computer. | Windows computer |
+| Pop-up clicker | Answers Revit and Navisworks pop-ups so runs don't stall. Its script is not in git. | VM | Can stay on the Windows computer, with its script saved to a repo first. | Windows computer |
 | Desktop-session keeper | Keeps the screen session alive for Revit and Navisworks. | VM | Can stay on the Windows computer. | Windows computer |
 | Claude keep-alive | Reopens the Claude app and Chrome. | VM | Could be removed. No Claude app or Chrome would be needed on the Windows computer. | Not needed |
 | Manual runs | A one-off task, only when the lead asks. It counts as the next run time. | VM | From the webapp's chat, with the same rule. | Webapp |
@@ -42,9 +42,9 @@ The NOVA102 and VKU electrical models in Revit and Navisworks, opened one at a t
 
 | Part | Currently | Runs on now | Can be optimized | Would run on |
 |---|---|---|---|---|
-| Bot's Revit reading | Desktop Revit on the VM. | VM | Desktop Revit on the Windows computer. | Windows computer |
+| Bot's Revit reading | NOVA102's 3 models and VKU's 1, opened one at a time in Revit 2025 and 2026, read only. | VM | Desktop Revit on the Windows computer. | Windows computer |
 | Chat's live Revit | Chats ask the open model through conduit. | VM | The same Revit, asked from the webapp's chat. | Windows computer |
-| Navisworks morning step | On the VM. | VM | On the Windows computer. | Windows computer |
+| Navisworks morning step | Each morning on the VM: 69 clash tests, the clash report, approved 4D changes, and the NWF and NWD saved. | VM | The same steps on the Windows computer. | Windows computer |
 
 **Where the bot reads Revit, as weighed**
 
@@ -118,6 +118,7 @@ Read only. All come from the VM's synced copy of the project folder, except Form
 | Clash report | Saved by the Navisworks step. | VM | Sent from the Windows computer to the webapp. | Webapp |
 | New laser scans | In the synced scan folder. | VM | From ACC through the API. | Webapp |
 | 4D approval files | Written by chats, read by the morning Navisworks step. | VM | Written by the webapp's chat, sent with the morning Navisworks job. | Webapp |
+| RFI sweep state file | Written by the morning AI sweep on the VM. The bot reads its Procore items. | VM | Both run in the webapp, so the bot reads it there. | Webapp |
 
 **Watch out:**
 
@@ -145,6 +146,7 @@ A Python program. For each project it finds what changed in the model, matches d
 | Held items | Released by commands run on the VM from chat. | VM | Released by the webapp, from chat. | Webapp |
 | File dates | From the synced files. | VM | From ACC through the API. | Webapp |
 | Clock | The VM runs on Chicago time. | VM | The bot's work runs on Chicago time. | Webapp |
+| The bot's code | The VM runs its own copy, with one file that is not in GitHub (the clash export step). | VM | The webapp runs the same code from GitHub, once that file is saved there. | Webapp |
 
 **Watch out:**
 
@@ -198,7 +200,7 @@ The real project folder in Autodesk's cloud, synced to the VM. The bot writes:
 |---|---|---|---|---|
 | Coordination Schedule | 6 safety steps. | VM | The same 6 steps, through the API. | Webapp |
 | Backups | Copies before every write. | ACC | Keep as they are. | ACC |
-| Workbooks, inventories, clash report, 5D, run log | The synced folder. | VM | Through the API. | Webapp |
+| Other workbooks and the run log | Model Impact Tracker, materials workbook, Lookahead, RFI and Submittal Impact Register, model inventories and diffs, clash report, 5D workbooks and the run log, written to the synced folder. | VM | The same files, written through the API. | Webapp |
 | NWF and NWD | Saved by Navisworks, uploaded by Desktop Connector. | VM | Saved by Navisworks, uploaded by the file helper through the API. | Windows computer |
 | Desktop Connector | Syncs whole project folders on the VM. | VM | Could be removed. A file helper would move only Navisworks' files. | Not needed |
 
@@ -226,7 +228,7 @@ Progress and problems, during each run.
 
 | Part | Currently | Runs on now | Can be optimized | Would run on |
 |---|---|---|---|---|
-| Alert emails | From the bot email address to the lead. | VM | The same, from the webapp. | Webapp |
+| Alert emails | When a run is blocked, slow, gives up, fails or finishes: an email from the bot email address to the lead. | VM | The same emails, sent by the webapp. | Webapp |
 | Run-finished pop-up | On the VM's screen. A click opens the summary. | VM | Suggested: a webapp notification on phone or browser that opens the summary. | To explore |
 | Progress lines | A file on the VM. | VM | The webapp's run status. | Webapp |
 
@@ -274,7 +276,7 @@ The only person on the bot's alert list (runner.json).
 
 | Part | Currently | Runs on now | Can be optimized | Would run on |
 |---|---|---|---|---|
-| Alert list | The lead only. | VM | No change: the lead only. | Webapp |
+| Alert list | The lead only, set in runner.json on the VM. | VM | The same list, kept in the webapp's settings. | Webapp |
 
 ## Cloudflare: hosting and sign-in
 
@@ -297,6 +299,7 @@ Puts each page online and checks who may open it (emailed code or Microsoft logi
 | Live-check key | On the VM. | VM | In the webapp's secure settings. | Webapp |
 | Tracker sync script (tracker_sync_cf.py) | Only on the VM, not in a repo. | VM | Rescued into a repo, run by the webapp. | Webapp |
 | Task Board claims by Claude | Through a signed-in browser, or by hand. | Browser | Through the portal's API, with the BIM Assistant's own sign-in. Needs a small portal change. | Webapp |
+| Page libraries | Some pages load code from public sites (jsDelivr, cdnjs). | Cloudflare | No change needed. | Cloudflare |
 
 ## Page users
 

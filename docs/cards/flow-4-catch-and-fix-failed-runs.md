@@ -73,7 +73,7 @@ Amazon's control panel. Starts or reboots the VM if it is stopped or frozen (reg
 
 | Part | Currently | Runs on now | Can be optimized | Would run on |
 |---|---|---|---|---|
-| Windows computer | Amazon's console, by hand. | Amazon console | Suggested: a button in the webapp. | To explore |
+| Restarting the VM | The lead starts or reboots the VM in Amazon's console, by hand. | Amazon console | Suggested: a 'Restart' button in the webapp for the Windows computer, for the lead and us, logged. The webapp itself is restarted from its hosting console. | To explore |
 
 ## The lead's PC (backup)
 

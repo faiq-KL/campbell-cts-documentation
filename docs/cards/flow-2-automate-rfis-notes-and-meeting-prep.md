@@ -17,7 +17,7 @@ Every HCG procedure in plain English. The lead's rulings are written here first,
 | Part | Currently | Runs on now | Can be optimized | Would run on |
 |---|---|---|---|---|
 | Rule book | Procedures and the lead's rulings. | GitHub | No change needed. | GitHub |
-| kb.py build | ClickUp workbooks and flowcharts. | GitHub | No change needed. | GitHub |
+| kb.py build | Run by hand: builds the ClickUp workbooks and flowcharts. | By hand | No change needed. | By hand |
 | Skills rebuild (kb.py plugin) | By hand, then uploaded by the lead. | By hand | Suggested: rebuilt from the rule book whenever it changes, once the starter folder is in git. | To explore |
 
 ## Jobs that change project files
@@ -36,7 +36,7 @@ Timers that start the AI on these jobs. They write to real project files.
 
 | Part | Currently | Runs on now | Can be optimized | Would run on |
 |---|---|---|---|---|
-| RFI and submittal sweep (weekdays 08:24) | Procore through Chrome with the deputy's login, files into ACC, loads ARCO's schedule updates, writes the sweep note, emails the lead and the deputy. | Claude + VM | Procore's and Autodesk's APIs. The same note and email. | Webapp |
+| RFI and submittal sweep (weekdays 08:24) | Procore through Chrome with the deputy's login, where its only action is asking for cover PDFs. Files into ACC, loads ARCO's schedule updates, writes the sweep note, emails the lead and the deputy. | Claude + VM | Procore's and Autodesk's APIs. The same note and email. | Webapp |
 | Project Memory and flags (weekdays 10:45) | Outlook, Teams, Fireflies and Procore, then the memory files in ACC and the project. | Claude + VM | Microsoft's, Fireflies' and Procore's APIs. The memory files still go to ACC. | Webapp |
 | VKU check (:25 in the run windows) | Checks VKU's run in Newtron's ACC, appends VKU's change log, emails the lead. | Claude + VM | Reads the run in the webapp and ACC through the API. | Webapp |
 
@@ -110,6 +110,9 @@ All read only.
 | Outlook, Teams, calendar | Claude's Microsoft 365 connector, read only. | Claude account | Microsoft's API, with the lead's consent. | Webapp |
 | Fireflies | Claude's connector. | Claude account | Fireflies' official tool server, with the lead's key. Never for VKU. | Webapp |
 | GitHub | Signed in as hcg-bim-runner on the VM. | VM | GitHub's API, with the webapp's own access. | Webapp |
+| conduit tools | The Navisworks model, read through conduit on the VM. | VM | Through conduit on the Windows computer, over the private link. | Windows computer |
+| The bot's run log | In ACC, read by the change-log job and the watchers. | ACC | Still in ACC, read through the API next to the webapp's run status. | ACC |
+| Claude's task list | The watchers check in it that the other jobs ran. | Claude account | The webapp's own job records. | Webapp |
 
 **Watch out:**
 
@@ -153,9 +156,11 @@ Claude, signed in as the lead. Seven jobs run in the Claude app on the VM, the h
 
 | Part | Currently | Runs on now | Can be optimized | Would run on |
 |---|---|---|---|---|
-| Claude app and keep-alive | On the VM. | VM | Could be removed. | Not needed |
+| Claude app and keep-alive | On the VM. | VM | Could be removed. Claude would run in the webapp on Anthropic's Agent SDK. | Not needed |
 | The jobs' send logs and saved state | On the VM. | VM | Copied into the webapp, so no job starts fresh and sends duplicates. | Webapp |
 | 8 paused job copies on the lead's PC | The emergency backup. | Lead's PC | Depends on what happens with the PC backup (Flow 4). | To explore |
+| Windows-MCP | Lets Claude read the VM's files, logs and Task Scheduler. | VM | Could be removed. The webapp's own tools read the same data, with no open access to a computer. | Not needed |
+| Project Manifest | Every folder path the jobs use comes from it, read from the synced folder. | VM | The same file, read from ACC through the API. | Webapp |
 
 **Where Claude runs, as weighed**
 
@@ -220,6 +225,8 @@ The AI's shared notebook: instructions plus 357 files (sweep results, diary, cha
 | Claude's own project memory | In the lead's account. | Claude account | Copied once into a memory file. | Git |
 | Chat history | In the lead's account. | Claude account | In the webapp, searchable. | Webapp |
 | Memory files in ACC | Written by the memory job. | ACC | Still written, through the API. | ACC |
+| Project instructions | The Claude Project's instructions, loaded into every chat and job. | Claude account | The same text, kept with the notes and loaded by the webapp. | Git |
+| Finding notes | Chats use Claude's built-in project search. Jobs open notes by name. | Claude account | Claude opens notes by name and searches inside them. A meaning-based search only if a test shows misses. | Webapp |
 
 **Watch out:**
 

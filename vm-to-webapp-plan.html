@@ -554,9 +554,9 @@ const PLAN = {
       today: "Four Windows timers on the VM: the Daily run (weekdays 09:00 and 16:00 CT), the pop-up clicker, the Claude keep-alive and the desktop-session keeper.",
       plan: "The webapp starts each run at 09:00 and 16:00 Chicago time on weekdays, holidays included, NOVA102 then VKU, at most once per run time, with the same time limits. It uses Chicago wall-clock time, so a clock change can't shift it. A missed run starts when the webapp is back. Manual runs come from the webapp's chat, only when the lead asks.",
       parts: [
-        ["Daily run", "Weekdays 09:00 and 16:00 CT on the VM. Since the clock change it likely fires an hour early.", "The webapp's timer, in Chicago time.", "moves", "VM", "Webapp"],
+        ["Daily run", "Weekdays 09:00 and 16:00 CT, plus a catch-up at sign-in. NOVA102 then VKU, each slot at most once a day. Since the clock change it likely fires an hour early.", "The webapp's timer, in Chicago time, with the same order and limits. A missed run starts when the webapp is back.", "moves", "VM", "Webapp"],
         ["The 30-minute morning wait", "A leftover from the lead's laptop.", "Could be dropped, so results arrive 30 minutes earlier. One setting brings it back.", "goes", "VM", "Not needed"],
-        ["Pop-up clicker", "Answers Revit and Navisworks pop-ups so runs don't stall.", "Can stay on the Windows computer.", "windows", "VM", "Windows computer"],
+        ["Pop-up clicker", "Answers Revit and Navisworks pop-ups so runs don't stall. Its script is not in git.", "Can stay on the Windows computer, with its script saved to a repo first.", "windows", "VM", "Windows computer"],
         ["Desktop-session keeper", "Keeps the screen session alive for Revit and Navisworks.", "Can stay on the Windows computer.", "windows", "VM", "Windows computer"],
         ["Claude keep-alive", "Reopens the Claude app and Chrome.", "Could be removed. No Claude app or Chrome would be needed on the Windows computer.", "goes", "VM", "Not needed"],
         ["Manual runs", "A one-off task, only when the lead asks. It counts as the next run time.", "From the webapp's chat, with the same rule.", "moves", "VM", "Webapp"]
@@ -569,9 +569,9 @@ const PLAN = {
       today: "Each run opens NOVA102's 3 models and VKU's 1 model in Revit, one at a time, read only. Each morning Navisworks loads NOVA102 - Triad.nwf (54 models), runs 69 clash tests, exports the clash report, applies approved 4D changes and saves the NWF and NWD.",
       plan: "The same Revit reading and Navisworks steps, on the Windows computer. The webapp sends the jobs over the private link and gets the results back. Navisworks has no online version, so it can only run there.",
       parts: [
-        ["Bot's Revit reading", "Desktop Revit on the VM.", "Desktop Revit on the Windows computer.", "windows", "VM", "Windows computer"],
+        ["Bot's Revit reading", "NOVA102's 3 models and VKU's 1, opened one at a time in Revit 2025 and 2026, read only.", "Desktop Revit on the Windows computer.", "windows", "VM", "Windows computer"],
         ["Chat's live Revit", "Chats ask the open model through conduit.", "The same Revit, asked from the webapp's chat.", "windows", "VM", "Windows computer"],
-        ["Navisworks morning step", "On the VM.", "On the Windows computer.", "windows", "VM", "Windows computer"]
+        ["Navisworks morning step", "Each morning on the VM: 69 clash tests, the clash report, approved 4D changes, and the NWF and NWD saved.", "The same steps on the Windows computer.", "windows", "VM", "Windows computer"]
       ],
       options: {
         title: "Where the bot reads Revit, as weighed",
@@ -612,7 +612,8 @@ const PLAN = {
         ["Forma issues and RFIs", "Chrome on the VM exports Excel files.", "Autodesk's Issues and RFIs APIs. No Chrome.", "moves", "VM", "Webapp"],
         ["Clash report", "Saved by the Navisworks step.", "Sent from the Windows computer to the webapp.", "moves", "VM", "Webapp"],
         ["New laser scans", "In the synced scan folder.", "From ACC through the API.", "moves", "VM", "Webapp"],
-        ["4D approval files", "Written by chats, read by the morning Navisworks step.", "Written by the webapp's chat, sent with the morning Navisworks job.", "moves", "VM", "Webapp"]
+        ["4D approval files", "Written by chats, read by the morning Navisworks step.", "Written by the webapp's chat, sent with the morning Navisworks job.", "moves", "VM", "Webapp"],
+        ["RFI sweep state file", "Written by the morning AI sweep on the VM. The bot reads its Procore items.", "Both run in the webapp, so the bot reads it there.", "moves", "VM", "Webapp"]
       ],
       watch: ["Autodesk's support page says Forma's date and Desktop Connector's file date can differ by minutes or days."]
     },
@@ -627,7 +628,8 @@ const PLAN = {
         ["Memory and settings", "orchestrator.db and runner.json on the VM.", "In the webapp, same values.", "moves", "VM", "Webapp"],
         ["Held items", "Released by commands run on the VM from chat.", "Released by the webapp, from chat.", "moves", "VM", "Webapp"],
         ["File dates", "From the synced files.", "From ACC through the API.", "moves", "VM", "Webapp"],
-        ["Clock", "The VM runs on Chicago time.", "The bot's work runs on Chicago time.", "moves", "VM", "Webapp"]
+        ["Clock", "The VM runs on Chicago time.", "The bot's work runs on Chicago time.", "moves", "VM", "Webapp"],
+        ["The bot's code", "The VM runs its own copy, with one file that is not in GitHub (the clash export step).", "The webapp runs the same code from GitHub, once that file is saved there.", "moves", "VM", "Webapp"]
       ],
       watch: ["The clash export step was never saved to GitHub. Copy it from the VM first (missing item 1)."]
     },
@@ -654,7 +656,7 @@ const PLAN = {
       parts: [
         ["Coordination Schedule", "6 safety steps.", "The same 6 steps, through the API.", "moves", "VM", "Webapp"],
         ["Backups", "Copies before every write.", "Keep as they are.", "same", "ACC", "ACC"],
-        ["Workbooks, inventories, clash report, 5D, run log", "The synced folder.", "Through the API.", "moves", "VM", "Webapp"],
+        ["Other workbooks and the run log", "Model Impact Tracker, materials workbook, Lookahead, RFI and Submittal Impact Register, model inventories and diffs, clash report, 5D workbooks and the run log, written to the synced folder.", "The same files, written through the API.", "moves", "VM", "Webapp"],
         ["NWF and NWD", "Saved by Navisworks, uploaded by Desktop Connector.", "Saved by Navisworks, uploaded by the file helper through the API.", "windows", "VM", "Windows computer"],
         ["Desktop Connector", "Syncs whole project folders on the VM.", "Could be removed. A file helper would move only Navisworks' files.", "goes", "VM", "Not needed"]
       ],
@@ -667,7 +669,7 @@ const PLAN = {
       today: "During each run the bot emails the lead through Amazon's email and shows pop-ups on the VM. Teams is switched off.",
       plan: "The same emails through Amazon's email, from the same sender to the same person. The lead never looks at the Windows computer, so the pop-up's job moves to the webapp.",
       parts: [
-        ["Alert emails", "From the bot email address to the lead.", "The same, from the webapp.", "moves", "VM", "Webapp"],
+        ["Alert emails", "When a run is blocked, slow, gives up, fails or finishes: an email from the bot email address to the lead.", "The same emails, sent by the webapp.", "moves", "VM", "Webapp"],
         ["Run-finished pop-up", "On the VM's screen. A click opens the summary.", "Suggested: a webapp notification on phone or browser that opens the summary.", "open", "VM", "To explore"],
         ["Progress lines", "A file on the VM.", "The webapp's run status.", "moves", "VM", "Webapp"]
       ],
@@ -691,7 +693,7 @@ const PLAN = {
       today: "The only person on the bot's alert list.",
       plan: "The same, now sent by the webapp.",
       parts: [
-        ["Alert list", "The lead only.", "No change: the lead only.", "same", "VM", "Webapp"]
+        ["Alert list", "The lead only, set in runner.json on the VM.", "The same list, kept in the webapp's settings.", "same", "VM", "Webapp"]
       ]
     },
     CF: {
@@ -703,7 +705,8 @@ const PLAN = {
         ["Hosting, sign-in, databases, file bucket", "Cloudflare.", "No change needed.", "same", "Cloudflare", "Cloudflare"],
         ["Live-check key", "On the VM.", "In the webapp's secure settings.", "moves", "VM", "Webapp"],
         ["Tracker sync script (tracker_sync_cf.py)", "Only on the VM, not in a repo.", "Rescued into a repo, run by the webapp.", "moves", "VM", "Webapp"],
-        ["Task Board claims by Claude", "Through a signed-in browser, or by hand.", "Through the portal's API, with the BIM Assistant's own sign-in. Needs a small portal change.", "moves", "Browser", "Webapp"]
+        ["Task Board claims by Claude", "Through a signed-in browser, or by hand.", "Through the portal's API, with the BIM Assistant's own sign-in. Needs a small portal change.", "moves", "Browser", "Webapp"],
+        ["Page libraries", "Some pages load code from public sites (jsDelivr, cdnjs).", "No change needed.", "same", "Cloudflare", "Cloudflare"]
       ]
     },
     USERS: {
@@ -725,7 +728,7 @@ const PLAN = {
       plan: "Unchanged rule book. The webapp loads the skills from git. Whether they rebuild by themselves when the rule book changes is still open.",
       parts: [
         ["Rule book", "Procedures and the lead's rulings.", "No change needed.", "same", "GitHub", "GitHub"],
-        ["kb.py build", "ClickUp workbooks and flowcharts.", "No change needed.", "same", "GitHub", "GitHub"],
+        ["kb.py build", "Run by hand: builds the ClickUp workbooks and flowcharts.", "No change needed.", "same", "By hand", "By hand"],
         ["Skills rebuild (kb.py plugin)", "By hand, then uploaded by the lead.", "Suggested: rebuilt from the rule book whenever it changes, once the starter folder is in git.", "open", "By hand", "To explore"]
       ]
     },
@@ -735,7 +738,7 @@ const PLAN = {
       today: "Three timed AI jobs in the lead's Claude account, working through the VM.",
       plan: "The webapp's timer starts them. They use Procore's, Autodesk's, Microsoft's and Fireflies' APIs and write to the webapp's notes. Each one goes live after a side-by-side check against today.",
       parts: [
-        ["RFI and submittal sweep (weekdays 08:24)", "Procore through Chrome with the deputy's login, files into ACC, loads ARCO's schedule updates, writes the sweep note, emails the lead and the deputy.", "Procore's and Autodesk's APIs. The same note and email.", "moves", "Claude + VM", "Webapp"],
+        ["RFI and submittal sweep (weekdays 08:24)", "Procore through Chrome with the deputy's login, where its only action is asking for cover PDFs. Files into ACC, loads ARCO's schedule updates, writes the sweep note, emails the lead and the deputy.", "Procore's and Autodesk's APIs. The same note and email.", "moves", "Claude + VM", "Webapp"],
         ["Project Memory and flags (weekdays 10:45)", "Outlook, Teams, Fireflies and Procore, then the memory files in ACC and the project.", "Microsoft's, Fireflies' and Procore's APIs. The memory files still go to ACC.", "moves", "Claude + VM", "Webapp"],
         ["VKU check (:25 in the run windows)", "Checks VKU's run in Newtron's ACC, appends VKU's change log, emails the lead.", "Reads the run in the webapp and ACC through the API.", "moves", "Claude + VM", "Webapp"]
       ],
@@ -772,7 +775,10 @@ const PLAN = {
         ["Procore", "Chrome on the VM, the deputy's login.", "Procore's API, once ARCO's Procore admin connects our app.", "moves", "VM", "Webapp"],
         ["Outlook, Teams, calendar", "Claude's Microsoft 365 connector, read only.", "Microsoft's API, with the lead's consent.", "moves", "Claude account", "Webapp"],
         ["Fireflies", "Claude's connector.", "Fireflies' official tool server, with the lead's key. Never for VKU.", "moves", "Claude account", "Webapp"],
-        ["GitHub", "Signed in as hcg-bim-runner on the VM.", "GitHub's API, with the webapp's own access.", "moves", "VM", "Webapp"]
+        ["GitHub", "Signed in as hcg-bim-runner on the VM.", "GitHub's API, with the webapp's own access.", "moves", "VM", "Webapp"],
+        ["conduit tools", "The Navisworks model, read through conduit on the VM.", "Through conduit on the Windows computer, over the private link.", "windows", "VM", "Windows computer"],
+        ["The bot's run log", "In ACC, read by the change-log job and the watchers.", "Still in ACC, read through the API next to the webapp's run status.", "same", "ACC", "ACC"],
+        ["Claude's task list", "The watchers check in it that the other jobs ran.", "The webapp's own job records.", "moves", "Claude account", "Webapp"]
       ],
       watch: ["Fireflies' docs say Free and Pro plans allow only 50 API requests a day. Hourly meeting prep likely needs Business."]
     },
@@ -793,9 +799,11 @@ const PLAN = {
       today: "The Claude app on the VM, signed in as the lead. Seven jobs work through the VM, the heartbeat runs in Claude's cloud, and a keep-alive reopens the app.",
       plan: "The webapp runs Anthropic's Agent SDK, the engine behind Claude Code, with an API key. It is paid first from the API credit included in the lead's plan. Tools are standard tool servers, so the engine could be swapped later. It reaches the Windows computer only through the private link.",
       parts: [
-        ["Claude app and keep-alive", "On the VM.", "Could be removed.", "goes", "VM", "Not needed"],
+        ["Claude app and keep-alive", "On the VM.", "Could be removed. Claude would run in the webapp on Anthropic's Agent SDK.", "goes", "VM", "Not needed"],
         ["The jobs' send logs and saved state", "On the VM.", "Copied into the webapp, so no job starts fresh and sends duplicates.", "moves", "VM", "Webapp"],
-        ["8 paused job copies on the lead's PC", "The emergency backup.", "Depends on what happens with the PC backup (Flow 4).", "open", "Lead's PC", "To explore"]
+        ["8 paused job copies on the lead's PC", "The emergency backup.", "Depends on what happens with the PC backup (Flow 4).", "open", "Lead's PC", "To explore"],
+        ["Windows-MCP", "Lets Claude read the VM's files, logs and Task Scheduler.", "Could be removed. The webapp's own tools read the same data, with no open access to a computer.", "goes", "VM", "Not needed"],
+        ["Project Manifest", "Every folder path the jobs use comes from it, read from the synced folder.", "The same file, read from ACC through the API.", "moves", "VM", "Webapp"]
       ],
       options: {
         title: "Where Claude runs, as weighed",
@@ -837,7 +845,9 @@ const PLAN = {
         ["VKU Project notes", "In the Claude Project.", "In git.", "moves", "Claude account", "Git"],
         ["Claude's own project memory", "In the lead's account.", "Copied once into a memory file.", "moves", "Claude account", "Git"],
         ["Chat history", "In the lead's account.", "In the webapp, searchable.", "moves", "Claude account", "Webapp"],
-        ["Memory files in ACC", "Written by the memory job.", "Still written, through the API.", "same", "ACC", "ACC"]
+        ["Memory files in ACC", "Written by the memory job.", "Still written, through the API.", "same", "ACC", "ACC"],
+        ["Project instructions", "The Claude Project's instructions, loaded into every chat and job.", "The same text, kept with the notes and loaded by the webapp.", "moves", "Claude account", "Git"],
+        ["Finding notes", "Chats use Claude's built-in project search. Jobs open notes by name.", "Claude opens notes by name and searches inside them. A meaning-based search only if a test shows misses.", "moves", "Claude account", "Webapp"]
       ],
       watch: ["Claude Projects have no export API, so the one-time copy needs a method."]
     },
@@ -870,7 +880,11 @@ const PLAN = {
       parts: [
         ["Release a held register change (approve-regression)", "Run on the VM.", "Run by the webapp.", "moves", "VM", "Webapp"],
         ["Release held page data (site-feed-approve)", "Run on the VM.", "Run by the webapp.", "moves", "VM", "Webapp"],
-        ["Release a held scan result (scan-approve)", "Run on the VM.", "Run by the webapp.", "moves", "VM", "Webapp"]
+        ["Release a held scan result (scan-approve)", "Run on the VM.", "Run by the webapp.", "moves", "VM", "Webapp"],
+        ["Finish dates with no PDF yet", "The bot waits until the drawing PDF is in Forma, then writes the date itself.", "The same wait, with Forma's date read through the API.", "moves", "VM", "Webapp"],
+        ["TimeLiner re-dates", "Proposed by the sweep, approved by the lead in chat.", "Proposed by the webapp's sweep, approved in the webapp's chat.", "moves", "Claude + VM", "Webapp"],
+        ["Proposed Forma issues", "Suggested in meeting follow-up emails, created in chat after the lead approves.", "Suggested the same way, created through Autodesk's Issues API after approval.", "moves", "Claude + VM", "Webapp"],
+        ["Flags marked for the lead", "Raised in the project diary for the lead to decide.", "The same flags in the notes, decided in the webapp's chat.", "moves", "Claude account", "Webapp"]
       ]
     },
     LEAD: {
@@ -897,7 +911,8 @@ const PLAN = {
       today: "A page listing every decision waiting for the lead (137 items), filled by hand into lead/seed.json. A click does not count as approval yet.",
       plan: "Unchanged, filled from the webapp's chat.",
       parts: [
-        ["lead/seed.json", "Filled by hand.", "No change needed.", "same", "By hand", "By hand"]
+        ["lead/seed.json", "Filled by hand.", "No change needed.", "same", "By hand", "By hand"],
+        ["Lead Queue page", "A page in the Action Hub listing 137 decisions. A click does not count as approval yet.", "No change needed.", "same", "Cloudflare", "Cloudflare"]
       ]
     },
     HUBD: {
@@ -906,7 +921,8 @@ const PLAN = {
       today: "Saves each Triad decision with the signer's email. Claude applies validated cards in chat after the lead approves.",
       plan: "Unchanged, applied from the webapp's chat.",
       parts: [
-        ["Applying sign-offs", "By Claude in chat, after the lead approves.", "The same, in the webapp's chat.", "same", "Claude + VM", "Webapp"]
+        ["Applying sign-offs", "By Claude in chat, after the lead approves.", "The same, in the webapp's chat.", "same", "Claude + VM", "Webapp"],
+        ["Sign-off board page", "Saves each Triad decision with the signer's email. It never changes the schedule.", "No change needed.", "same", "Cloudflare", "Cloudflare"]
       ]
     },
     ONREQ: {
@@ -930,7 +946,10 @@ const PLAN = {
         ["Approvals", "Typed in chat, then Claude runs the bot's commands on the VM.", "Typed in the webapp's chat, then the webapp carries them out.", "moves", "Claude + VM", "Webapp"],
         ["Manual runs", "Only when the lead asks.", "From the webapp's chat, same rule.", "moves", "Claude + VM", "Webapp"],
         ["The deputy and teammates", "Their own Claude, on their own computers.", "Their own sign-in to the webapp. They keep their own Claude for other work.", "moves", "Claude account", "Webapp"],
-        ["Claude app extras (phone app, voice, artifacts)", "In the Claude app.", "The lead lists what they use, so the webapp can match it.", "open", "Claude account", "To explore"]
+        ["Claude app extras (phone app, voice, artifacts)", "In the Claude app.", "The lead lists what they use, so the webapp can match it.", "open", "Claude account", "To explore"],
+        ["Other chat work", "Task Board claims, issue drafts and the Monday expectation-gap check.", "The same work in the webapp's chat. Task Board claims go through the portal's API.", "moves", "Claude + VM", "Webapp"],
+        ["Run-time rule", "Shared changes are claimed on the Task Board first and kept out of the bot's run times (09:00 to 10:15 and 16:00 to 17:15).", "The same rule, checked by the webapp before any shared write.", "moves", "Claude + VM", "Webapp"],
+        ["Claude's sandbox", "Some tools ran on uploaded copies, not the real files.", "Could be removed. The webapp's tools work on the real files through the APIs.", "goes", "Claude account", "Not needed"]
       ],
       options: {
         title: "Chat options, as weighed",
@@ -953,7 +972,7 @@ const PLAN = {
         ["4D approval files", "On the VM.", "Written by the webapp's chat, sent with the morning Navisworks job.", "moves", "VM", "Webapp"],
         ["Tracker shared notes", "tracker_sync_cf.py on the VM.", "The rescued script, run by the webapp.", "moves", "VM", "Webapp"],
         ["Forma issues", "Clicked in Forma's 3D viewer, then edited with a copied sign-in token.", "Autodesk's Issues API, still created as drafts.", "moves", "Browser", "Webapp"],
-        ["Replies to BES, ARCO, CMMC, Triad", "Drafted by Claude, sent by the lead after checking.", "No change needed.", "same", "Claude account", "Webapp"]
+        ["Replies to BES, ARCO, CMMC, Triad", "Drafted by Claude, sent by the lead after checking.", "The same, drafted in the webapp's chat and sent by the lead after checking.", "same", "Claude account", "Webapp"]
       ],
       watch: ["Today's clash-issue method copies a sign-in token from the browser, against the rule 'never capture auth tokens'. The API removes the need."]
     },
@@ -983,7 +1002,7 @@ const PLAN = {
       today: "Claude proposes the rule-book change in chat. The lead approves, and the rule book is updated.",
       plan: "The same, from the webapp's chat.",
       parts: [
-        ["Rule changes", "Claude proposes the rule-book change in chat. The lead approves, and the rule book is updated.", "No change needed.", "same", "Claude account", "Webapp"]
+        ["Rule changes", "Claude proposes the rule-book change in chat. The lead approves, and the rule book is updated.", "The same, proposed in the webapp's chat.", "same", "Claude account", "Webapp"]
       ]
     }
   },
@@ -1027,7 +1046,7 @@ const PLAN = {
       today: "The lead starts or reboots the VM in Amazon's console.",
       plan: "Suggested: a 'Restart Windows computer' button in the webapp, through Amazon's API, for the lead and us only, logged. The webapp itself is restarted by hand from its console, since it can't restart itself when it's down.",
       parts: [
-        ["Windows computer", "Amazon's console, by hand.", "Suggested: a button in the webapp.", "open", "Amazon console", "To explore"]
+        ["Restarting the VM", "The lead starts or reboots the VM in Amazon's console, by hand.", "Suggested: a 'Restart' button in the webapp for the Windows computer, for the lead and us, logged. The webapp itself is restarted from its hosting console.", "open", "Amazon console", "To explore"]
       ]
     },
     PCFB: {
