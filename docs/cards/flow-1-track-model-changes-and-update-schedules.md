@@ -21,12 +21,12 @@ Windows Task Scheduler. A manual re-run (only when the client asks) uses a one-o
 
 | Part | Currently | Can be optimized | Suggestion | Tag |
 |---|---|---|---|---|
-| Daily run | Weekdays 09:00 and 16:00 CT, plus a catch-up at sign-in. NOVA102 then VKU, each slot at most once a day. Since the clock change it likely fires an hour early. | Yes, the webapp's timer starts it at the same Chicago times. | The webapp's timer, in Chicago time, with the same order and limits. A missed run starts when the webapp is back. | Webapp |
-| The 30-minute morning wait | A leftover from the client's laptop. | Yes, removing it gets morning results 30 minutes earlier. | Could be removed, so results arrive 30 minutes earlier. One setting brings it back. | Not needed |
-| Pop-up clicker | Answers Revit and Navisworks pop-ups so runs don't stall. Its script is not in git. | Yes, its script gets saved to git. | Can stay on the VM, with its script saved to a repo first. | VM |
-| Desktop-session keeper | Keeps the screen session alive for Revit and Navisworks. Its script is not in git. | Yes, its script gets saved to git. | Can stay on the VM, with its script saved to a repo first. | VM |
+| Daily run | Weekdays 09:00 and 16:00 CT, plus a catch-up at sign-in. NOVA102 then VKU, each slot at most once a day. Since the clock change it likely fires an hour early. | Yes, the webapp starts it at the same times. | The webapp's timer, in Chicago time, with the same order and limits. A missed run starts when the webapp is back. | Webapp |
+| The 30-minute morning wait | A leftover from the client's laptop. | Yes, without it, morning results come 30 minutes sooner. | Could be removed, so results arrive 30 minutes earlier. One setting brings it back. | Not needed |
+| Pop-up clicker | Answers Revit and Navisworks pop-ups so runs don't stall. Its script is not in git. | Yes, we save its code to GitHub. | Can stay on the VM, with its script saved to a repo first. | VM |
+| Desktop-session keeper | Keeps the screen session alive for Revit and Navisworks. Its script is not in git. | Yes, we save its code to GitHub. | Can stay on the VM, with its script saved to a repo first. | VM |
 | Claude keep-alive | Reopens the Claude app and Chrome. | Yes, the Claude app and Chrome won't be needed. | Could be removed. No Claude app or Chrome would be needed on the VM. | Not needed |
-| Manual runs | A one-off task, only when the client asks. It counts as that day's most recent run time, or as the 09:00 run if it starts before 09:00. | Yes, started from the webapp's chat, with the same rule. | From the webapp's chat, with the same rule. | Webapp |
+| Manual runs | A one-off task, only when the client asks. It counts as that day's most recent run time, or as the 09:00 run if it starts before 09:00. | Yes, the client starts it from the webapp's chat. | From the webapp's chat, with the same rule. | Webapp |
 
 **Watch out:**
 
@@ -46,8 +46,8 @@ The NOVA102 and VKU electrical models in Revit and Navisworks, opened one at a t
 
 | Part | Currently | Can be optimized | Suggestion | Tag |
 |---|---|---|---|---|
-| Bot's Revit reading | NOVA102's 3 models and VKU's 1, opened one at a time in Revit 2025 and 2026, read only. | No, reading the models needs Revit, a desktop program. | No change needed. Stays on the VM. | VM |
-| Chat's live Revit | Chats ask the open model through conduit. | No, live questions need an open Revit. | No change needed. The same Revit on the VM, asked from the webapp's chat. | VM |
+| Bot's Revit reading | NOVA102's 3 models and VKU's 1, opened one at a time in Revit 2025 and 2026, read only. | No, only Revit can open the models. | No change needed. Stays on the VM. | VM |
+| Chat's live Revit | Chats ask the open model through conduit. | No, chats need Revit open to answer questions. | No change needed. The same Revit on the VM, asked from the webapp's chat. | VM |
 | Navisworks morning step | Each morning on the VM: 69 clash tests, the clash report, approved 4D changes, and the NWF and NWD saved. | No, Navisworks has no online version. | No change needed. Stays on the VM. | VM |
 
 **Where the bot reads Revit, as weighed**
@@ -84,9 +84,9 @@ The company's software that lets the bot (and the AI) open and read Revit and Na
 
 | Part | Currently | Can be optimized | Suggestion | Tag |
 |---|---|---|---|---|
-| Revit add-in and tool | The bot opens and reads the models through it. Chats in the Claude app on the VM use it too. | Yes, the webapp reaches it over a private link. | Reached by the webapp's bot and chat over the private link. | VM |
-| Navisworks bridge | Lets the bot's morning step drive Navisworks. The VM runs a newer build than the repo. | Yes, its newest source gets saved to git. | Stays as it is, with its source saved to a repo. | VM |
-| Point cloud and fabrication tools | Used by chats. | Yes, chats in the webapp reach them over a private link. | Reached from the webapp over the private link. | VM |
+| Revit add-in and tool | The bot opens and reads the models through it. Chats in the Claude app on the VM use it too. | Yes, the webapp connects to it through a private link. | Reached by the webapp's bot and chat over the private link. | VM |
+| Navisworks bridge | Lets the bot's morning step drive Navisworks. The VM runs a newer build than the repo. | Yes, we save its newest code to GitHub. | Stays as it is, with its source saved to a repo. | VM |
+| Point cloud and fabrication tools | Used by chats. | Yes, the webapp's chat connects to them through a private link. | Reached from the webapp over the private link. | VM |
 
 **What we need:**
 
@@ -117,15 +117,15 @@ Read only. All come from the VM's synced copy of the project folder, except Form
 
 | Part | Currently | Can be optimized | Suggestion | Tag |
 |---|---|---|---|---|
-| Project Manifest and Profile | From the synced folder. | Yes, read from ACC through Autodesk's API, not the synced folder. | From ACC through the API. | Webapp |
-| Coordination Schedule | From the synced folder. | Yes, read from ACC through Autodesk's API, not the synced folder. | From ACC through the API. | Webapp |
-| Issued drawing PDFs | Dated by the VM's file date. These dates become Actual Finish dates. | Yes, dated by Forma's upload date through the API, if the client agrees. | Could be dated by Forma's own upload date, the preferred option. It can differ by minutes or days, so the client decides. | Webapp |
-| RFI and submittal folders | The folder an RFI sits in is its status. | Yes, the same folders, read through Autodesk's API. | The same folders, read through the API. | Webapp |
-| Forma issues and RFIs | Chrome on the VM exports Excel files. | Yes, read through Autodesk's API instead of Chrome exports. | Autodesk's Issues and RFIs APIs. No Chrome. | Webapp |
-| Clash report | The newest export in the Clash Reports folder: the morning Navisworks step's, or one the client saved. | Yes, sent from the VM to the webapp, or read from ACC through the API. | The step's export sent from the VM to the webapp. The client's own exports read from ACC through the API. | Webapp |
-| New laser scans | In the synced scan folder. | Yes, read from ACC through Autodesk's API, not the synced folder. | From ACC through the API. | Webapp |
-| 4D approval files | Written by chats, read by the morning Navisworks step. | Yes, written in the webapp's chat and sent with the morning job. | Written by the webapp's chat, sent with the morning Navisworks job. | Webapp |
-| RFI sweep state file | Written by the morning AI sweep on the VM. The bot reads its Procore items. | Yes, the sweep and the bot both run in the webapp. | Both run in the webapp, so the bot reads it there. | Webapp |
+| Project Manifest and Profile | From the synced folder. | Yes, Autodesk's API replaces the synced folder. | From ACC through the API. | Webapp |
+| Coordination Schedule | From the synced folder. | Yes, Autodesk's API replaces the synced folder. | From ACC through the API. | Webapp |
+| Issued drawing PDFs | Dated by the VM's file date. These dates become Actual Finish dates. | Yes, the date can come from Forma, if the client agrees. | Could be dated by Forma's own upload date, the preferred option. It can differ by minutes or days, so the client decides. | Webapp |
+| RFI and submittal folders | The folder an RFI sits in is its status. | Yes, Autodesk's API reads the same folders. | The same folders, read through the API. | Webapp |
+| Forma issues and RFIs | Chrome on the VM exports Excel files. | Yes, Autodesk's API replaces the Chrome exports. | Autodesk's Issues and RFIs APIs. No Chrome. | Webapp |
+| Clash report | The newest export in the Clash Reports folder: the morning Navisworks step's, or one the client saved. | Yes, the VM sends it to the webapp, or the API reads it from ACC. | The step's export sent from the VM to the webapp. The client's own exports read from ACC through the API. | Webapp |
+| New laser scans | In the synced scan folder. | Yes, Autodesk's API replaces the synced folder. | From ACC through the API. | Webapp |
+| 4D approval files | Written by chats, read by the morning Navisworks step. | Yes, the webapp's chat writes them and sends them with the morning job. | Written by the webapp's chat, sent with the morning Navisworks job. | Webapp |
+| RFI sweep state file | Written by the morning AI sweep on the VM. The bot reads its Procore items. | Yes, the sweep and the bot both move to the webapp. | Both run in the webapp, so the bot reads it there. | Webapp |
 
 **Watch out:**
 
@@ -149,13 +149,13 @@ A Python program. For each project it finds what changed in the model, matches d
 
 | Part | Currently | Can be optimized | Suggestion | Tag |
 |---|---|---|---|---|
-| Revit reading and Navisworks step | On the VM. | No, it needs Revit and Navisworks, both desktop programs. | No change needed. Stays on the VM. | VM |
-| Matching, register plan, workbooks, feeds | On the VM. | Yes, the same code runs in the webapp. | In the webapp, same code. | Webapp |
-| Memory and settings | orchestrator.db and runner.json on the VM. | Yes, moved into the webapp with the same values. | In the webapp, same values. | Webapp |
-| Held items | Released by commands run on the VM from chat. | Yes, released by the webapp when asked in chat. | Released by the webapp, from chat. | Webapp |
-| File dates | From the synced files. | Yes, read from ACC through Autodesk's API, not the synced files. | From ACC through the API. | Webapp |
-| Clock | The VM runs on Chicago time. | Yes, the webapp runs the bot on Chicago time. | The bot's work runs on Chicago time. | Webapp |
-| The bot's code | The VM runs its own copy, with one file that is not in GitHub (the clash export step). | Yes, the webapp runs it from GitHub, once the missing file is saved. | The webapp runs the same code from GitHub, once that file is saved there. | Webapp |
+| Revit reading and Navisworks step | On the VM. | No, it needs Revit and Navisworks. | No change needed. Stays on the VM. | VM |
+| Matching, register plan, workbooks, feeds | On the VM. | Yes, the same code moves to the webapp. | In the webapp, same code. | Webapp |
+| Memory and settings | orchestrator.db and runner.json on the VM. | Yes, they move to the webapp unchanged. | In the webapp, same values. | Webapp |
+| Held items | Released by commands run on the VM from chat. | Yes, the webapp releases them when the client asks in chat. | Released by the webapp, from chat. | Webapp |
+| File dates | From the synced files. | Yes, Autodesk's API replaces the synced files. | From ACC through the API. | Webapp |
+| Clock | The VM runs on Chicago time. | Yes, the webapp keeps Chicago time. | The bot's work runs on Chicago time. | Webapp |
+| The bot's code | The VM runs its own copy, with one file that is not in GitHub (the clash export step). | Yes, the webapp runs it from GitHub, once we save the missing file. | The webapp runs the same code from GitHub, once that file is saved there. | Webapp |
 | OpenGuard | Fixes TEMP-POWER's error, in the run's session only. | No, it works inside Revit. | No change needed. Stays on the VM. | VM |
 
 **Watch out:**
@@ -178,11 +178,11 @@ The bot's last two steps: a 4D timeline snapshot, and the 4D refresh, which also
 
 | Part | Currently | Can be optimized | Suggestion | Tag |
 |---|---|---|---|---|
-| Conduit export | Revit on the VM. | No, the export needs Revit. | No change needed. Stays on the VM. | VM |
-| Scan comparison | Python on the VM. | Yes, the same code runs in the webapp, sized for the biggest scan. | The same code in the webapp, on a worker sized for the biggest scan. | Webapp |
-| Held scan result and its release | On the VM. | Yes, held and released in the webapp. | In the webapp. | Webapp |
-| 4D viewer, 4D progress, 5D workbook | After each run, on the VM. | Yes, the same code builds them in the webapp, at the same times. | In the webapp, same code and times. | Webapp |
-| Timeline snapshot | Navisworks, each morning. | No, the snapshot needs Navisworks. | No change needed. Stays on the VM. | VM |
+| Conduit export | Revit on the VM. | No, it needs Revit. | No change needed. Stays on the VM. | VM |
+| Scan comparison | Python on the VM. | Yes, the same code moves to the webapp. | The same code in the webapp, on a worker sized for the biggest scan. | Webapp |
+| Held scan result and its release | On the VM. | Yes, the webapp holds and releases it. | In the webapp. | Webapp |
+| 4D viewer, 4D progress, 5D workbook | After each run, on the VM. | Yes, the webapp builds them with the same code. | In the webapp, same code and times. | Webapp |
+| Timeline snapshot | Navisworks, each morning. | No, it needs Navisworks. | No change needed. Stays on the VM. | VM |
 
 **Watch out:**
 
@@ -211,11 +211,11 @@ The real project folder in Autodesk's cloud, synced to the VM. The bot writes:
 
 | Part | Currently | Can be optimized | Suggestion | Tag |
 |---|---|---|---|---|
-| Coordination Schedule | 6 safety steps. | Yes, written through Autodesk's API with the same 6 safety steps. | The same 6 steps, through the API. | Webapp |
-| Backups | The bot copies each workbook into the backups folder before every write. | Yes, the webapp makes the same copies through the API. | The same copies in the same folder, made by the webapp through the API. | Webapp |
-| Other workbooks and the run log | Model Impact Tracker, materials workbook, Lookahead, RFI and Submittal Impact Register, model inventories and diffs, clash report, 5D workbooks and the run log, written to the synced folder. | Yes, written through Autodesk's API, not the synced folder. | The same files, written through the API. | Webapp |
-| NWF and NWD | Saved by Navisworks, uploaded by Desktop Connector. | Yes, a small file helper uploads them through the API instead. | Saved by Navisworks, uploaded by the file helper through the API. | VM |
-| Desktop Connector | Syncs whole project folders on the VM. | Yes, the API replaces it, and a file helper moves Navisworks' files. | Could be removed. A file helper would move only Navisworks' files. | Not needed |
+| Coordination Schedule | 6 safety steps. | Yes, the webapp writes it with Autodesk's API and the same 6 safety steps. | The same 6 steps, through the API. | Webapp |
+| Backups | The bot copies each workbook into the backups folder before every write. | Yes, the webapp makes the same backups. | The same copies in the same folder, made by the webapp through the API. | Webapp |
+| Other workbooks and the run log | Model Impact Tracker, materials workbook, Lookahead, RFI and Submittal Impact Register, model inventories and diffs, clash report, 5D workbooks and the run log, written to the synced folder. | Yes, Autodesk's API replaces the synced folder. | The same files, written through the API. | Webapp |
+| NWF and NWD | Saved by Navisworks, uploaded by Desktop Connector. | Yes, a small file helper uploads them instead of Desktop Connector. | Saved by Navisworks, uploaded by the file helper through the API. | VM |
+| Desktop Connector | Syncs whole project folders on the VM. | Yes, Autodesk's API and a small file helper replace it. | Could be removed. A file helper would move only Navisworks' files. | Not needed |
 
 **Watch out:**
 
@@ -244,8 +244,8 @@ Progress and problems, during each run.
 | Part | Currently | Can be optimized | Suggestion | Tag |
 |---|---|---|---|---|
 | Alert emails | When a run is blocked, slow, gives up, fails or finishes: an email from the bot email address to the client. | Yes, the webapp sends the same emails. | The same emails, sent by the webapp. | Webapp |
-| Windows pop-ups | On the VM's screen when a run is blocked, slow, gives up, fails or finishes. A click on the finished one opens the summary. | Yes, a webapp notification on phone or browser instead. | Suggested: a webapp notification on phone or browser. The finished one opens the summary. | Webapp |
-| Progress lines | A file on the VM. | Yes, shown in the webapp's run status instead. | The webapp's run status. | Webapp |
+| Windows pop-ups | On the VM's screen when a run is blocked, slow, gives up, fails or finishes. A click on the finished one opens the summary. | Yes, a phone or browser notification replaces it. | Suggested: a webapp notification on phone or browser. The finished one opens the summary. | Webapp |
+| Progress lines | A file on the VM. | Yes, the webapp shows the run's progress. | The webapp's run status. | Webapp |
 
 **What we need:**
 
@@ -276,7 +276,7 @@ Each page is its own repo. New data saved to its main branch goes live within mi
 
 | Part | Currently | Can be optimized | Suggestion | Tag |
 |---|---|---|---|---|
-| Publishing to 7 pages | Git pushes from the VM. | Yes, the webapp publishes with its own GitHub access. | From the webapp, with its own GitHub access. | Webapp |
+| Publishing to 7 pages | Git pushes from the VM. | Yes, the webapp publishes them with its own GitHub access. | From the webapp, with its own GitHub access. | Webapp |
 | Live check | After each Impact Dashboard update, the NOVA102 page is opened with a key and checked. The VKU page has no key, so its GitHub build status is checked instead. | Yes, the webapp runs the same checks. | The same checks, from the webapp. | Webapp |
 | The pages themselves | On Cloudflare. | No, the pages stay on Cloudflare. | No change needed: same addresses, look, sign-in and data. |  |
 
@@ -294,7 +294,7 @@ The only person on the bot's alert list (runner.json).
 
 | Part | Currently | Can be optimized | Suggestion | Tag |
 |---|---|---|---|---|
-| Alert list | The client only, set in runner.json on the VM. | Yes, the same list, kept in the webapp's settings. | The same list, kept in the webapp's settings. | Webapp |
+| Alert list | The client only, set in runner.json on the VM. | Yes, the same list moves to the webapp's settings. | The same list, kept in the webapp's settings. | Webapp |
 
 ## Host the pages and sign-in
 
@@ -316,7 +316,7 @@ Puts each page online and checks who may open it (emailed code or Microsoft logi
 | Part | Currently | Can be optimized | Suggestion | Tag |
 |---|---|---|---|---|
 | Hosting, sign-in, databases, file bucket | Cloudflare. | No, Cloudflare keeps hosting everything. | No change needed. |  |
-| Live-check key | On the VM. | Yes, kept in the webapp's secure settings. | In the webapp's secure settings. | Webapp |
+| Live-check key | On the VM. | Yes, it moves to the webapp's secure settings. | In the webapp's secure settings. | Webapp |
 | Page libraries | Some pages load code from public sites (jsDelivr, cdnjs). | No, the pages load them the same way. | No change needed. |  |
 
 ## Use the pages
