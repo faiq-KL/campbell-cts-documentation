@@ -17,13 +17,12 @@ Plain meanings of the terms on the [plan page](https://faiq-kl.github.io/campbel
 - **P6, Lookahead:** P6 is ARCO's master schedule. The Lookahead is its next 6 to 12 weeks.
 - **4D, 5D:** 4D links the model to the schedule to show the build over time. 5D adds quantities.
 - **Laser scan:** A 3D scan of what is built, compared with the model to measure progress.
-- **VM:** The rented Windows computer in Amazon's cloud where production runs today. Times are US Central (CT).
+- **VM:** The rented Windows machine in Amazon's cloud where production runs today. In the suggested setup a smaller VM keeps only Revit, Navisworks, conduit and the file helper, and nobody needs to open it. Times are US Central (CT).
 - **Bot:** Our Python program (hcg-bim-assistant) that updates project files and pages twice a day. It doesn't use AI.
 - **Repo, main branch:** A folder of code on GitHub. Saving to its main branch makes a change live.
 - **Scheduled task, skill, Claude Project:** An AI job on a timer, a set of instructions the AI loads, and a shared space of notes the AI reads and writes.
 - **Webapp:** Our app on our own server. It could run the bot, Claude and the notes.
-- **Windows computer:** A smaller cloud computer that could replace the VM, only for Revit, Navisworks, conduit and the file helper. Nobody would need to open it.
-- **Private link:** A connection between the webapp and the Windows computer, closed to the internet.
+- **Private link:** A connection between the webapp and the VM, closed to the internet.
 - **File helper:** A small program that would move Navisworks' files to and from ACC through Autodesk's API, in place of Desktop Connector.
 - **Agent SDK:** Anthropic's engine behind Claude Code. It could run Claude inside the webapp.
 - **API, tool server:** An API lets our app talk to another system directly. A tool server (MCP) is a standard way to give Claude tools.

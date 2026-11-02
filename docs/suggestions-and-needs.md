@@ -12,13 +12,13 @@ What we suggest for each flow, and what we need to get there. For how each flow 
 
 ### What we suggest
 
-- **Where it runs:** the bot's own code runs in the webapp on Chicago time, with its memory and settings at the same values. Only the Revit and Navisworks steps run on the Windows computer, sent over the private link. The pop-up clicker and the session keeper stay there. The Claude keep-alive goes.
+- **Where it runs:** the bot's own code runs in the webapp on Chicago time, with its memory and settings at the same values. Only the Revit and Navisworks steps stay on the VM, sent over the private link. The pop-up clicker and the session keeper stay there. The Claude keep-alive goes.
 - **Timer:** weekdays at 09:00 and 16:00 Chicago time, holidays included, NOVA102 then VKU, at most once per run time. A missed run starts when the webapp is back. Manual runs come from chat, only when the lead asks, and count toward that day's latest run time.
 - **One timing change:** the 30-minute morning wait could be removed, so morning results arrive 30 minutes earlier. One setting brings it back.
 - **Files in:** every input comes from ACC through Autodesk's API, including Forma issues and RFIs, with no Chrome. Issued drawings could take Forma's own upload date. The lead decides, because some Actual Finish dates can shift.
 - **Files out:** the same files go to the same ACC folders through the API, with the same 6 safety steps and the same backups. ACC's history will show our app's account as the author.
 - **Navisworks' files:** the file helper moves them to and from ACC through Autodesk's API. Desktop Connector goes.
-- **Scans, 4D and 5D:** the scan check, the 4D viewer, 4D progress and the 5D workbook run in the webapp with the same code, on a worker sized for the biggest scan. The Revit export and the Navisworks timeline snapshot stay on the Windows computer.
+- **Scans, 4D and 5D:** the scan check, the 4D viewer, 4D progress and the 5D workbook run in the webapp with the same code, on a worker sized for the biggest scan. The Revit export and the Navisworks timeline snapshot stay on the VM.
 - **Alerts:** the same emails through Amazon's email, from the same sender, to the lead only. Teams stays off.
 - **Pages:** the 10 pages stay exactly as they are. The webapp publishes the same data to the same 7 with its own GitHub access, so GitHub's history shows its name, and runs the same live check. Pages kept by hand stay by hand.
 - **Cloudflare:** stays as it is. The live-check key moves to the webapp.
@@ -28,8 +28,8 @@ For later: the bot's Revit reading could move to Autodesk's online Revit (Automa
 ### What we need
 
 1. **Triad, Newtron and ARCO** connect our app to their Autodesk accounts: read access to the project files, and write access only where the bot writes today. The lead tells us who their Autodesk admins are.
-2. **An Autodesk account for the Windows computer**, not the lead's, with Revit, Navisworks Manage and Forma Design Collaboration licences, added to the three companies' projects.
-3. **From the lead:** which Navisworks licence the VM uses and when it renews, who opens the NWD, their OK to run conduit on the new computer with a network mode, and their OK on the drawing dates after a comparison shows how many move.
+2. **An Autodesk account for the VM**, not the lead's, with Revit, Navisworks Manage and Forma Design Collaboration licences, added to the three companies' projects.
+3. **From the lead:** which Navisworks licence the VM uses and when it renews, who opens the NWD, their OK to run conduit with a network mode on the VM, and their OK on the drawing dates after a comparison shows how many move.
 4. **To build:** conduit's network mode or bridge, the file helper, and the private link.
 5. **From the VM:** everything on the [What we still need from the VM](https://faiq-kl.github.io/campbell-cts-documentation/vm-to-webapp-plan.html#missing) list, starting with the clash export step and the newest Navisworks bridge source. Also the bot's memory and settings, the tracker sync script and the email script.
 6. **Access for the webapp:** Amazon email, and a Cloudflare key for the live check.
@@ -71,7 +71,7 @@ Not carried over: the 2 finished acting-lead digests and the 3 finished one-off 
 - **Approved changes:** written from chat only after approval, outside run times, with the same safety steps. This covers Coordination Schedule changes, 4D approval files and tracker notes.
 - **Task Board:** before changing a shared file, Claude claims the task through the portal's API, with its own sign-in, instead of through a person's signed-in browser.
 - **Forma issues:** created through Autodesk's Issues API, still as drafts until a person publishes them.
-- **Work done when asked:** 4D builds, clash reviews and quantities reach Revit and Navisworks through conduit on the Windows computer. Document control, RFI questions, prefab and Trello work, and Forma correspondence use Autodesk's, Procore's and Trello's APIs.
+- **Work done when asked:** 4D builds, clash reviews and quantities reach Revit and Navisworks through conduit on the VM. Document control, RFI questions, prefab and Trello work, and Forma correspondence use Autodesk's, Procore's and Trello's APIs.
 - **Unchanged:** the six Triad signers and their sign-off page (applied only after the lead approves), the Lead Queue (filled by hand), replies to BES, ARCO, CMMC and Triad (drafted by Claude, sent by the lead), and rule changes (approved by the lead).
 - **Pages kept by hand:** stay by hand, with their scripts in the webapp. The RFI Sweep stays on the lead's PC.
 
@@ -94,11 +94,11 @@ Looked at and not suggested: filling the Lead Queue automatically, a stand-in ro
 - **Independent alarm:** the heartbeat stays outside the webapp, so the lead still hears when the webapp itself is down. Suggested: a small task in the lead's Claude account that checks the webapp's status page.
 - **Who decides:** the lead, or the stand-in, as today.
 - **Fixing:** starts from the webapp's run status, logs and job results. The Claude app and the Procore and Forma sign-ins are gone.
-- **Windows problems:** rare Revit, Navisworks or Windows problems are fixed by us on the Windows computer, not by the lead.
+- **Windows problems:** rare Revit, Navisworks or Windows problems are fixed by us on the VM, not by the lead.
 - **Re-running a step:** a chat request, only when the lead asks, outside run times, with the same skip rule.
 
 ### What we need
 
-1. **Rewritten directions:** the 'what to do' part of every watcher's email, pointing at the webapp and the Windows computer instead of the VM. Everything else in those emails stays the same. The lead checks the new wording.
+1. **Rewritten directions:** the 'what to do' part of every watcher's email, pointing at the webapp instead of the VM. Everything else in those emails stays the same. The lead checks the new wording.
 
 Not worked out yet: Flow 5 (Sell and support Conduit), Flow A (Release code changes) and Flow B (Onboard a new project).

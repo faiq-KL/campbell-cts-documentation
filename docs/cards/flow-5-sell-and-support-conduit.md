@@ -2,7 +2,7 @@
 
 Every card in this flow, in full. The [plan page](https://faiq-kl.github.io/campbell-cts-documentation/vm-to-webapp-plan.html) shows the diagram.
 
-## The product: conduit
+## Make the conduit product
 
 *Repo, In git*
 
@@ -12,7 +12,7 @@ The same Revit and Navisworks tools the bot uses, sold to other companies.
 
 Not explored yet.
 
-## Skill delivery
+## Deliver the skills
 
 *Repo, In git*
 
@@ -22,7 +22,7 @@ A script (conduit/tools/publish-marketplace.ps1) copies the skills here by pull 
 
 Not explored yet.
 
-## Release build
+## Build a release
 
 *Repo tools, In git*
 
@@ -36,7 +36,7 @@ Builds the installers on the lead's PC and signs them with a key only that PC ha
 
 Not explored yet.
 
-## Release build in the cloud
+## Build a release in the cloud
 
 *Scheduler, In git*
 
@@ -46,7 +46,7 @@ The other way to build: GitHub builds on a clean machine.
 
 Not explored yet.
 
-## Company Claude
+## Share skills across the company
 
 *Skills, Claude account*
 
@@ -56,7 +56,7 @@ Cowork shares the skills with everyone in the company account.
 
 Not explored yet.
 
-## Release upload
+## Upload a release
 
 *Repo tool, In git*
 
@@ -66,7 +66,7 @@ The lead runs it by hand, with a Keygen token, to upload each release.
 
 Not explored yet.
 
-## Keygen: licences and downloads
+## Manage licences and downloads
 
 *Service, Outside*
 
@@ -76,7 +76,7 @@ Online licensing service. Holds licence keys and release files. Licence events e
 
 Not explored yet.
 
-## Support digest
+## Send the support digest
 
 *Scheduler, In git*
 
@@ -86,7 +86,7 @@ A daily summary of the website's support chats.
 
 Not explored yet.
 
-## Company website: campbellcts.com
+## Run the company website
 
 *Repo, In git*
 
@@ -98,7 +98,7 @@ Hosted on Netlify: product pages, licensed downloads and an AI support chat.
 
 Not explored yet.
 
-## Customers and testers
+## Download and use conduit
 
 *People*
 
@@ -106,7 +106,7 @@ Customers download with a licence key and can use the support chat. Testers get 
 
 Not explored yet.
 
-## Services behind the chat
+## Power the support chat
 
 *Service, Outside*
 
@@ -118,7 +118,7 @@ Used by the support chat.
 
 Not explored yet.
 
-## The lead
+## Handle escalations and alerts
 
 *People*
 

@@ -2,7 +2,7 @@
 
 Every card in this flow, in full. The [plan page](https://faiq-kl.github.io/campbell-cts-documentation/vm-to-webapp-plan.html) shows the diagram.
 
-## Project lead
+## Answer and approve the setup
 
 *People*
 
@@ -10,7 +10,7 @@ Fills in the intake form, answers the interview and approves every setting. Noth
 
 Not explored yet.
 
-## Intake form and project docs
+## Fill in the intake form
 
 *Service, Outside*
 
@@ -22,7 +22,7 @@ In the project's ACC folder.
 
 Not explored yet.
 
-## Onboarding chat
+## Interview the lead
 
 *Skill + repo tools, Git + Claude account*
 
@@ -34,7 +34,7 @@ An AI chat that interviews the lead and checks each answer twice on the live mod
 
 Not explored yet.
 
-## Project settings in ACC
+## Save the project settings
 
 *Service, Outside*
 
@@ -45,7 +45,7 @@ The two files every run and chat reads. Changed only with the lead's OK.
 
 Not explored yet.
 
-## Added to the bot
+## Add the project to the bot
 
 *On the VM, On the VM*
 
@@ -57,7 +57,7 @@ The project joins the bot's daily run.
 
 Not explored yet.
 
-## New pages, set up by hand
+## Set up the pages by hand
 
 *Repos, In git*
 

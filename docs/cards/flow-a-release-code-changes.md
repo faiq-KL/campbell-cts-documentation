@@ -2,7 +2,7 @@
 
 Every card in this flow, in full. The [plan page](https://faiq-kl.github.io/campbell-cts-documentation/vm-to-webapp-plan.html) shows the diagram.
 
-## The lead and AI coding sessions
+## Write code changes
 
 *People + AI*
 
@@ -15,7 +15,7 @@ Where code changes come from.
 
 Not explored yet.
 
-## The bot's saved data
+## Save fresh page data
 
 *Bot, On the VM*
 
@@ -25,7 +25,7 @@ Twice a day the bot saves fresh data to 7 page repos' main branch, which puts it
 
 Not explored yet.
 
-## Who may sign in
+## Control who may sign in
 
 *Repo config, In git*
 
@@ -36,7 +36,7 @@ Lists of who may see each page. A script run by hand copies them to Cloudflare.
 
 Not explored yet.
 
-## Claude company account
+## Hold AI skills and job instructions
 
 *Claude, Claude account*
 
@@ -48,7 +48,7 @@ AI skills and job instructions are not updated from GitHub.
 
 Not explored yet.
 
-## GitHub
+## Store the code
 
 *Service, Outside*
 
@@ -61,7 +61,7 @@ Where all 15 repos live.
 
 Not explored yet.
 
-## Cloudflare builds
+## Put the pages live
 
 *Service, Outside*
 
@@ -71,7 +71,7 @@ Puts each page repo's main branch live automatically, and enforces sign-in.
 
 Not explored yet.
 
-## Netlify
+## Put the website live
 
 *Service, Outside*
 
@@ -81,7 +81,7 @@ Puts the company website live from its main branch.
 
 Not explored yet.
 
-## The VM's own copies of the code
+## Run the VM's copies of the code
 
 *On the VM, On the VM*
 
@@ -95,7 +95,7 @@ The code the bot really runs. Some bot fixes were made here and pushed to GitHub
 
 Not explored yet.
 
-## Live pages and website
+## Show the live pages and website
 
 *Live*
 
@@ -103,7 +103,7 @@ What the team, BES, Triad, leadership and customers see.
 
 Not explored yet.
 
-## A dev copy of the VM
+## Test on a dev copy of the VM
 
 *Dev copy, Not in git*
 
