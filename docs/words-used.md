@@ -4,7 +4,7 @@ Plain meanings of the terms on the [plan page](https://faiq-kl.github.io/campbel
 
 - **NOVA102, VKU:** The two construction projects. NOVA102, a data-centre building, is the main one.
 - **HCG:** The team that keeps the electrical 3D model and the project paperwork up to date.
-- **Lead, deputy:** The lead makes the project decisions. The deputy is a teammate who stands in when the lead is away.
+- **Client, deputy:** The client runs HCG and makes the project decisions. The deputy is a teammate who stands in when the client is away.
 - **ARCO, Triad, BES, CMMC:** ARCO is the general contractor and Triad the electrical contractor. BES and CMMC are design firms.
 - **Revit, Navisworks:** Revit holds the electrical 3D model. Navisworks combines every trade's model to find clashes and play the schedule.
 - **NWF, NWD:** Navisworks files. The NWF lists the models, clash checks and 4D timeline. The NWD is a full snapshot.

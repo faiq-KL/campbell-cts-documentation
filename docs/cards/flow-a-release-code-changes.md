@@ -4,6 +4,8 @@ Every card in this flow, in full. The [plan page](https://faiq-kl.github.io/camp
 
 ## Write code changes
 
+The client and AI coding sessions write the code changes.
+
 *People + AI*
 
 Where code changes come from.
@@ -17,6 +19,8 @@ Not explored yet.
 
 ## Save fresh page data
 
+Twice a day the bot saves fresh data to 7 page repos, which puts it live.
+
 *Bot, On the VM*
 
 Twice a day the bot saves fresh data to 7 page repos' main branch, which puts it live.
@@ -26,6 +30,8 @@ Twice a day the bot saves fresh data to 7 page repos' main branch, which puts it
 Not explored yet.
 
 ## Control who may sign in
+
+Lists of who may see each page, copied to Cloudflare by hand.
 
 *Repo config, In git*
 
@@ -38,6 +44,8 @@ Not explored yet.
 
 ## Hold AI skills and job instructions
 
+The company's Claude account holds the skills and jobs, which GitHub doesn't update.
+
 *Claude, Claude account*
 
 AI skills and job instructions are not updated from GitHub.
@@ -49,6 +57,8 @@ AI skills and job instructions are not updated from GitHub.
 Not explored yet.
 
 ## Store the code
+
+GitHub holds all 15 repos.
 
 *Service, Outside*
 
@@ -63,6 +73,8 @@ Not explored yet.
 
 ## Put the pages live
 
+Cloudflare puts each page live from its main branch and enforces sign-in.
+
 *Service, Outside*
 
 Puts each page repo's main branch live automatically, and enforces sign-in.
@@ -73,6 +85,8 @@ Not explored yet.
 
 ## Put the website live
 
+Netlify puts the company website live from its main branch.
+
 *Service, Outside*
 
 Puts the company website live from its main branch.
@@ -82,6 +96,8 @@ Puts the company website live from its main branch.
 Not explored yet.
 
 ## Run the VM's copies of the code
+
+The VM runs its own copy of the code, which can differ from GitHub.
 
 *On the VM, On the VM*
 
@@ -97,6 +113,8 @@ Not explored yet.
 
 ## Show the live pages and website
 
+What the team, BES, Triad, leadership and customers see.
+
 *Live*
 
 What the team, BES, Triad, leadership and customers see.
@@ -104,6 +122,8 @@ What the team, BES, Triad, leadership and customers see.
 Not explored yet.
 
 ## Test on a dev copy of the VM
+
+A test copy of the VM, known to us only by its notes' names.
 
 *Dev copy, Not in git*
 

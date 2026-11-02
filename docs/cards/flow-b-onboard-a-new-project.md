@@ -4,6 +4,8 @@ Every card in this flow, in full. The [plan page](https://faiq-kl.github.io/camp
 
 ## Answer and approve the setup
 
+The client fills in the intake form, answers the interview and approves every setting.
+
 *People*
 
 Fills in the intake form, answers the interview and approves every setting. Nothing is copied from another project.
@@ -11,6 +13,8 @@ Fills in the intake form, answers the interview and approves every setting. Noth
 Not explored yet.
 
 ## Fill in the intake form
+
+The intake form and project documents, kept in the project's ACC folder.
 
 *Service, Outside*
 
@@ -22,11 +26,13 @@ In the project's ACC folder.
 
 Not explored yet.
 
-## Interview the lead
+## Interview the client
+
+An AI chat interviews the client and checks each answer twice on the live model.
 
 *Skill + repo tools, Git + Claude account*
 
-An AI chat that interviews the lead and checks each answer twice on the live model.
+An AI chat that interviews the client and checks each answer twice on the live model.
 
 - `project-onboarding`: the skill
 - `python -m onboarding`: checks the Manifest, lists models, reads drawing naming rules
@@ -36,9 +42,11 @@ Not explored yet.
 
 ## Save the project settings
 
+Two settings files in ACC that every run and chat reads.
+
 *Service, Outside*
 
-The two files every run and chat reads. Changed only with the lead's OK.
+The two files every run and chat reads. Changed only with the client's OK.
 
 - `BIM_Project_Manifest.json`: where things are: folders, files, models, page repos
 - `BIM_Project_Profile.yaml`: how to read them: areas, naming rules, spreadsheet columns (checked by schemas/project-profile.schema.json)
@@ -46,6 +54,8 @@ The two files every run and chat reads. Changed only with the lead's OK.
 Not explored yet.
 
 ## Add the project to the bot
+
+The new project joins the bot's twice-daily run.
 
 *On the VM, On the VM*
 
@@ -59,6 +69,8 @@ Not explored yet.
 
 ## Set up the pages by hand
 
+The project's pages are copied from NOVA102's, each with its own sign-in list.
+
 *Repos, In git*
 
 Copied from NOVA102's pages (as VKU's were), each with its own Cloudflare site and sign-in list.
@@ -71,9 +83,11 @@ Not explored yet.
 
 ## Dry run, then write
 
+The bot first runs without writing, and writes only after the client reviews it.
+
 *Bot, In git*
 
-The bot first runs without writing. After the lead reviews it, it may write.
+The bot first runs without writing. After the client reviews it, it may write.
 
 - `write_back.mode: dry_run → write`: the switch in the Profile
 

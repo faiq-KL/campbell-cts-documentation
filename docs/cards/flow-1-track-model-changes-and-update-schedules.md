@@ -4,9 +4,11 @@ Every card in this flow, in full. The [plan page](https://faiq-kl.github.io/camp
 
 ## Start the runs on time
 
+Four timers on the VM start the bot twice a day and keep its helpers running.
+
 *Schedulers ×4, On the VM*
 
-Windows Task Scheduler. A manual re-run (only when the lead asks) uses a one-off task.
+Windows Task Scheduler. A manual re-run (only when the client asks) uses a one-off task.
 
 - `\HCG BIM Assistant\Daily run` (Weekdays 09:00 and 16:00 CT, and at sign-in): Starts the bot: NOVA102 first (60 to 90 min), then VKU. Each slot runs once a day at most.
 - `\HCG BIM Assistant\Dialog watcher` (At sign-in): Clicks safe answers on Revit and Navisworks pop-ups so runs don't stall. Never clicks save, sync or publish. Script not in git.
@@ -15,22 +17,24 @@ Windows Task Scheduler. A manual re-run (only when the lead asks) uses a one-off
 
 **Today:** Four Windows timers on the VM: the Daily run (weekdays 09:00 and 16:00 CT), the pop-up clicker, the Claude keep-alive and the desktop-session keeper.
 
-**What could change:** The webapp's timer starts the runs at the same times as today. The webapp starts each run at 09:00 and 16:00 Chicago time on weekdays, holidays included, NOVA102 then VKU, at most once per run time, with the same time limits. It uses Chicago wall-clock time, so a clock change can't shift it. A missed run starts when the webapp is back. Manual runs come from the webapp's chat, only when the lead asks.
+**What could change:** The webapp's timer starts the runs at the same times as today. The webapp starts each run at 09:00 and 16:00 Chicago time on weekdays, holidays included, NOVA102 then VKU, at most once per run time, with the same time limits. It uses Chicago wall-clock time, so a clock change can't shift it. A missed run starts when the webapp is back. Manual runs come from the webapp's chat, only when the client asks.
 
 | Part | Currently | Can be optimized | Suggestion | Tag |
 |---|---|---|---|---|
 | Daily run | Weekdays 09:00 and 16:00 CT, plus a catch-up at sign-in. NOVA102 then VKU, each slot at most once a day. Since the clock change it likely fires an hour early. | Yes | The webapp's timer, in Chicago time, with the same order and limits. A missed run starts when the webapp is back. | Webapp |
-| The 30-minute morning wait | A leftover from the lead's laptop. | Yes | Could be removed, so results arrive 30 minutes earlier. One setting brings it back. | Not needed |
+| The 30-minute morning wait | A leftover from the client's laptop. | Yes | Could be removed, so results arrive 30 minutes earlier. One setting brings it back. | Not needed |
 | Pop-up clicker | Answers Revit and Navisworks pop-ups so runs don't stall. Its script is not in git. | Yes | Can stay on the VM, with its script saved to a repo first. | VM |
 | Desktop-session keeper | Keeps the screen session alive for Revit and Navisworks. Its script is not in git. | Yes | Can stay on the VM, with its script saved to a repo first. | VM |
 | Claude keep-alive | Reopens the Claude app and Chrome. | Yes | Could be removed. No Claude app or Chrome would be needed on the VM. | Not needed |
-| Manual runs | A one-off task, only when the lead asks. It counts as that day's most recent run time, or as the 09:00 run if it starts before 09:00. | Yes | From the webapp's chat, with the same rule. | Webapp |
+| Manual runs | A one-off task, only when the client asks. It counts as that day's most recent run time, or as the 09:00 run if it starts before 09:00. | Yes | From the webapp's chat, with the same rule. | Webapp |
 
 **Watch out:**
 
-- Since the clock change the VM's timer likely fires at 08:00 and 15:00, so the 09:00 run comes late and there is no 16:00 run. Only the lead can fix it on the VM. That late run also skips the Navisworks morning step, which only runs before 13:00.
+- Since the clock change the VM's timer likely fires at 08:00 and 15:00, so the 09:00 run comes late and there is no 16:00 run. Only the client can fix it on the VM. That late run also skips the Navisworks morning step, which only runs before 13:00.
 
 ## Open the models in Revit and Navisworks
+
+Revit and Navisworks on the VM open the 3D models for the bot and for chats.
 
 *Service, On the VM*
 
@@ -62,9 +66,11 @@ Revit must stay on the VM for chat anyway, so the online option would not remove
 
 **What we need:**
 
-- An Autodesk account for the VM, not the lead's, with Revit, Navisworks Manage and Forma Design Collaboration licences, added to Triad's, ARCO's and Newtron's projects.
+- An Autodesk account for the VM, not the client's, with Revit, Navisworks Manage and Forma Design Collaboration licences, added to Triad's, ARCO's and Newtron's projects.
 
 ## Connect to Revit and Navisworks
+
+conduit, the company's software, lets the bot and chats work inside Revit and Navisworks.
 
 *Repo, In git*
 
@@ -84,10 +90,12 @@ The company's software that lets the bot (and the AI) open and read Revit and Na
 
 **What we need:**
 
-- The lead's OK to run conduit on the new computer with a network mode.
+- The client's OK to run conduit on the new computer with a network mode.
 - The Navisworks bridge's newest source from the VM.
 
 ## Collect files, issues and scans
+
+Everything else the bot reads on each run: schedules, drawings, issues, clashes and scans.
 
 *Service, Outside*
 
@@ -99,9 +107,9 @@ Read only. All come from the VM's synced copy of the project folder, except Form
 - `RFI and submittal folders`: their status: open, in review, answered
 - `Forma issues and RFIs`: from ARCO's and Triad's Forma projects, through the bot's own Chrome
 - `RFI sweep state file`: Procore items from the morning AI sweep (Flow 2)
-- `Clash report (XML)`: the 09:00 run re-runs the clash tests and exports it. The newest export is read, the run's or the lead's
+- `Clash report (XML)`: the 09:00 run re-runs the clash tests and exports it. The newest export is read, the run's or the client's
 - `New laser scans (.e57)`
-- `4D approval files`: schedule changes the lead approved (Flow 3)
+- `4D approval files`: schedule changes the client approved (Flow 3)
 
 **Today:** Read from the VM's synced copy of the project folders. Forma issues and RFIs are exported by a bot-controlled Chrome.
 
@@ -111,10 +119,10 @@ Read only. All come from the VM's synced copy of the project folder, except Form
 |---|---|---|---|---|
 | Project Manifest and Profile | From the synced folder. | Yes | From ACC through the API. | Webapp |
 | Coordination Schedule | From the synced folder. | Yes | From ACC through the API. | Webapp |
-| Issued drawing PDFs | Dated by the VM's file date. These dates become Actual Finish dates. | Yes | Could be dated by Forma's own upload date, the preferred option. It can differ by minutes or days, so the lead decides. | Webapp |
+| Issued drawing PDFs | Dated by the VM's file date. These dates become Actual Finish dates. | Yes | Could be dated by Forma's own upload date, the preferred option. It can differ by minutes or days, so the client decides. | Webapp |
 | RFI and submittal folders | The folder an RFI sits in is its status. | Yes | The same folders, read through the API. | Webapp |
 | Forma issues and RFIs | Chrome on the VM exports Excel files. | Yes | Autodesk's Issues and RFIs APIs. No Chrome. | Webapp |
-| Clash report | The newest export in the Clash Reports folder: the morning Navisworks step's, or one the lead saved. | Yes | The step's export sent from the VM to the webapp. The lead's own exports read from ACC through the API. | Webapp |
+| Clash report | The newest export in the Clash Reports folder: the morning Navisworks step's, or one the client saved. | Yes | The step's export sent from the VM to the webapp. The client's own exports read from ACC through the API. | Webapp |
 | New laser scans | In the synced scan folder. | Yes | From ACC through the API. | Webapp |
 | 4D approval files | Written by chats, read by the morning Navisworks step. | Yes | Written by the webapp's chat, sent with the morning Navisworks job. | Webapp |
 | RFI sweep state file | Written by the morning AI sweep on the VM. The bot reads its Procore items. | Yes | Both run in the webapp, so the bot reads it there. | Webapp |
@@ -125,15 +133,17 @@ Read only. All come from the VM's synced copy of the project folder, except Form
 
 ## Find changes and plan the updates
 
+The bot compares each model with its last version and works out which records to update.
+
 *Repo, In git*
 
-A Python program. For each project it finds what changed in the model, matches drawings to work packages and updates the spreadsheets. It also builds the clash list, the issue-tracker and task-board data and a BES / Triad feed, checks new scans, and applies approved 4D changes in the morning. Results that fail its safety checks are held for the lead.
+A Python program. For each project it finds what changed in the model, matches drawings to work packages and updates the spreadsheets. It also builds the clash list, the issue-tracker and task-board data and a BES / Triad feed, checks new scans, and applies approved 4D changes in the morning. Results that fail its safety checks are held for the client.
 
 - `hcg-bim-assistant`: the repo (main branch: master)
 - `runner.json`: its settings, only on the VM
 - `HCGBIM.OpenGuard add-in`: small Revit add-in that avoids one known error when opening a model
 
-**Today:** A Python program on the VM. Each run reads the models, matches drawings to work packages, updates spreadsheets and pages, builds the clash, issue and 4D feeds, and holds risky results for the lead.
+**Today:** A Python program on the VM. Each run reads the models, matches drawings to work packages, updates spreadsheets and pages, builds the clash, issue and 4D feeds, and holds risky results for the client.
 
 **What could change:** The bot's thinking moves to the webapp. The VM keeps only the Revit and Navisworks steps. The webapp runs the same code on Chicago time, sends model jobs to the VM over the private link and gets the results back. Its memory (orchestrator.db) and settings (runner.json) move with the same values.
 
@@ -154,13 +164,15 @@ A Python program. For each project it finds what changed in the model, matches d
 
 ## Compare scans and build 4D views
 
+Compares laser scans with the model to measure progress, and builds the 4D and 5D views.
+
 *Repo tools, In git*
 
-The bot's last two steps: a 4D timeline snapshot, and the 4D refresh, which also writes the 5D quantity workbooks. The scan page is updated by hand after the lead approves a scan.
+The bot's last two steps: a 4D timeline snapshot, and the 4D refresh, which also writes the 5D quantity workbooks. The scan page is updated by hand after the client approves a scan.
 
 - `Nova102-Scan-Tracker/tools`: scripts in the scan page's repo
 
-**Today:** When a new scan lands, the bot exports the conduits from Revit, compares the scan with them on a 1.5 cm grid, and holds the result for the lead. The 4D viewer and the 5D quantity workbook refresh after each run.
+**Today:** When a new scan lands, the bot exports the conduits from Revit, compares the scan with them on a 1.5 cm grid, and holds the result for the client. The 4D viewer and the 5D quantity workbook refresh after each run.
 
 **What could change:** The scan check and the 4D and 5D tools run in the webapp. Only the Revit conduit export and the Navisworks timeline snapshot stay on the VM. The VM exports the conduits. The webapp gets the scan from ACC through the API and runs the same comparison. The Scan Tracker page stays a by-hand step after approval.
 
@@ -177,6 +189,8 @@ The bot's last two steps: a 4D timeline snapshot, and the 4D refresh, which also
 - Scan files are big. Measure peak memory before sizing the webapp's worker.
 
 ## Save the files to ACC
+
+The bot saves the updated spreadsheets and Navisworks files to ACC, with backups first.
 
 *Service, Outside*
 
@@ -211,23 +225,25 @@ The real project folder in Autodesk's cloud, synced to the VM. The bot writes:
 
 - Write rights for our app only where the bot writes today.
 
-## Alert the lead about each run
+## Alert the client about each run
+
+Emails the client, and shows a pop-up on the VM, when a run has a problem or finishes.
 
 *Service, Outside*
 
 Progress and problems, during each run.
 
-- `Amazon SES`: email to the lead, from the bot email address
+- `Amazon SES`: email to the client, from the bot email address
 - `Windows pop-ups`: on the VM
 - `Teams`: not used: the Teams link in runner.json is empty
 
-**Today:** During each run the bot emails the lead through Amazon's email and shows pop-ups on the VM. Teams is switched off.
+**Today:** During each run the bot emails the client through Amazon's email and shows pop-ups on the VM. Teams is switched off.
 
 **What could change:** The webapp sends the same alert emails. The run-finished pop-up needs a new home. The same emails through Amazon's email, from the same sender to the same person. In the suggested setup nobody opens the VM, so the pop-up's job moves to the webapp.
 
 | Part | Currently | Can be optimized | Suggestion | Tag |
 |---|---|---|---|---|
-| Alert emails | When a run is blocked, slow, gives up, fails or finishes: an email from the bot email address to the lead. | Yes | The same emails, sent by the webapp. | Webapp |
+| Alert emails | When a run is blocked, slow, gives up, fails or finishes: an email from the bot email address to the client. | Yes | The same emails, sent by the webapp. | Webapp |
 | Windows pop-ups | On the VM's screen when a run is blocked, slow, gives up, fails or finishes. A click on the finished one opens the summary. | Yes | Suggested: a webapp notification on phone or browser. The finished one opens the summary. | Webapp |
 | Progress lines | A file on the VM. | Yes | The webapp's run status. | Webapp |
 
@@ -236,6 +252,8 @@ Progress and problems, during each run.
 - Amazon email access for the webapp.
 
 ## Publish the web pages
+
+The bot sends fresh data to 7 of the 10 web pages after each run.
 
 *Repos ×10, In git*
 
@@ -250,7 +268,7 @@ Each page is its own repo. New data saved to its main branch goes live within mi
 - `Nova102-4D-Viewer`: 3D model with a timeline, refreshed by the bot
 - `Nova102-Action-Hub`: BES and Triad to-do lists, Triad sign-off board, Lead Queue, 4D view. Updated by hand. A bot step for its Triad records exists, not yet seen running. Emails are drafts only for now
 - `Nova102-Scan-Tracker`: built vs planned, from scans. Updated by hand
-- `Nova102-RFI-Sweep`: answered questions. Updated by hand from the lead's PC
+- `Nova102-RFI-Sweep`: answered questions. Updated by hand from the client's PC
 
 **Today:** 10 pages, each its own GitHub repo, put online by Cloudflare behind a sign-in. The bot pushes new data into 7 of them and checks its Impact Dashboard updates went live. The rest are kept by hand.
 
@@ -264,19 +282,23 @@ Each page is its own repo. New data saved to its main branch goes live within mi
 
 ## Receive alerts and decide
 
+The client reads the run alerts and decides what happens next.
+
 *People*
 
 The only person on the bot's alert list (runner.json).
 
 **Today:** The only person on the bot's alert list.
 
-**What could change:** The lead keeps getting the same alerts at the same address. The same, now sent by the webapp.
+**What could change:** The client keeps getting the same alerts at the same address. The same, now sent by the webapp.
 
 | Part | Currently | Can be optimized | Suggestion | Tag |
 |---|---|---|---|---|
-| Alert list | The lead only, set in runner.json on the VM. | Yes | The same list, kept in the webapp's settings. | Webapp |
+| Alert list | The client only, set in runner.json on the VM. | Yes | The same list, kept in the webapp's settings. | Webapp |
 
 ## Host the pages and sign-in
+
+Cloudflare hosts the web pages, their sign-in, databases and files.
 
 *Service, Outside*
 
@@ -298,6 +320,8 @@ Puts each page online and checks who may open it (emailed code or Microsoft logi
 | Page libraries | Some pages load code from public sites (jsDelivr, cdnjs). | No | No change needed. |  |
 
 ## Use the pages
+
+HCG's team and leaders use the pages, and BES and Triad see only their own items.
 
 *People*
 

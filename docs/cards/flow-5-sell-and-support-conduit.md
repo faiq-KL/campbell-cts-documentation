@@ -4,6 +4,8 @@ Every card in this flow, in full. The [plan page](https://faiq-kl.github.io/camp
 
 ## Make the conduit product
 
+conduit, the same Revit and Navisworks tools the bot uses, sold to other companies.
+
 *Repo, In git*
 
 The same Revit and Navisworks tools the bot uses, sold to other companies.
@@ -13,6 +15,8 @@ The same Revit and Navisworks tools the bot uses, sold to other companies.
 Not explored yet.
 
 ## Deliver the skills
+
+A script sends conduit's AI skills here, and Cowork shares them once merged.
 
 *Repo, In git*
 
@@ -24,9 +28,11 @@ Not explored yet.
 
 ## Build a release
 
+Builds and signs the installers on the client's PC so Windows trusts them.
+
 *Repo tools, In git*
 
-Builds the installers on the lead's PC and signs them with a key only that PC has, so Windows trusts them.
+Builds the installers on the client's PC and signs them with a key only that PC has, so Windows trusts them.
 
 - `conduit/build/Build-Release.ps1`: builds a release
 - `build/Build-Addins.ps1`: builds and signs the Revit add-ins
@@ -38,6 +44,8 @@ Not explored yet.
 
 ## Build a release in the cloud
 
+The other way to build: GitHub builds the installers on a clean machine.
+
 *Scheduler, In git*
 
 The other way to build: GitHub builds on a clean machine.
@@ -47,6 +55,8 @@ The other way to build: GitHub builds on a clean machine.
 Not explored yet.
 
 ## Share skills across the company
+
+Cowork shares the skills with everyone in the company's Claude account.
 
 *Skills, Claude account*
 
@@ -58,9 +68,11 @@ Not explored yet.
 
 ## Upload a release
 
+The client uploads each new release to Keygen by hand.
+
 *Repo tool, In git*
 
-The lead runs it by hand, with a Keygen token, to upload each release.
+The client runs it by hand, with a Keygen token, to upload each release.
 
 - `conduit/tools/publish-release.ps1`
 
@@ -68,9 +80,11 @@ Not explored yet.
 
 ## Manage licences and downloads
 
+An online service that holds licence keys and release files.
+
 *Service, Outside*
 
-Online licensing service. Holds licence keys and release files. Licence events email the lead through the website.
+Online licensing service. Holds licence keys and release files. Licence events email the client through the website.
 
 - `Keygen`
 
@@ -78,15 +92,19 @@ Not explored yet.
 
 ## Send the support digest
 
+A daily summary of the website's support chats.
+
 *Scheduler, In git*
 
 A daily summary of the website's support chats.
 
-- `support-digest (Netlify function)` (Daily 12:00 UTC (06:00 or 07:00 CT, depending on daylight saving)): Emails the summary to the lead.
+- `support-digest (Netlify function)` (Daily 12:00 UTC (06:00 or 07:00 CT, depending on daylight saving)): Emails the summary to the client.
 
 Not explored yet.
 
 ## Run the company website
+
+campbellcts.com on Netlify: product pages, downloads and an AI support chat.
 
 *Repo, In git*
 
@@ -100,6 +118,8 @@ Not explored yet.
 
 ## Download and use conduit
 
+Customers download conduit with a licence key, and testers get a free trial.
+
 *People*
 
 Customers download with a licence key and can use the support chat. Testers get a tester kit and a free trial key.
@@ -107,6 +127,8 @@ Customers download with a licence key and can use the support chat. Testers get 
 Not explored yet.
 
 ## Power the support chat
+
+The outside services the website's support chat uses.
 
 *Service, Outside*
 
@@ -119,6 +141,8 @@ Used by the support chat.
 Not explored yet.
 
 ## Handle escalations and alerts
+
+The client gets support escalations, licence alerts and the daily digest.
 
 *People*
 
