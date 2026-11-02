@@ -145,7 +145,7 @@ People working with Claude in the Nova BIM Schedule and VKU projects. Shared cha
 | Approvals | Typed in chat. Claude then carries out the exact approved action through the VM, such as the bot's commands. | Claude + VM | Typed in the webapp's chat and recorded with name and time. Only the lead or the stand-in can approve. The webapp carries them out. | Webapp |
 | Manual runs | Only when the lead asks. | Claude + VM | From the webapp's chat, same rule. | Webapp |
 | The deputy and teammates | Their own Claude, on their own computers. | Claude account | Their own sign-in to the webapp. They keep their own Claude for other work. | Webapp |
-| Claude app extras (phone app, voice, artifacts) | In the Claude app. | Claude account | The lead lists what they use, so the webapp can match it. | To explore |
+| Claude app extras (phone app, voice, artifacts) | In the Claude app. | Claude account | Suggested: the webapp's chat works in a phone's browser, takes files and images, and shows what Claude makes. Voice is added only if the lead uses it. | To explore |
 | Task Board claims | Before changing a shared file, the task is claimed on the Task Board, through a browser signed in as a person, or by a person by hand. | Browser | Claude claims it through the portal's API, with its own sign-in. Needs a small portal change. | Webapp |
 | Other chat work | Issue drafts for the lead to approve. | Claude + VM | The same work in the webapp's chat. | Webapp |
 | Run-time rule | Shared changes are kept out of the bot's run times (09:00 to 10:15 and 16:00 to 17:15). | Claude + VM | The same rule, checked by the webapp before any shared write. | Webapp |

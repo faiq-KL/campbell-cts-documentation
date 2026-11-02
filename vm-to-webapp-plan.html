@@ -752,9 +752,9 @@ const PLAN = {
     },
     G3: {
       verdict: "moves", size: "S", where: "The webapp, with the heartbeat outside it",
-      lead: "The two watchdogs run in the webapp. The heartbeat must stay outside the webapp.",
+      lead: "The two watchdogs run in the webapp. The heartbeat stays outside it, suggested as a small task in the lead's Claude account that checks the webapp's status page.",
       today: "The sweep watchdog (09:05) and the run watchdog (11:40, 17:40) work through the VM. The heartbeat (12:35, 19:35) runs in Claude's cloud and alerts the lead by push and email.",
-      plan: "The same checks, in the webapp. The heartbeat keeps watching from outside.",
+      plan: "The same checks, in the webapp. The heartbeat keeps watching from outside, suggested as a small task in the lead's Claude account that checks the webapp's status page.",
       parts: [
         ["Sweep watchdog (09:05)", "Checks the sweep's run in Claude's task list, its files on the VM and its note in the Claude Project. Emails the lead only if something is wrong.", "The same checks, in the webapp.", "moves", "Claude + VM", "Webapp"],
         ["Run watchdog (11:40 and 17:40)", "Reads the run log, the portal's GitHub history and the VM's timer. Emails the lead only if something is wrong.", "The same, with the webapp's schedule in place of the timer.", "moves", "Claude + VM", "Webapp"],
@@ -860,7 +860,7 @@ const PLAN = {
       plan: "Unchanged.",
       parts: [
         ["Emails and push", "Summaries and alerts by email, plus a phone push from the heartbeat.", "No change needed.", "same", "Email", "Email"],
-        ["Job notices", "Claude sends the lead each job's closing message as a notice by email. The heartbeat's notice is its alert, by push and email.", "To explore: the heartbeat can keep Claude's notice. The other jobs' notices need a new place, such as a webapp notification.", "open", "Claude account", "To explore"]
+        ["Job notices", "Claude sends the lead each job's closing message as a notice by email. The heartbeat's notice is its alert, by push and email.", "Suggested: a webapp notification for each job's closing message, on phone or browser. The heartbeat keeps Claude's push and email.", "open", "Claude account", "To explore"]
       ]
     }
   },
@@ -941,7 +941,7 @@ const PLAN = {
         ["Approvals", "Typed in chat. Claude then carries out the exact approved action through the VM, such as the bot's commands.", "Typed in the webapp's chat and recorded with name and time. Only the lead or the stand-in can approve. The webapp carries them out.", "moves", "Claude + VM", "Webapp"],
         ["Manual runs", "Only when the lead asks.", "From the webapp's chat, same rule.", "moves", "Claude + VM", "Webapp"],
         ["The deputy and teammates", "Their own Claude, on their own computers.", "Their own sign-in to the webapp. They keep their own Claude for other work.", "moves", "Claude account", "Webapp"],
-        ["Claude app extras (phone app, voice, artifacts)", "In the Claude app.", "The lead lists what they use, so the webapp can match it.", "open", "Claude account", "To explore"],
+        ["Claude app extras (phone app, voice, artifacts)", "In the Claude app.", "Suggested: the webapp's chat works in a phone's browser, takes files and images, and shows what Claude makes. Voice is added only if the lead uses it.", "open", "Claude account", "To explore"],
         ["Task Board claims", "Before changing a shared file, the task is claimed on the Task Board, through a browser signed in as a person, or by a person by hand.", "Claude claims it through the portal's API, with its own sign-in. Needs a small portal change.", "moves", "Browser", "Webapp"],
         ["Other chat work", "Issue drafts for the lead to approve.", "The same work in the webapp's chat.", "moves", "Claude + VM", "Webapp"],
         ["Run-time rule", "Shared changes are kept out of the bot's run times (09:00 to 10:15 and 16:00 to 17:15).", "The same rule, checked by the webapp before any shared write.", "moves", "Claude + VM", "Webapp"]
@@ -1009,12 +1009,12 @@ const PLAN = {
       verdict: "moves", size: "S", where: "The webapp, plus one alarm outside it",
       lead: "The same alarms, now from the webapp, plus one independent alarm outside it.",
       today: "The run watchdog, the sweep watchdog, the VKU check, the heartbeat (push), and the bot's emails and pop-ups. They only report.",
-      plan: "The watchers and the bot's alerts come from the webapp. The heartbeat stays outside the webapp.",
+      plan: "The watchers and the bot's alerts come from the webapp. The heartbeat stays outside the webapp, suggested as a small task in the lead's Claude account that checks the webapp's status page.",
       parts: [
         ["AI watchers", "In Claude, using the VM.", "In the webapp.", "moves", "Claude + VM", "Webapp"],
         ["The bot's alert emails", "From the VM.", "From the webapp.", "moves", "VM", "Webapp"],
         ["Heartbeat", "In Claude's cloud.", "Suggested: a small task in the lead's Claude account that checks the webapp's status page, with the same push and email.", "open", "Claude cloud", "To explore"],
-        ["The bot's pop-ups", "On the VM's screen, during each run.", "Suggested: a webapp notification (see Flow 1).", "open", "VM", "To explore"],
+        ["The bot's pop-ups", "On the VM's screen, during each run.", "Suggested: a webapp notification on phone or browser.", "open", "VM", "To explore"],
         ["What-to-do lines in the alarms", "Each watcher's email says what to do, such as remote desktop into the VM, read the progress log, or start the VM in Amazon's console.", "Could point to the webapp instead of the VM. The lead checks the new wording.", "moves", "Claude + VM", "Webapp"]
       ]
     },
@@ -1055,7 +1055,7 @@ const PLAN = {
       today: "An old copy of the bot and paused copies of the jobs on the lead's PC, switched on only if the VM can't run. Never both.",
       plan: "The bot and the jobs now live in the webapp, so the PC can't stand in for them, and keeping it current is a burden. Suggested: remove it and rely on the hosting backups and a quick restore. Risk: a long webapp outage means no runs until it's restored.",
       parts: [
-        ["The PC's bot and its paused job copies", "Kept as the last resort.", "Suggested: remove it.", "open", "Lead's PC", "To explore"]
+        ["The PC's bot and its paused job copies", "Kept as the last resort.", "Suggested: remove it, and rely on the hosting's backups and a quick restore.", "open", "Lead's PC", "To explore"]
       ]
     },
     RERUN: {

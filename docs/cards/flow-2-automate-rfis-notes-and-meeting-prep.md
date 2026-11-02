@@ -74,7 +74,7 @@ Timers for three checks. They raise an alarm by email or phone push if something
 
 **Today:** The sweep watchdog (09:05) and the run watchdog (11:40, 17:40) work through the VM. The heartbeat (12:35, 19:35) runs in Claude's cloud and alerts the lead by push and email.
 
-**What could change:** The two watchdogs run in the webapp. The heartbeat must stay outside the webapp. The same checks, in the webapp. The heartbeat keeps watching from outside.
+**What could change:** The two watchdogs run in the webapp. The heartbeat stays outside it, suggested as a small task in the lead's Claude account that checks the webapp's status page. The same checks, in the webapp. The heartbeat keeps watching from outside, suggested as a small task in the lead's Claude account that checks the webapp's status page.
 
 | Part | Currently | Runs on now | Can be optimized | Would run on |
 |---|---|---|---|---|
@@ -258,4 +258,4 @@ Get the summaries and alerts by email, plus a phone push from the heartbeat.
 | Part | Currently | Runs on now | Can be optimized | Would run on |
 |---|---|---|---|---|
 | Emails and push | Summaries and alerts by email, plus a phone push from the heartbeat. | Email | No change needed. | Email |
-| Job notices | Claude sends the lead each job's closing message as a notice by email. The heartbeat's notice is its alert, by push and email. | Claude account | To explore: the heartbeat can keep Claude's notice. The other jobs' notices need a new place, such as a webapp notification. | To explore |
+| Job notices | Claude sends the lead each job's closing message as a notice by email. The heartbeat's notice is its alert, by push and email. | Claude account | Suggested: a webapp notification for each job's closing message, on phone or browser. The heartbeat keeps Claude's push and email. | To explore |

@@ -16,14 +16,14 @@ They only report. None of them fixes anything.
 
 **Today:** The run watchdog, the sweep watchdog, the VKU check, the heartbeat (push), and the bot's emails and pop-ups. They only report.
 
-**What could change:** The same alarms, now from the webapp, plus one independent alarm outside it. The watchers and the bot's alerts come from the webapp. The heartbeat stays outside the webapp.
+**What could change:** The same alarms, now from the webapp, plus one independent alarm outside it. The watchers and the bot's alerts come from the webapp. The heartbeat stays outside the webapp, suggested as a small task in the lead's Claude account that checks the webapp's status page.
 
 | Part | Currently | Runs on now | Can be optimized | Would run on |
 |---|---|---|---|---|
 | AI watchers | In Claude, using the VM. | Claude + VM | In the webapp. | Webapp |
 | The bot's alert emails | From the VM. | VM | From the webapp. | Webapp |
 | Heartbeat | In Claude's cloud. | Claude cloud | Suggested: a small task in the lead's Claude account that checks the webapp's status page, with the same push and email. | To explore |
-| The bot's pop-ups | On the VM's screen, during each run. | VM | Suggested: a webapp notification (see Flow 1). | To explore |
+| The bot's pop-ups | On the VM's screen, during each run. | VM | Suggested: a webapp notification on phone or browser. | To explore |
 | What-to-do lines in the alarms | Each watcher's email says what to do, such as remote desktop into the VM, read the progress log, or start the VM in Amazon's console. | Claude + VM | Could point to the webapp instead of the VM. The lead checks the new wording. | Webapp |
 
 ## The lead, or the stand-in
@@ -90,7 +90,7 @@ Last resort: switch on the PC's Daily run task and paused job copies. Never both
 
 | Part | Currently | Runs on now | Can be optimized | Would run on |
 |---|---|---|---|---|
-| The PC's bot and its paused job copies | Kept as the last resort. | Lead's PC | Suggested: remove it. | To explore |
+| The PC's bot and its paused job copies | Kept as the last resort. | Lead's PC | Suggested: remove it, and rely on the hosting's backups and a quick restore. | To explore |
 
 ## Re-run a step
 
