@@ -8,7 +8,7 @@ What we suggest for each flow, and what we need to get there. For how each flow 
 - **One design:** we plan only the finished setup, not a before and after. Approvals and tests come before it goes live.
 - **API first:** if an official API exists, we use it. A desktop program stays only where no API exists.
 
-## Flow 1: Update project data
+## Flow 1: Track model changes and update schedules
 
 ### What we suggest
 
@@ -35,7 +35,7 @@ For later: the bot's Revit reading could move to Autodesk's online Revit (Automa
 6. **Access for the webapp:** Amazon email, and a Cloudflare key for the live check.
 7. **Task Board:** The lead's OK and a small portal change, so Claude can claim tasks with its own sign-in.
 
-## Flow 2: Run scheduled AI jobs
+## Flow 2: Automate RFIs, notes and meeting prep
 
 ### What we suggest
 
@@ -62,7 +62,7 @@ Not carried over: the 2 finished acting-lead digests and the 3 finished one-off 
 7. **From the lead's Claude account:** the notes, the VKU notes, Claude's project memory and the whats-on-my-plate skill. The lead tells us where the skills starter folder is.
 8. **From the lead:** a screenshot of their Connectors page, whether anything uses Google Drive, and whether Greenhead (pinned in their Claude account) is part of this system.
 
-## Flow 3: Review and approve
+## Flow 3: Review, approve and carry out
 
 ### What we suggest
 
@@ -85,7 +85,7 @@ Looked at and not suggested: filling the Lead Queue automatically, a stand-in ro
 4. **Autodesk and Procore:** the connections from Flows 1 and 2, including Autodesk's Issues API for Forma issues.
 5. **The tracker sync script** saved into a repo, for the tracker notes.
 
-## Flow 4: Respond to incidents
+## Flow 4: Catch and fix failed runs
 
 ### What we suggest
 

@@ -2,9 +2,9 @@
 
 Each flow step by step, as production runs now. The [plan page](https://faiq-kl.github.io/campbell-cts-documentation/vm-to-webapp-plan.html) shows each flow's diagram, and [Words used](words-used.md) explains the terms.
 
-## Flow 1: Update project data
+## Flow 1: Track model changes and update schedules
 
-Twice each weekday, at 09:00 and 16:00 CT, the bot reads the 3D models and project files, then updates the schedule spreadsheets and the web pages. Anything that fails a safety check is held for the lead.
+Twice each weekday the bot reads each 3D model, finds what changed since the last run, and updates the schedule spreadsheets and web pages. Each morning it also checks the trades' combined models for clashes, and holds anything risky for the lead.
 
 1. A Windows timer on the VM starts the bot (**hcg-bim-assistant**).
 2. The bot opens each 3D model through **conduit**, read only, and finds what changed.
@@ -13,7 +13,7 @@ Twice each weekday, at 09:00 and 16:00 CT, the bot reads the 3D models and proje
 5. It updates 7 of the 10 web pages, and Cloudflare puts them online. The other 3 are updated by hand (the Action Hub also has a newer bot step).
 6. Results that fail its safety checks are held for the lead instead of written. It emails the lead when a run is blocked, slow, failed or finished, and shows pop-ups on the VM.
 
-## Flow 2: Run scheduled AI jobs
+## Flow 2: Automate RFIs, notes and meeting prep
 
 AI jobs run on timers all day. They file RFIs and submittals, keep the project notes, prepare meetings and email summaries, while three watchers check that everything ran.
 
@@ -23,7 +23,7 @@ AI jobs run on timers all day. They file RFIs and submittals, keep the project n
 4. It **emails** the lead and the deputy, and no one else.
 5. The three watchers only check for problems. Their alarms start Flow 4.
 
-## Flow 3: Review and approve
+## Flow 3: Review, approve and carry out
 
 Anything unusual waits for a person. The lead decides in chat, Triad signs off schedule cards, and the AI then carries out exactly what was approved.
 
@@ -34,7 +34,7 @@ Anything unusual waits for a person. The lead decides in chat, Triad signs off s
 5. The lead's rulings go into the rule book, so future jobs follow them.
 6. Teammates start their day in chat, and claim tasks on the Task Board before changing shared files.
 
-## Flow 4: Respond to incidents
+## Flow 4: Catch and fix failed runs
 
 When a run or a job fails, a watcher alerts the lead. The lead finds the cause on the VM, then restarts or re-runs what failed, with a backup PC as the last resort.
 

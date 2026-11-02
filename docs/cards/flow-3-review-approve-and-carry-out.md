@@ -1,4 +1,4 @@
-# Flow 3: Review and approve
+# Flow 3: Review, approve and carry out
 
 Every card in this flow, in full. The [plan page](https://faiq-kl.github.io/campbell-cts-documentation/vm-to-webapp-plan.html) shows the diagram.
 
@@ -20,11 +20,11 @@ Unusual results the bot or AI did not write. Listed in run summaries, notes and 
 
 **What could change:** Held items work as today. The lead approves in the webapp's chat and the webapp releases them. The lead approves in chat, as today. The webapp runs the same release commands and records who approved and when.
 
-| Part | Currently | Can be optimized |
-|---|---|---|
-| Release a held register change (approve-regression) | Run on the VM. | Run by the webapp. |
-| Release held page data (site-feed-approve) | Run on the VM. | Run by the webapp. |
-| Release a held scan result (scan-approve) | Run on the VM. | Run by the webapp. |
+| Part | Currently | Runs on now | Can be optimized | Would run on |
+|---|---|---|---|---|
+| Release a held register change (approve-regression) | Run on the VM. | VM | Run by the webapp. | Webapp |
+| Release held page data (site-feed-approve) | Run on the VM. | VM | Run by the webapp. | Webapp |
+| Release a held scan result (scan-approve) | Run on the VM. | VM | Run by the webapp. | Webapp |
 
 ## Project Lead and team
 
@@ -36,10 +36,9 @@ The lead decides (the deputy has stood in). VKU has its own small team.
 
 **What could change:** The same people decide in the same way. Unchanged. A stand-in is still set by a written note. Each person signs in to the webapp, so only the lead or the stand-in can approve.
 
-| Part | Currently | Can be optimized |
-|---|---|---|
-| Stand-in lead | A written note. | No change needed. |
-| A stand-in role set for a date range | Not done today. | Not suggested. |
+| Part | Currently | Runs on now | Can be optimized | Would run on |
+|---|---|---|---|---|
+| Stand-in lead | A written note. | People | No change needed. | People |
 
 ## Triad signers
 
@@ -51,9 +50,9 @@ Six people at Triad who approve, change or reject schedule cards.
 
 **What could change:** The six Triad signers keep using the same sign-off page. Unchanged.
 
-| Part | Currently | Can be optimized |
-|---|---|---|
-| Triad signers | The sign-off page. | No change needed. |
+| Part | Currently | Runs on now | Can be optimized | Would run on |
+|---|---|---|---|---|
+| Triad signers | The sign-off page. | Cloudflare | No change needed. | Cloudflare |
 
 ## Lead Queue
 
@@ -69,10 +68,9 @@ One page listing every decision waiting for the lead. The lead approves, changes
 
 **What could change:** The Lead Queue stays as it is, filled by hand. Unchanged, filled from the webapp's chat.
 
-| Part | Currently | Can be optimized |
-|---|---|---|
-| lead/seed.json | Filled by hand. | No change needed. |
-| Filling it automatically | Not done today. | Not suggested. |
+| Part | Currently | Runs on now | Can be optimized | Would run on |
+|---|---|---|---|---|
+| lead/seed.json | Filled by hand. | By hand | No change needed. | By hand |
 
 ## Sign-off board
 
@@ -86,9 +84,9 @@ Saves each Triad decision with the signer's email. It never changes the schedule
 
 **What could change:** The sign-off board stays as it is. Sign-offs are applied only after the lead approves. Unchanged, applied from the webapp's chat.
 
-| Part | Currently | Can be optimized |
-|---|---|---|
-| Applying sign-offs | By Claude in chat, after the lead approves. | The same, in the webapp's chat. |
+| Part | Currently | Runs on now | Can be optimized | Would run on |
+|---|---|---|---|---|
+| Applying sign-offs | By Claude in chat, after the lead approves. | Claude + VM | The same, in the webapp's chat. | Webapp |
 
 ## Work done when asked
 
@@ -108,10 +106,10 @@ Not daily. Started on request, each following its rule-book procedure.
 
 **What could change:** Work done when asked runs in the webapp's chat. Revit and Navisworks work reaches the Windows computer through conduit. The same procedures from the webapp's chat, through conduit and the official APIs.
 
-| Part | Currently | Can be optimized |
-|---|---|---|
-| BIM-11, BIM-12, BIM-13 | Navisworks and Revit on the VM, through conduit. | Through conduit on the Windows computer. |
-| BIM-04, BIM-08, BIM-10, Forma correspondence | Chats working through the VM. | Autodesk's, Procore's and Trello's APIs. |
+| Part | Currently | Runs on now | Can be optimized | Would run on |
+|---|---|---|---|---|
+| BIM-11, BIM-12, BIM-13 | Navisworks and Revit on the VM, through conduit. | VM | Through conduit on the Windows computer. | Windows computer |
+| BIM-04, BIM-08, BIM-10, Forma correspondence | Chats working through the VM. | Claude + VM | Autodesk's, Procore's and Trello's APIs. | Webapp |
 
 **Watch out:**
 
@@ -134,13 +132,13 @@ People working with Claude in the Nova BIM Schedule and VKU projects. Shared cha
 
 **What could change:** Chat moves into the webapp for the lead, the deputy and the teammates. A chat page in the webapp, on the same engine as the jobs, with the same words and procedures, such as 'start my tasks for the day' and 'Approve' with the item's number. Each person signs in. Approvals are recorded with name and time.
 
-| Part | Currently | Can be optimized |
-|---|---|---|
-| Start my tasks for the day | In the Claude app. | In the webapp's chat. |
-| Approvals | Typed in chat, then Claude runs the bot's commands on the VM. | Typed in the webapp's chat, then the webapp carries them out. |
-| Manual runs | Only when the lead asks. | From the webapp's chat, same rule. |
-| The deputy and teammates | Their own Claude, on their own computers. | Their own sign-in to the webapp. They keep their own Claude for other work. |
-| Claude app extras (phone app, voice, artifacts) | In the Claude app. | The lead lists what they use, so the webapp can match it. |
+| Part | Currently | Runs on now | Can be optimized | Would run on |
+|---|---|---|---|---|
+| Start my tasks for the day | In the Claude app. | Claude account | In the webapp's chat. | Webapp |
+| Approvals | Typed in chat, then Claude runs the bot's commands on the VM. | Claude + VM | Typed in the webapp's chat, then the webapp carries them out. | Webapp |
+| Manual runs | Only when the lead asks. | Claude + VM | From the webapp's chat, same rule. | Webapp |
+| The deputy and teammates | Their own Claude, on their own computers. | Claude account | Their own sign-in to the webapp. They keep their own Claude for other work. | Webapp |
+| Claude app extras (phone app, voice, artifacts) | In the Claude app. | Claude account | The lead lists what they use, so the webapp can match it. | To explore |
 
 **Chat options, as weighed**
 
@@ -168,13 +166,13 @@ Only what was approved is written.
 
 **What could change:** Approved changes are written from the webapp, only after approval, outside run times, with the same safety steps. The same changes from the webapp's chat, through Autodesk's API.
 
-| Part | Currently | Can be optimized |
-|---|---|---|
-| Coordination Schedule changes | From chats using the VM. | From the webapp's chat, through the API. |
-| 4D approval files | On the VM. | Written by the webapp's chat, sent with the morning Navisworks job. |
-| Tracker shared notes | tracker_sync_cf.py on the VM. | The rescued script, run by the webapp. |
-| Forma issues | Clicked in Forma's 3D viewer, then edited with a copied sign-in token. | Autodesk's Issues API, still created as drafts. |
-| Replies to BES, ARCO, CMMC, Triad | Drafted by Claude, sent by the lead after checking. | No change needed. |
+| Part | Currently | Runs on now | Can be optimized | Would run on |
+|---|---|---|---|---|
+| Coordination Schedule changes | From chats using the VM. | Claude + VM | From the webapp's chat, through the API. | Webapp |
+| 4D approval files | On the VM. | VM | Written by the webapp's chat, sent with the morning Navisworks job. | Webapp |
+| Tracker shared notes | tracker_sync_cf.py on the VM. | VM | The rescued script, run by the webapp. | Webapp |
+| Forma issues | Clicked in Forma's 3D viewer, then edited with a copied sign-in token. | Browser | Autodesk's Issues API, still created as drafts. | Webapp |
+| Replies to BES, ARCO, CMMC, Triad | Drafted by Claude, sent by the lead after checking. | Claude account | No change needed. | Webapp |
 
 **Watch out:**
 
@@ -193,10 +191,10 @@ Commands that publish what the bot held, once approved.
 
 **What could change:** The two release commands run in the webapp. The same commands, run by the webapp from chat.
 
-| Part | Currently | Can be optimized |
-|---|---|---|
-| Release held page data (site-feed-approve) | On the VM. | In the webapp. |
-| Release a held scan result (scan-approve) | On the VM. | In the webapp. |
+| Part | Currently | Runs on now | Can be optimized | Would run on |
+|---|---|---|---|---|
+| Release held page data (site-feed-approve) | On the VM. | VM | In the webapp. | Webapp |
+| Release a held scan result (scan-approve) | On the VM. | VM | In the webapp. | Webapp |
 
 ## Pages kept by hand
 
@@ -214,11 +212,10 @@ Pages, or parts of pages, the bot does not update.
 
 **What could change:** Pages kept by hand stay by hand. Their scripts run in the webapp. The same pages, kept by hand from the webapp's chat. The RFI Sweep stays on the lead's PC.
 
-| Part | Currently | Can be optimized |
-|---|---|---|
-| Scripts for the pages kept by hand | On the VM. | In the webapp. |
-| RFI Sweep | From the lead's PC. | No change needed. |
-| RFI Sweep's index on our server | Not done today. | Not suggested. |
+| Part | Currently | Runs on now | Can be optimized | Would run on |
+|---|---|---|---|---|
+| Scripts for the pages kept by hand | On the VM. | VM | In the webapp. | Webapp |
+| RFI Sweep | From the lead's PC. | Lead's PC | No change needed. | Lead's PC |
 
 ## Rule changes
 
@@ -234,6 +231,6 @@ The lead's rulings update the rule book, then the skills and workbooks are rebui
 
 **What could change:** Rule changes go into the rule book as today. The same, from the webapp's chat.
 
-| Part | Currently | Can be optimized |
-|---|---|---|
-| Rule changes | Claude proposes the rule-book change in chat. The lead approves, and the rule book is updated. | No change needed. |
+| Part | Currently | Runs on now | Can be optimized | Would run on |
+|---|---|---|---|---|
+| Rule changes | Claude proposes the rule-book change in chat. The lead approves, and the rule book is updated. | Claude account | No change needed. | Webapp |

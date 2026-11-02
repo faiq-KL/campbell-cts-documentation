@@ -1,4 +1,4 @@
-# Flow 4: Respond to incidents
+# Flow 4: Catch and fix failed runs
 
 Every card in this flow, in full. The [plan page](https://faiq-kl.github.io/campbell-cts-documentation/vm-to-webapp-plan.html) shows the diagram.
 
@@ -18,11 +18,11 @@ They only report. None of them fixes anything.
 
 **What could change:** The same alarms, now from the webapp, plus one independent alarm outside it. The watchers and the bot's alerts come from the webapp. The heartbeat stays outside the webapp.
 
-| Part | Currently | Can be optimized |
-|---|---|---|
-| AI watchers | In Claude, using the VM. | In the webapp. |
-| The bot's own alerts | From the VM. | From the webapp. |
-| Heartbeat | In Claude's cloud. | Outside the webapp (see Flow 2). |
+| Part | Currently | Runs on now | Can be optimized | Would run on |
+|---|---|---|---|---|
+| AI watchers | In Claude, using the VM. | Claude + VM | In the webapp. | Webapp |
+| The bot's own alerts | From the VM. | VM | From the webapp. | Webapp |
+| Heartbeat | In Claude's cloud. | Claude cloud | Outside the webapp (see Flow 2). | To explore |
 
 ## The lead, or the stand-in
 
@@ -34,9 +34,9 @@ Reads the alert and decides what to do.
 
 **What could change:** The lead, or the stand-in, reads the alert and decides. Unchanged.
 
-| Part | Currently | Can be optimized |
-|---|---|---|
-| Who decides | The lead or the stand-in. | No change needed. |
+| Part | Currently | Runs on now | Can be optimized | Would run on |
+|---|---|---|---|---|
+| Who decides | The lead or the stand-in. | People | No change needed. | People |
 
 ## Fix it on the VM
 
@@ -54,12 +54,12 @@ Remote desktop into the VM, then check:
 
 **What could change:** Fixing starts in the webapp. Nobody needs to open the Windows computer for daily work. Run status, logs and job results are in the webapp. Procore and Forma sign-ins are gone. Only rare Revit, Navisworks or Windows problems need someone on the Windows computer, and that is us, not the lead.
 
-| Part | Currently | Can be optimized |
-|---|---|---|
-| Progress log | A file on the VM. | The webapp's run status. |
-| Claude app and its jobs | On the VM. | Could be removed, with the jobs in the webapp. |
-| Revit and Navisworks problems | On the VM. | On the Windows computer, fixed by us when needed. |
-| Procore and Forma sign-ins | Chrome on the VM. | Could be removed, since both have APIs. |
+| Part | Currently | Runs on now | Can be optimized | Would run on |
+|---|---|---|---|---|
+| Progress log | A file on the VM. | VM | The webapp's run status. | Webapp |
+| Claude app and its jobs | On the VM. | VM | Could be removed, with the jobs in the webapp. | Not needed |
+| Revit and Navisworks problems | On the VM. | VM | On the Windows computer, fixed by us when needed. | Windows computer |
+| Procore and Forma sign-ins | Chrome on the VM. | VM | Could be removed, since both have APIs. | Not needed |
 
 ## AWS console
 
@@ -71,9 +71,9 @@ Amazon's control panel. Starts or reboots the VM if it is stopped or frozen (reg
 
 **What could change:** Restarting the Windows computer: by hand, or a webapp button. Suggested: a 'Restart Windows computer' button in the webapp, through Amazon's API, for the lead and us only, logged. The webapp itself is restarted by hand from its console, since it can't restart itself when it's down.
 
-| Part | Currently | Can be optimized |
-|---|---|---|
-| Windows computer | Amazon's console, by hand. | Suggested: a button in the webapp. |
+| Part | Currently | Runs on now | Can be optimized | Would run on |
+|---|---|---|---|---|
+| Windows computer | Amazon's console, by hand. | Amazon console | Suggested: a button in the webapp. | To explore |
 
 ## The lead's PC (backup)
 
@@ -85,9 +85,9 @@ Last resort: switch on the PC's Daily run task and paused job copies. Never both
 
 **What could change:** The lead's PC backup: suggested to drop it. The bot and the jobs now live in the webapp, so the PC can't stand in for them, and keeping it current is a burden. Suggested: drop it and rely on the hosting backups and a quick restore. Risk: a long webapp outage means no runs until it's restored.
 
-| Part | Currently | Can be optimized |
-|---|---|---|
-| The PC's bot and its 8 job copies | Kept as the last resort. | Suggested: drop. |
+| Part | Currently | Runs on now | Can be optimized | Would run on |
+|---|---|---|---|---|
+| The PC's bot and its 8 job copies | Kept as the last resort. | Lead's PC | Suggested: drop. | To explore |
 
 ## Re-run a step
 
@@ -101,6 +101,6 @@ Only when the lead asks, outside run times, through a one-off task. Each step sk
 
 **What could change:** Re-running a step stays a chat request, only when the lead asks, outside run times. From the webapp's chat, with the same skip rule.
 
-| Part | Currently | Can be optimized |
-|---|---|---|
-| Re-run a step | A one-off task on the VM. | From the webapp's chat. |
+| Part | Currently | Runs on now | Can be optimized | Would run on |
+|---|---|---|---|---|
+| Re-run a step | A one-off task on the VM. | VM | From the webapp's chat. | Webapp |
