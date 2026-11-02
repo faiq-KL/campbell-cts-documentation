@@ -20,15 +20,15 @@ Windows Task Scheduler. A manual re-run (only when the lead asks) uses a one-off
 | Part | Currently | Runs on now | Can be optimized | Would run on |
 |---|---|---|---|---|
 | Daily run | Weekdays 09:00 and 16:00 CT, plus a catch-up at sign-in. NOVA102 then VKU, each slot at most once a day. Since the clock change it likely fires an hour early. | VM | The webapp's timer, in Chicago time, with the same order and limits. A missed run starts when the webapp is back. | Webapp |
-| The 30-minute morning wait | A leftover from the lead's laptop. | VM | Could be dropped, so results arrive 30 minutes earlier. One setting brings it back. | Not needed |
+| The 30-minute morning wait | A leftover from the lead's laptop. | VM | Could be removed, so results arrive 30 minutes earlier. One setting brings it back. | Not needed |
 | Pop-up clicker | Answers Revit and Navisworks pop-ups so runs don't stall. Its script is not in git. | VM | Can stay on the Windows computer, with its script saved to a repo first. | Windows computer |
-| Desktop-session keeper | Keeps the screen session alive for Revit and Navisworks. | VM | Can stay on the Windows computer. | Windows computer |
+| Desktop-session keeper | Keeps the screen session alive for Revit and Navisworks. Its script is not in git. | VM | Can stay on the Windows computer, with its script saved to a repo first. | Windows computer |
 | Claude keep-alive | Reopens the Claude app and Chrome. | VM | Could be removed. No Claude app or Chrome would be needed on the Windows computer. | Not needed |
-| Manual runs | A one-off task, only when the lead asks. It counts as the next run time. | VM | From the webapp's chat, with the same rule. | Webapp |
+| Manual runs | A one-off task, only when the lead asks. It counts as that day's most recent run time, or as the 09:00 run if it starts before 09:00. | VM | From the webapp's chat, with the same rule. | Webapp |
 
 **Watch out:**
 
-- Since the clock change the VM's timer likely fires at 08:00 and 15:00, so the 09:00 run comes late and there is no 16:00 run. Only the lead can fix it on the VM.
+- Since the clock change the VM's timer likely fires at 08:00 and 15:00, so the 09:00 run comes late and there is no 16:00 run. Only the lead can fix it on the VM. That late run also skips the Navisworks morning step, which only runs before 13:00.
 
 ## 3D models
 
@@ -72,15 +72,14 @@ The company's software that lets the bot (and the AI) open and read Revit and Na
 
 - `conduit`: the repo
 
-**Today:** The company's software that lets Claude work inside Revit and Navisworks. On the VM it talks only to the Claude app on the same computer. OpenGuard fixes one known Revit error when the bot opens TEMP-POWER.
+**Today:** The company's software that lets the bot and Claude work inside Revit and Navisworks. On the VM the bot and the Claude app use it.
 
 **What could change:** conduit stays on the Windows computer and is reached from the webapp over the private link. The same conduit on the Windows computer, with a small network mode or bridge so the webapp's Claude and bot can reach it. It answers only inside the private link, never on the internet.
 
 | Part | Currently | Runs on now | Can be optimized | Would run on |
 |---|---|---|---|---|
-| Revit add-in and tool | Used by the Claude app on the VM. | VM | Reached from the webapp. | Windows computer |
-| Navisworks bridge | A newer local build on the VM, ahead of the repo. | VM | Copied as it is, source saved to a repo. | Windows computer |
-| OpenGuard | Fixes TEMP-POWER's error, in the run's session only. | VM | Copied as it is. | Windows computer |
+| Revit add-in and tool | The bot opens and reads the models through it. Chats in the Claude app on the VM use it too. | VM | Reached by the webapp's bot and chat over the private link. | Windows computer |
+| Navisworks bridge | Lets the bot's morning step drive Navisworks. The VM runs a newer build than the repo. | VM | Copied as it is, source saved to a repo. | Windows computer |
 | Point cloud and fabrication tools | Used by chats. | VM | Reached from the webapp. | Windows computer |
 
 **What we need:**
@@ -112,10 +111,10 @@ Read only. All come from the VM's synced copy of the project folder, except Form
 |---|---|---|---|---|
 | Project Manifest and Profile | From the synced folder. | VM | From ACC through the API. | Webapp |
 | Coordination Schedule | From the synced folder. | VM | From ACC through the API. | Webapp |
-| Issued drawing PDFs | Dated by the VM's file date. These dates become Actual Finish dates. | VM | Dated by Forma's own upload date, the preferred option. It can differ by minutes or days, so the lead has the final say. | Webapp |
+| Issued drawing PDFs | Dated by the VM's file date. These dates become Actual Finish dates. | VM | Could be dated by Forma's own upload date, the preferred option. It can differ by minutes or days, so the lead decides. | Webapp |
 | RFI and submittal folders | The folder an RFI sits in is its status. | VM | The same folders, read through the API. | Webapp |
 | Forma issues and RFIs | Chrome on the VM exports Excel files. | VM | Autodesk's Issues and RFIs APIs. No Chrome. | Webapp |
-| Clash report | Saved by the Navisworks step. | VM | Sent from the Windows computer to the webapp. | Webapp |
+| Clash report | The newest export in the Clash Reports folder: the morning Navisworks step's, or one the lead saved. | VM | The step's export sent from the Windows computer to the webapp. The lead's own exports read from ACC through the API. | Webapp |
 | New laser scans | In the synced scan folder. | VM | From ACC through the API. | Webapp |
 | 4D approval files | Written by chats, read by the morning Navisworks step. | VM | Written by the webapp's chat, sent with the morning Navisworks job. | Webapp |
 | RFI sweep state file | Written by the morning AI sweep on the VM. The bot reads its Procore items. | VM | Both run in the webapp, so the bot reads it there. | Webapp |
@@ -147,6 +146,7 @@ A Python program. For each project it finds what changed in the model, matches d
 | File dates | From the synced files. | VM | From ACC through the API. | Webapp |
 | Clock | The VM runs on Chicago time. | VM | The bot's work runs on Chicago time. | Webapp |
 | The bot's code | The VM runs its own copy, with one file that is not in GitHub (the clash export step). | VM | The webapp runs the same code from GitHub, once that file is saved there. | Webapp |
+| OpenGuard | Fixes TEMP-POWER's error, in the run's session only. | VM | Copied as it is. | Windows computer |
 
 **Watch out:**
 
@@ -169,7 +169,6 @@ The bot's last two steps: a 4D timeline snapshot, and the 4D refresh, which also
 | Conduit export | Revit on the VM. | VM | Revit on the Windows computer. | Windows computer |
 | Scan comparison | Python on the VM. | VM | The same code in the webapp, on a worker sized for the biggest scan. | Webapp |
 | Held scan result and its release | On the VM. | VM | In the webapp. | Webapp |
-| Scan Tracker page | Rebuilt by hand after approval. | By hand | Can stay by hand after approval. | By hand |
 | 4D viewer, 4D progress, 5D workbook | After each run, on the VM. | VM | In the webapp, same code and times. | Webapp |
 | Timeline snapshot | Navisworks, each morning. | VM | Navisworks on the Windows computer. | Windows computer |
 
@@ -199,7 +198,7 @@ The real project folder in Autodesk's cloud, synced to the VM. The bot writes:
 | Part | Currently | Runs on now | Can be optimized | Would run on |
 |---|---|---|---|---|
 | Coordination Schedule | 6 safety steps. | VM | The same 6 steps, through the API. | Webapp |
-| Backups | Copies before every write. | ACC | Keep as they are. | ACC |
+| Backups | The bot copies each workbook into the backups folder before every write. | VM | The same copies in the same folder, made by the webapp through the API. | Webapp |
 | Other workbooks and the run log | Model Impact Tracker, materials workbook, Lookahead, RFI and Submittal Impact Register, model inventories and diffs, clash report, 5D workbooks and the run log, written to the synced folder. | VM | The same files, written through the API. | Webapp |
 | NWF and NWD | Saved by Navisworks, uploaded by Desktop Connector. | VM | Saved by Navisworks, uploaded by the file helper through the API. | Windows computer |
 | Desktop Connector | Syncs whole project folders on the VM. | VM | Could be removed. A file helper would move only Navisworks' files. | Not needed |
@@ -229,7 +228,7 @@ Progress and problems, during each run.
 | Part | Currently | Runs on now | Can be optimized | Would run on |
 |---|---|---|---|---|
 | Alert emails | When a run is blocked, slow, gives up, fails or finishes: an email from the bot email address to the lead. | VM | The same emails, sent by the webapp. | Webapp |
-| Run-finished pop-up | On the VM's screen. A click opens the summary. | VM | Suggested: a webapp notification on phone or browser that opens the summary. | To explore |
+| Windows pop-ups | On the VM's screen when a run is blocked, slow, gives up, fails or finishes. A click on the finished one opens the summary. | VM | Suggested: a webapp notification on phone or browser. The finished one opens the summary. | To explore |
 | Progress lines | A file on the VM. | VM | The webapp's run status. | Webapp |
 
 **What we need:**
@@ -253,16 +252,15 @@ Each page is its own repo. New data saved to its main branch goes live within mi
 - `Nova102-Scan-Tracker`: built vs planned, from scans. Updated by hand
 - `Nova102-RFI-Sweep`: answered questions. Updated by hand from the lead's PC
 
-**Today:** 10 pages, each its own GitHub repo, put online by Cloudflare behind a sign-in. The bot pushes new data into 7 of them and checks each update went live. The rest are kept by hand.
+**Today:** 10 pages, each its own GitHub repo, put online by Cloudflare behind a sign-in. The bot pushes new data into 7 of them and checks its Impact Dashboard updates went live. The rest are kept by hand.
 
 **What could change:** The 10 pages stay exactly as they are. Only the bot's publishing moves to the webapp. The webapp writes the same data into the same 7 repos with the same code, through GitHub's API with its own access, and runs the same live check.
 
 | Part | Currently | Runs on now | Can be optimized | Would run on |
 |---|---|---|---|---|
 | Publishing to 7 pages | Git pushes from the VM. | VM | From the webapp, with its own GitHub access. | Webapp |
-| Live check | Build status, then the page opened with a key. | VM | The same, from the webapp. | Webapp |
+| Live check | After each Impact Dashboard update, the NOVA102 page is opened with a key and checked. The VKU page has no key, so its GitHub build status is checked instead. | VM | The same checks, from the webapp. | Webapp |
 | The pages themselves | On Cloudflare. | Cloudflare | No change needed: same addresses, look, sign-in and data. | Cloudflare |
-| Pages kept by hand | Action Hub, Scan Tracker, parts of the dashboards, RFI Sweep (the lead's PC). | By hand | Can stay by hand, from the webapp's chat. The RFI Sweep can stay on the lead's PC. | By hand |
 
 ## The lead
 
@@ -291,13 +289,12 @@ Puts each page online and checks who may open it (emailed code or Microsoft logi
 
 **Today:** Puts each page online and checks who may open it. Holds the pages' 4 small databases, including the Task Board, and 1 scan file bucket.
 
-**What could change:** Cloudflare stays as it is. The keys and scripts the bot and chats use move to the webapp. Unchanged. The live-check key and the tracker sync script move to the webapp.
+**What could change:** Cloudflare stays as it is. The keys and scripts the bot and chats use move to the webapp. Unchanged. The live-check key moves to the webapp.
 
 | Part | Currently | Runs on now | Can be optimized | Would run on |
 |---|---|---|---|---|
 | Hosting, sign-in, databases, file bucket | Cloudflare. | Cloudflare | No change needed. | Cloudflare |
 | Live-check key | On the VM. | VM | In the webapp's secure settings. | Webapp |
-| Tracker sync script (tracker_sync_cf.py) | Only on the VM, not in a repo. | VM | Rescued into a repo, run by the webapp. | Webapp |
 | Page libraries | Some pages load code from public sites (jsDelivr, cdnjs). | Cloudflare | No change needed. | Cloudflare |
 
 ## Page users
@@ -312,4 +309,4 @@ HCG's team and leadership, plus BES and Triad (their own items only). They also 
 
 | Part | Currently | Runs on now | Can be optimized | Would run on |
 |---|---|---|---|---|
-| Page users | HCG's team and leadership, plus BES and Triad, who see their own items only. | Cloudflare | No change needed. | Cloudflare |
+| Page users | HCG's team and leadership, plus BES and Triad, who see their own items only. | People | No change needed. | People |

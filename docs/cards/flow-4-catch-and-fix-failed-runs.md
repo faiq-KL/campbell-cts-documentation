@@ -21,8 +21,10 @@ They only report. None of them fixes anything.
 | Part | Currently | Runs on now | Can be optimized | Would run on |
 |---|---|---|---|---|
 | AI watchers | In Claude, using the VM. | Claude + VM | In the webapp. | Webapp |
-| The bot's own alerts | From the VM. | VM | From the webapp. | Webapp |
-| Heartbeat | In Claude's cloud. | Claude cloud | Outside the webapp (see Flow 2). | To explore |
+| The bot's alert emails | From the VM. | VM | From the webapp. | Webapp |
+| Heartbeat | In Claude's cloud. | Claude cloud | Suggested: a small task in the lead's Claude account that checks the webapp's status page, with the same push and email. | To explore |
+| The bot's pop-ups | On the VM's screen, during each run. | VM | Suggested: a webapp notification (see Flow 1). | To explore |
+| What-to-do lines in the alarms | Each watcher's email says what to do, such as remote desktop into the VM, read the progress log, or start the VM in Amazon's console. | Claude + VM | Could point to the webapp instead of the VM. The lead checks the new wording. | Webapp |
 
 ## The lead, or the stand-in
 
@@ -58,8 +60,9 @@ Remote desktop into the VM, then check:
 |---|---|---|---|---|
 | Progress log | A file on the VM. | VM | The webapp's run status. | Webapp |
 | Claude app and its jobs | On the VM. | VM | Could be removed, with the jobs in the webapp. | Not needed |
-| Revit and Navisworks problems | On the VM. | VM | On the Windows computer, fixed by us when needed. | Windows computer |
-| Procore and Forma sign-ins | Chrome on the VM. | VM | Could be removed, since both have APIs. | Not needed |
+| Revit and Navisworks checks | The lead checks that Revit 2025 and 2026 answer and restarts them, or closes a file left open in Navisworks. | VM | On the Windows computer, fixed by us when needed. | Windows computer |
+| Procore and Forma sign-ins | Chrome on the VM, and the Claude app's browser for Procore. | VM | Could be removed. Forma through Autodesk's API, and Procore through its API once ARCO's Procore admin connects our app. | Not needed |
+| Re-run a job | The lead runs the sweep again from its task page in Claude, after fixing the cause. | Claude + VM | Could be started again from the webapp's chat, only when the lead asks. | Webapp |
 
 ## AWS console
 
@@ -69,7 +72,7 @@ Amazon's control panel. Starts or reboots the VM if it is stopped or frozen (reg
 
 **Today:** The lead starts or reboots the VM in Amazon's console.
 
-**What could change:** Restarting the Windows computer: by hand, or a webapp button. Suggested: a 'Restart Windows computer' button in the webapp, through Amazon's API, for the lead and us only, logged. The webapp itself is restarted by hand from its console, since it can't restart itself when it's down.
+**What could change:** Restarting the Windows computer: by hand, or a webapp button. Suggested: a 'Restart Windows computer' button in the webapp, through the hosting provider's API, for the lead and us only, logged. The webapp itself is restarted by hand from its console, since it can't restart itself when it's down.
 
 | Part | Currently | Runs on now | Can be optimized | Would run on |
 |---|---|---|---|---|
@@ -81,13 +84,13 @@ Amazon's control panel. Starts or reboots the VM if it is stopped or frozen (reg
 
 Last resort: switch on the PC's Daily run task and paused job copies. Never both machines at once, or everything runs twice.
 
-**Today:** An old copy of the bot and 8 paused job copies on the lead's PC, switched on only if the VM can't run. Never both.
+**Today:** An old copy of the bot and paused copies of the jobs on the lead's PC, switched on only if the VM can't run. Never both.
 
-**What could change:** The lead's PC backup: suggested to drop it. The bot and the jobs now live in the webapp, so the PC can't stand in for them, and keeping it current is a burden. Suggested: drop it and rely on the hosting backups and a quick restore. Risk: a long webapp outage means no runs until it's restored.
+**What could change:** The lead's PC backup: suggested to remove it. The bot and the jobs now live in the webapp, so the PC can't stand in for them, and keeping it current is a burden. Suggested: remove it and rely on the hosting backups and a quick restore. Risk: a long webapp outage means no runs until it's restored.
 
 | Part | Currently | Runs on now | Can be optimized | Would run on |
 |---|---|---|---|---|
-| The PC's bot and its 8 job copies | Kept as the last resort. | Lead's PC | Suggested: drop. | To explore |
+| The PC's bot and its paused job copies | Kept as the last resort. | Lead's PC | Suggested: remove it. | To explore |
 
 ## Re-run a step
 

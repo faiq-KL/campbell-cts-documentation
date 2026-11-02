@@ -13,15 +13,15 @@ What we suggest for each flow, and what we need to get there. For how each flow 
 ### What we suggest
 
 - **Where it runs:** the bot's own code runs in the webapp on Chicago time, with its memory and settings at the same values. Only the Revit and Navisworks steps run on the Windows computer, sent over the private link. The pop-up clicker and the session keeper stay there. The Claude keep-alive goes.
-- **Timer:** weekdays at 09:00 and 16:00 Chicago time, holidays included, NOVA102 then VKU, at most once per run time. A missed run starts when the webapp is back. Manual runs come from chat, only when the lead asks, and count as the next run.
-- **One timing change:** the 30-minute morning wait can be dropped, so morning results arrive 30 minutes earlier. One setting brings it back.
-- **Files in:** every input comes from ACC through Autodesk's API, including Forma issues and RFIs, with no Chrome. Issued drawings take Forma's own upload date. The lead has the final say, because some Actual Finish dates can shift.
+- **Timer:** weekdays at 09:00 and 16:00 Chicago time, holidays included, NOVA102 then VKU, at most once per run time. A missed run starts when the webapp is back. Manual runs come from chat, only when the lead asks, and count toward that day's latest run time.
+- **One timing change:** the 30-minute morning wait could be removed, so morning results arrive 30 minutes earlier. One setting brings it back.
+- **Files in:** every input comes from ACC through Autodesk's API, including Forma issues and RFIs, with no Chrome. Issued drawings could take Forma's own upload date. The lead decides, because some Actual Finish dates can shift.
 - **Files out:** the same files go to the same ACC folders through the API, with the same 6 safety steps and the same backups. ACC's history will show our app's account as the author.
 - **Navisworks' files:** the file helper moves them to and from ACC through Autodesk's API. Desktop Connector goes.
 - **Scans, 4D and 5D:** the scan check, the 4D viewer, 4D progress and the 5D workbook run in the webapp with the same code, on a worker sized for the biggest scan. The Revit export and the Navisworks timeline snapshot stay on the Windows computer.
 - **Alerts:** the same emails through Amazon's email, from the same sender, to the lead only. Teams stays off.
 - **Pages:** the 10 pages stay exactly as they are. The webapp publishes the same data to the same 7 with its own GitHub access, so GitHub's history shows its name, and runs the same live check. Pages kept by hand stay by hand.
-- **Cloudflare:** stays as it is. The live-check key and the tracker sync script move to the webapp.
+- **Cloudflare:** stays as it is. The live-check key moves to the webapp.
 
 For later: the bot's Revit reading could move to Autodesk's online Revit (Automation API) after a side-by-side test. Also possible later: clash checking in ACC instead of Navisworks, and a Run now button. Looked at and not suggested: one app replacing the 10 pages, and Autodesk's free data service.
 
@@ -70,7 +70,7 @@ Not carried over: the 2 finished acting-lead digests and the 3 finished one-off 
 - **Held items:** released by the webapp with the same commands, for register changes, page data and scan results.
 - **Approved changes:** written from chat only after approval, outside run times, with the same safety steps. This covers Coordination Schedule changes, 4D approval files and tracker notes.
 - **Task Board:** before changing a shared file, Claude claims the task through the portal's API, with its own sign-in, instead of through a person's signed-in browser.
-- **Forma issues:** created through Autodesk's Issues API, still as drafts. No sign-in token is copied from a browser anymore.
+- **Forma issues:** created through Autodesk's Issues API, still as drafts until a person publishes them.
 - **Work done when asked:** 4D builds, clash reviews and quantities reach Revit and Navisworks through conduit on the Windows computer. Document control, RFI questions, prefab and Trello work, and Forma correspondence use Autodesk's, Procore's and Trello's APIs.
 - **Unchanged:** the six Triad signers and their sign-off page (applied only after the lead approves), the Lead Queue (filled by hand), replies to BES, ARCO, CMMC and Triad (drafted by Claude, sent by the lead), and rule changes (approved by the lead).
 - **Pages kept by hand:** stay by hand, with their scripts in the webapp. The RFI Sweep stays on the lead's PC.
@@ -84,7 +84,7 @@ Looked at and not suggested: filling the Lead Queue automatically, a stand-in ro
 3. **Task Board:** The lead's OK and a small portal change, so Claude can claim tasks with its own sign-in.
 4. **Trello:** API access for the prefab and Trello work.
 5. **Autodesk and Procore:** the connections from Flows 1 and 2, including Autodesk's Issues API for Forma issues.
-6. **The tracker sync script** saved into a repo, for the tracker notes.
+6. **The tracker sync script:** the copy on a side branch of the bot's repo, checked against the VM's copy and merged.
 
 ## Flow 4: Catch and fix failed runs
 
@@ -99,6 +99,6 @@ Looked at and not suggested: filling the Lead Queue automatically, a stand-in ro
 
 ### What we need
 
-1. **Rewritten directions:** the 'what to do' part of every watcher's email, pointing at the webapp and the Windows computer instead of the VM. Everything else in those emails stays the same. The lead sees the final wording.
+1. **Rewritten directions:** the 'what to do' part of every watcher's email, pointing at the webapp and the Windows computer instead of the VM. Everything else in those emails stays the same. The lead checks the new wording.
 
 Not worked out yet: Flow 5 (Sell and support Conduit), Flow A (Release code changes) and Flow B (Onboard a new project).
