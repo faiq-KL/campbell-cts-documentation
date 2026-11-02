@@ -21,7 +21,7 @@ What we suggest for each flow, and what we need to get there. For how each flow 
 - **Scans, 4D and 5D:** the scan check, the 4D viewer, 4D progress and the 5D workbook run in the webapp with the same code, on a worker sized for the biggest scan. The Revit export and the Navisworks timeline snapshot stay on the Windows computer.
 - **Alerts:** the same emails through Amazon's email, from the same sender, to the lead only. Teams stays off.
 - **Pages:** the 10 pages stay exactly as they are. The webapp publishes the same data to the same 7 with its own GitHub access, so GitHub's history shows its name, and runs the same live check. Pages kept by hand stay by hand.
-- **Cloudflare:** stays as it is. The live-check key and the tracker sync script move to the webapp. Claude claims Task Board items through the portal's API, with its own sign-in.
+- **Cloudflare:** stays as it is. The live-check key and the tracker sync script move to the webapp.
 
 For later: the bot's Revit reading could move to Autodesk's online Revit (Automation API) after a side-by-side test. Also possible later: clash checking in ACC instead of Navisworks, and a Run now button. Looked at and not suggested: one app replacing the 10 pages, and Autodesk's free data service.
 
@@ -33,7 +33,6 @@ For later: the bot's Revit reading could move to Autodesk's online Revit (Automa
 4. **To build:** conduit's network mode or bridge, the file helper, and the private link.
 5. **From the VM:** everything on the [What we still need from the VM](https://faiq-kl.github.io/campbell-cts-documentation/vm-to-webapp-plan.html#missing) list, starting with the clash export step and the newest Navisworks bridge source. Also the bot's memory and settings, the tracker sync script and the email script.
 6. **Access for the webapp:** Amazon email, and a Cloudflare key for the live check.
-7. **Task Board:** The lead's OK and a small portal change, so Claude can claim tasks with its own sign-in.
 
 ## Flow 2: Automate RFIs, notes and meeting prep
 
@@ -70,6 +69,7 @@ Not carried over: the 2 finished acting-lead digests and the 3 finished one-off 
 - **Approvals:** typed in chat as today. The webapp carries them out and records who approved and when. Only the lead or the stand-in can approve, and a stand-in is still set by a written note.
 - **Held items:** released by the webapp with the same commands, for register changes, page data and scan results.
 - **Approved changes:** written from chat only after approval, outside run times, with the same safety steps. This covers Coordination Schedule changes, 4D approval files and tracker notes.
+- **Task Board:** before changing a shared file, Claude claims the task through the portal's API, with its own sign-in, instead of through a person's signed-in browser.
 - **Forma issues:** created through Autodesk's Issues API, still as drafts. No sign-in token is copied from a browser anymore.
 - **Work done when asked:** 4D builds, clash reviews and quantities reach Revit and Navisworks through conduit on the Windows computer. Document control, RFI questions, prefab and Trello work, and Forma correspondence use Autodesk's, Procore's and Trello's APIs.
 - **Unchanged:** the six Triad signers and their sign-off page (applied only after the lead approves), the Lead Queue (filled by hand), replies to BES, ARCO, CMMC and Triad (drafted by Claude, sent by the lead), and rule changes (approved by the lead).
@@ -81,9 +81,10 @@ Looked at and not suggested: filling the Lead Queue automatically, a stand-in ro
 
 1. **Sign-ins and roles** in the webapp for the lead, the deputy and the teammates, including the VKU team.
 2. **From the lead:** their list of Claude app extras, and their answer on LQ-000: should a signed-in click on the Lead Queue count as approval?
-3. **Trello:** API access for the prefab and Trello work.
-4. **Autodesk and Procore:** the connections from Flows 1 and 2, including Autodesk's Issues API for Forma issues.
-5. **The tracker sync script** saved into a repo, for the tracker notes.
+3. **Task Board:** The lead's OK and a small portal change, so Claude can claim tasks with its own sign-in.
+4. **Trello:** API access for the prefab and Trello work.
+5. **Autodesk and Procore:** the connections from Flows 1 and 2, including Autodesk's Issues API for Forma issues.
+6. **The tracker sync script** saved into a repo, for the tracker notes.
 
 ## Flow 4: Catch and fix failed runs
 

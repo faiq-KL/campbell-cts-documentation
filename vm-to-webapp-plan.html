@@ -700,12 +700,11 @@ const PLAN = {
       verdict: "same", size: "S", where: "As today",
       lead: "Cloudflare stays as it is. The keys and scripts the bot and chats use move to the webapp.",
       today: "Puts each page online and checks who may open it. Holds the pages' 4 small databases, including the Task Board, and 1 scan file bucket.",
-      plan: "Unchanged. The live-check key and the tracker sync script move to the webapp. The BIM Assistant claims tasks on the Task Board through the portal's own API, with its own sign-in.",
+      plan: "Unchanged. The live-check key and the tracker sync script move to the webapp.",
       parts: [
         ["Hosting, sign-in, databases, file bucket", "Cloudflare.", "No change needed.", "same", "Cloudflare", "Cloudflare"],
         ["Live-check key", "On the VM.", "In the webapp's secure settings.", "moves", "VM", "Webapp"],
         ["Tracker sync script (tracker_sync_cf.py)", "Only on the VM, not in a repo.", "Rescued into a repo, run by the webapp.", "moves", "VM", "Webapp"],
-        ["Task Board claims by Claude", "Through a signed-in browser, or by hand.", "Through the portal's API, with the BIM Assistant's own sign-in. Needs a small portal change.", "moves", "Browser", "Webapp"],
         ["Page libraries", "Some pages load code from public sites (jsDelivr, cdnjs).", "No change needed.", "same", "Cloudflare", "Cloudflare"]
       ]
     },
@@ -938,14 +937,15 @@ const PLAN = {
       verdict: "moves", size: "L", where: "The webapp",
       lead: "Chat moves into the webapp for the lead, the deputy and the teammates.",
       today: "People chat with Claude in the Nova BIM Schedule and VKU projects. The lead's chats work through the VM. The deputy approved in their own Claude, in the shared project.",
-      plan: "A chat page in the webapp, on the same engine as the jobs, with the same words and procedures, such as 'start my tasks for the day' and 'Approve' with the item's number. Each person signs in. Approvals are recorded with name and time.",
+      plan: "A chat page in the webapp, on the same engine as the jobs, with the same words and procedures, such as 'start my tasks for the day' and 'Approve' with the item's number. Each person signs in. Approvals are recorded with name and time. Task Board claims go through the portal's API.",
       parts: [
         ["Start my tasks for the day", "In the Claude app.", "In the webapp's chat.", "moves", "Claude account", "Webapp"],
         ["Approvals", "Typed in chat, then Claude runs the bot's commands on the VM.", "Typed in the webapp's chat, then the webapp carries them out.", "moves", "Claude + VM", "Webapp"],
         ["Manual runs", "Only when the lead asks.", "From the webapp's chat, same rule.", "moves", "Claude + VM", "Webapp"],
         ["The deputy and teammates", "Their own Claude, on their own computers.", "Their own sign-in to the webapp. They keep their own Claude for other work.", "moves", "Claude account", "Webapp"],
         ["Claude app extras (phone app, voice, artifacts)", "In the Claude app.", "The lead lists what they use, so the webapp can match it.", "open", "Claude account", "To explore"],
-        ["Other chat work", "Task Board claims, issue drafts and the Monday expectation-gap check.", "The same work in the webapp's chat. Task Board claims go through the portal's API.", "moves", "Claude + VM", "Webapp"],
+        ["Task Board claims", "Before changing a shared file, the task is claimed on the Task Board, through a browser signed in as a person, or by a person by hand.", "Claude claims it through the portal's API, with its own sign-in. Needs a small portal change.", "moves", "Browser", "Webapp"],
+        ["Other chat work", "Issue drafts and the Monday expectation-gap check.", "The same work in the webapp's chat.", "moves", "Claude + VM", "Webapp"],
         ["Run-time rule", "Shared changes are claimed on the Task Board first and kept out of the bot's run times (09:00 to 10:15 and 16:00 to 17:15).", "The same rule, checked by the webapp before any shared write.", "moves", "Claude + VM", "Webapp"]
       ],
       options: {

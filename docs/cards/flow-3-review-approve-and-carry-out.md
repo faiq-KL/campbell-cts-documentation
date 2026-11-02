@@ -136,7 +136,7 @@ People working with Claude in the Nova BIM Schedule and VKU projects. Shared cha
 
 **Today:** People chat with Claude in the Nova BIM Schedule and VKU projects. The lead's chats work through the VM. The deputy approved in their own Claude, in the shared project.
 
-**What could change:** Chat moves into the webapp for the lead, the deputy and the teammates. A chat page in the webapp, on the same engine as the jobs, with the same words and procedures, such as 'start my tasks for the day' and 'Approve' with the item's number. Each person signs in. Approvals are recorded with name and time.
+**What could change:** Chat moves into the webapp for the lead, the deputy and the teammates. A chat page in the webapp, on the same engine as the jobs, with the same words and procedures, such as 'start my tasks for the day' and 'Approve' with the item's number. Each person signs in. Approvals are recorded with name and time. Task Board claims go through the portal's API.
 
 | Part | Currently | Runs on now | Can be optimized | Would run on |
 |---|---|---|---|---|
@@ -145,7 +145,8 @@ People working with Claude in the Nova BIM Schedule and VKU projects. Shared cha
 | Manual runs | Only when the lead asks. | Claude + VM | From the webapp's chat, same rule. | Webapp |
 | The deputy and teammates | Their own Claude, on their own computers. | Claude account | Their own sign-in to the webapp. They keep their own Claude for other work. | Webapp |
 | Claude app extras (phone app, voice, artifacts) | In the Claude app. | Claude account | The lead lists what they use, so the webapp can match it. | To explore |
-| Other chat work | Task Board claims, issue drafts and the Monday expectation-gap check. | Claude + VM | The same work in the webapp's chat. Task Board claims go through the portal's API. | Webapp |
+| Task Board claims | Before changing a shared file, the task is claimed on the Task Board, through a browser signed in as a person, or by a person by hand. | Browser | Claude claims it through the portal's API, with its own sign-in. Needs a small portal change. | Webapp |
+| Other chat work | Issue drafts and the Monday expectation-gap check. | Claude + VM | The same work in the webapp's chat. | Webapp |
 | Run-time rule | Shared changes are claimed on the Task Board first and kept out of the bot's run times (09:00 to 10:15 and 16:00 to 17:15). | Claude + VM | The same rule, checked by the webapp before any shared write. | Webapp |
 
 **Chat options, as weighed**

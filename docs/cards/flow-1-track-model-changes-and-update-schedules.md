@@ -291,14 +291,13 @@ Puts each page online and checks who may open it (emailed code or Microsoft logi
 
 **Today:** Puts each page online and checks who may open it. Holds the pages' 4 small databases, including the Task Board, and 1 scan file bucket.
 
-**What could change:** Cloudflare stays as it is. The keys and scripts the bot and chats use move to the webapp. Unchanged. The live-check key and the tracker sync script move to the webapp. The BIM Assistant claims tasks on the Task Board through the portal's own API, with its own sign-in.
+**What could change:** Cloudflare stays as it is. The keys and scripts the bot and chats use move to the webapp. Unchanged. The live-check key and the tracker sync script move to the webapp.
 
 | Part | Currently | Runs on now | Can be optimized | Would run on |
 |---|---|---|---|---|
 | Hosting, sign-in, databases, file bucket | Cloudflare. | Cloudflare | No change needed. | Cloudflare |
 | Live-check key | On the VM. | VM | In the webapp's secure settings. | Webapp |
 | Tracker sync script (tracker_sync_cf.py) | Only on the VM, not in a repo. | VM | Rescued into a repo, run by the webapp. | Webapp |
-| Task Board claims by Claude | Through a signed-in browser, or by hand. | Browser | Through the portal's API, with the BIM Assistant's own sign-in. Needs a small portal change. | Webapp |
 | Page libraries | Some pages load code from public sites (jsDelivr, cdnjs). | Cloudflare | No change needed. | Cloudflare |
 
 ## Page users
