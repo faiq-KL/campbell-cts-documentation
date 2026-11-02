@@ -133,6 +133,11 @@ code { background: var(--chip); }
 .node li { background: var(--chip); }
 [hidden] { display: none !important; }
 .top { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; justify-content: space-between; }
+.theme { display: inline-flex; border: 1px solid var(--node-line); border-radius: 8px; overflow: hidden; }
+.theme button { font: 500 14px var(--sans); color: var(--muted); background: var(--panel); border: 0; padding: 7px 14px; cursor: pointer; }
+.theme button + button { border-left: 1px solid var(--node-line); }
+.theme button[aria-pressed="true"] { color: var(--bg); background: var(--fg); }
+.theme button:focus-visible { outline: 2px solid var(--c-ext); outline-offset: -2px; }
 .vd { font: 700 10.5px/1.7 var(--mono); letter-spacing: .05em; text-transform: uppercase; padding: 0 7px; border-radius: 99px; border: 1px solid; white-space: nowrap; }
 .v-moves { color: var(--ok); border-color: var(--ok-line); background: var(--ok-bg); }
 .v-windows { color: var(--win); border-color: var(--win-line); background: var(--win-bg); }
@@ -143,8 +148,6 @@ code { background: var(--chip); }
 .v-parked { border-style: dashed; }
 .node .go { font: 500 12px var(--sans); color: var(--c-ext); margin-top: 3px; }
 .node:hover .go { text-decoration: underline; }
-.vlegend .vd { margin-right: 3px; }
-.vlegend b { color: var(--fg); font-weight: 600; }
 .wrap { grid-template-columns: minmax(0, 1fr); gap: 14px; }
 details.sec, details.flow, details.words, details.missing { display: block; border-top: 1px solid var(--node-line); padding-top: 14px; }
 details > summary { cursor: pointer; list-style: none; display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; }
@@ -155,10 +158,8 @@ details[open] > summary { margin-bottom: 14px; }
 details > summary h2 { font-size: 19px; }
 details > summary:focus-visible { outline: 2px solid var(--c-ext); outline-offset: 3px; border-radius: 4px; }
 details.flow[open] > * + *, details.missing[open] > * + * { margin-top: 14px; }
-.how-h { margin: 0; font: 600 12px var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
 .what { max-width: 100ch; }
 .flow-head > .zoom { display: flex; gap: 6px; align-items: center; }
-#howto .legend, #howto .src { margin-top: 10px; }
 .notes { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 12px; }
 .note { border: 1px solid var(--node-line); border-radius: 8px; padding: 12px 14px; display: grid; gap: 6px; align-content: start; background: var(--panel); }
 .note h3, .note h4 { margin: 0; font: 600 12px var(--mono); letter-spacing: .08em; text-transform: uppercase; }
@@ -176,7 +177,6 @@ details.flow[open] > * + *, details.missing[open] > * + * { margin-top: 14px; }
 .dhead { display: grid; gap: 6px; }
 .dhead h1:focus { outline: none; }
 .dhead .chips { display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center; }
-.size { font: 12px var(--mono); color: var(--muted); }
 .lead { font-size: 17px; max-width: 85ch; }
 .cmp { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
 .box { background: var(--panel); border: 1px solid var(--node-line); border-radius: 10px; padding: 14px 16px; display: grid; gap: 8px; align-content: start; }
@@ -219,14 +219,13 @@ details.flow[open] > * + *, details.missing[open] > * + * { margin-top: 14px; }
 
 <div class="wrap" id="main">
   <header style="display:grid;gap:12px">
-    <div class="top"><h1>VM to Webapp Plan</h1><button type="button" class="btn" id="theme">Light mode</button></div>
-    <p class="muted">How production works today, flow by flow. Open a flow, then click any card for its details and where it goes in the new setup.</p>
+    <div class="top"><h1>VM to Webapp Plan</h1><div class="theme" role="group" aria-label="Colour theme"><button type="button" data-pick="light">Light</button><button type="button" data-pick="dark">Dark</button></div></div>
+    <p class="muted">How production works today, and where each part goes in the new setup.</p>
     
   </header>
 
   <details class="sec" id="howto">
     <summary><h2>How to read this page</h2></summary>
-    <p class="muted">Each flow is a diagram you read left to right, from START to END. Click a card to highlight its links, then open its details.</p>
     <div class="legend">
       <span><i style="background:var(--c-sched)"></i>Scheduler (timer)</span>
       <span><i style="background:var(--c-repo)"></i>Repo (code on GitHub)</span>
@@ -236,8 +235,6 @@ details.flow[open] > * + *, details.missing[open] > * + * { margin-top: 14px; }
       <span><i style="background:var(--c-people)"></i>People</span>
       <span>Solid line: sends. Dashed line: reads, or happens rarely.</span>
     </div>
-    <div class="legend vlegend" id="vlegend"></div>
-    <p class="muted src">Sources: the 15 repos, the scheduled-task export, the project notes export, the VM walkthrough and VM copy, and official documentation from Anthropic, Autodesk, Microsoft and Fireflies.</p>
   </details>
 
   <details class="words" id="words">
@@ -274,16 +271,7 @@ details.flow[open] > * + *, details.missing[open] > * + * { margin-top: 14px; }
   <details class="flow" id="flow-robot">
     <summary><span class="tag">Flow 1</span><h2>Update project data</h2></summary>
     <div class="flow-head">
-      <div><h3 class="how-h">How it works today</h3>
-        <p class="what">Twice each weekday, at 09:00 and 16:00 CT, the bot reads the 3D models and project files, then updates the schedule spreadsheets and the web pages. Anything that fails a safety check is held for the lead.</p>
-        <ol class="how">
-          <li>A Windows timer on the VM starts the bot (<b>hcg-bim-assistant</b>).</li>
-          <li>The bot opens each 3D model through <b>conduit</b>, read only, and finds what changed.</li>
-          <li>It also reads the project's spreadsheets, drawings, RFI folders, clash report, laser scans and Forma issues.</li>
-          <li>It writes the results to the project files in ACC (after a backup) and to a run log.</li>
-          <li>It updates 7 of the 10 web pages, and Cloudflare puts them online. The other 3 are updated by hand (the Action Hub also has a newer bot step).</li>
-          <li>Results that fail its safety checks are held for the lead instead of written. It emails the lead when a run is blocked, slow, failed or finished, and shows pop-ups on the VM.</li>
-        </ol></div>
+      <p class="what">Twice each weekday, at 09:00 and 16:00 CT, the bot reads the 3D models and project files, then updates the schedule spreadsheets and the web pages. Anything that fails a safety check is held for the lead.</p>
       <div class="zoom"><button type="button" data-z="out" aria-label="Zoom out">-</button><output>100%</output><button type="button" data-z="in" aria-label="Zoom in">+</button><button type="button" data-z="fit">Fit</button></div>
     </div>
     <div class="viewport"><div class="sizer"><div class="canvas"></div></div></div>
@@ -292,15 +280,7 @@ details.flow[open] > * + *, details.missing[open] > * + * { margin-top: 14px; }
   <details class="flow" id="flow-ai">
     <summary><span class="tag">Flow 2</span><h2>Run scheduled AI jobs</h2></summary>
     <div class="flow-head">
-      <div><h3 class="how-h">How it works today</h3>
-        <p class="what">AI jobs run on timers all day. They file RFIs and submittals, keep the project notes, prepare meetings and email summaries, while three watchers check that everything ran.</p>
-        <ol class="how">
-          <li><b>Timers</b> start each job. Seven run in the Claude app on the VM, and the heartbeat runs in Claude's cloud.</li>
-          <li><b>The AI</b> (Claude, signed in as the lead) does the job, using the team's skills and reading what it needs.</li>
-          <li>It <b>writes the results</b>: documents and schedule updates in ACC, the tracker page's schedule section, and notes.</li>
-          <li>It <b>emails</b> the lead and the deputy, and no one else.</li>
-          <li>The three watchers only check for problems. Their alarms start Flow 4.</li>
-        </ol></div>
+      <p class="what">AI jobs run on timers all day. They file RFIs and submittals, keep the project notes, prepare meetings and email summaries, while three watchers check that everything ran.</p>
       <div class="zoom"><button type="button" data-z="out" aria-label="Zoom out">-</button><output>100%</output><button type="button" data-z="in" aria-label="Zoom in">+</button><button type="button" data-z="fit">Fit</button></div>
     </div>
     <div class="viewport"><div class="sizer"><div class="canvas"></div></div></div>
@@ -309,16 +289,7 @@ details.flow[open] > * + *, details.missing[open] > * + * { margin-top: 14px; }
   <details class="flow" id="flow-people">
     <summary><span class="tag">Flow 3</span><h2>Review and approve</h2></summary>
     <div class="flow-head">
-      <div><h3 class="how-h">How it works today</h3>
-        <p class="what">Anything unusual waits for a person. The lead decides in chat, Triad signs off schedule cards, and the AI then carries out exactly what was approved.</p>
-        <ol class="how">
-          <li>The bot and the AI hold anything unusual instead of writing it.</li>
-          <li>The lead decides in a Claude chat or on the Lead Queue page.</li>
-          <li>Triad's signers approve or reject schedule cards on the sign-off board.</li>
-          <li>In chat, the AI carries out exactly what was approved.</li>
-          <li>The lead's rulings go into the rule book, so future jobs follow them.</li>
-          <li>Teammates start their day in chat, and claim tasks on the Task Board before changing shared files.</li>
-        </ol></div>
+      <p class="what">Anything unusual waits for a person. The lead decides in chat, Triad signs off schedule cards, and the AI then carries out exactly what was approved.</p>
       <div class="zoom"><button type="button" data-z="out" aria-label="Zoom out">-</button><output>100%</output><button type="button" data-z="in" aria-label="Zoom in">+</button><button type="button" data-z="fit">Fit</button></div>
     </div>
     <div class="viewport"><div class="sizer"><div class="canvas"></div></div></div>
@@ -327,16 +298,7 @@ details.flow[open] > * + *, details.missing[open] > * + * { margin-top: 14px; }
   <details class="flow" id="flow-break">
     <summary><span class="tag">Flow 4</span><h2>Respond to incidents</h2></summary>
     <div class="flow-head">
-      <div><h3 class="how-h">How it works today</h3>
-        <p class="what">When a run or a job fails, a watcher alerts the lead. The lead finds the cause on the VM, then restarts or re-runs what failed, with a backup PC as the last resort.</p>
-        <ol class="how">
-          <li>A watcher or the bot alerts the lead by email or phone push.</li>
-          <li>The lead logs into the VM and checks the run log, the Claude app, Revit, and the Procore and Forma sign-ins.</li>
-          <li>If the VM is down, they restart it in Amazon's AWS console.</li>
-          <li>If a step failed, it is re-run only when the lead asks, outside run times.</li>
-          <li>Last resort: run the jobs on the lead's PC instead, never on both.</li>
-          <li>Two things fix themselves: the keep-alive reopens the Claude app and Chrome, and the bot restarts a frozen Revit.</li>
-        </ol></div>
+      <p class="what">When a run or a job fails, a watcher alerts the lead. The lead finds the cause on the VM, then restarts or re-runs what failed, with a backup PC as the last resort.</p>
       <div class="zoom"><button type="button" data-z="out" aria-label="Zoom out">-</button><output>100%</output><button type="button" data-z="in" aria-label="Zoom in">+</button><button type="button" data-z="fit">Fit</button></div>
     </div>
     <div class="viewport"><div class="sizer"><div class="canvas"></div></div></div>
@@ -345,16 +307,7 @@ details.flow[open] > * + *, details.missing[open] > * + * { margin-top: 14px; }
   <details class="flow" id="flow-biz">
     <summary><span class="tag">Flow 5</span><h2>Sell and support Conduit</h2></summary>
     <div class="flow-head">
-      <div><h3 class="how-h">How it works today</h3>
-        <p class="what">The company also sells conduit, its Revit and Navisworks software. Releases are built and uploaded for licensed download, and an AI chat on the website answers customers.</p>
-        <ol class="how">
-          <li>The company's software, <b>conduit</b>, is also sold to other companies.</li>
-          <li>Installers are built and signed on the lead's PC, or built by GitHub.</li>
-          <li>A script uploads each release to Keygen, which holds licence keys and files.</li>
-          <li>Customers enter their licence key on campbellcts.com and download.</li>
-          <li>The site's AI chat answers questions and emails the lead when needed. A daily summary reaches the lead at 07:00 CT.</li>
-          <li>Conduit's AI skills reach everyone in the company through the marketplace repo.</li>
-        </ol></div>
+      <p class="what">The company also sells conduit, its Revit and Navisworks software. Releases are built and uploaded for licensed download, and an AI chat on the website answers customers.</p>
       <div class="zoom"><button type="button" data-z="out" aria-label="Zoom out">-</button><output>100%</output><button type="button" data-z="in" aria-label="Zoom in">+</button><button type="button" data-z="fit">Fit</button></div>
     </div>
     <div class="viewport"><div class="sizer"><div class="canvas"></div></div></div>
@@ -363,17 +316,7 @@ details.flow[open] > * + *, details.missing[open] > * + * { margin-top: 14px; }
   <details class="flow" id="flow-change">
     <summary><span class="tag">Flow A</span><h2>Release code changes</h2></summary>
     <div class="flow-head">
-      <div><h3 class="how-h">How it works today</h3>
-        <p class="what">Code changes come from coding sessions and land on GitHub. Saving to a repo's main branch puts the pages and the website live, while the VM runs its own copy of the code.</p>
-        <ol class="how">
-          <li>The lead and AI coding sessions change the code on GitHub.</li>
-          <li>Saving a page repo's main branch makes Cloudflare put it live within minutes. Most page repos have no test branch.</li>
-          <li>The website goes live the same way, through Netlify.</li>
-          <li>The bot saves fresh page data to main twice a day (as <b>hcg-bim-runner</b>).</li>
-          <li>The VM runs its own copy of the code. Some bot fixes were made on the VM itself and saved to GitHub from there. How other changes reach the VM is unknown. One bot file and changes to the Navisworks bridge exist only on the VM.</li>
-          <li>AI skills and job instructions are edited by hand in the Claude app, not through GitHub.</li>
-          <li>A dev copy of the VM was made. Only its file names are known.</li>
-        </ol></div>
+      <p class="what">Code changes come from coding sessions and land on GitHub. Saving to a repo's main branch puts the pages and the website live, while the VM runs its own copy of the code.</p>
       <div class="zoom"><button type="button" data-z="out" aria-label="Zoom out">-</button><output>100%</output><button type="button" data-z="in" aria-label="Zoom in">+</button><button type="button" data-z="fit">Fit</button></div>
     </div>
     <div class="viewport"><div class="sizer"><div class="canvas"></div></div></div>
@@ -382,14 +325,7 @@ details.flow[open] > * + *, details.missing[open] > * + * { margin-top: 14px; }
   <details class="flow" id="flow-setup">
     <summary><span class="tag">Flow B</span><h2>Onboard a new project</h2></summary>
     <div class="flow-head">
-      <div><h3 class="how-h">How it works today</h3>
-        <p class="what">A new project starts with an AI interview of its lead. The answers become two settings files, then the bot adds the project and its pages are copied from an existing project.</p>
-        <ol class="how">
-          <li>The project lead fills in an intake form and is interviewed by the onboarding AI chat.</li>
-          <li>The chat checks each answer twice on the live model, then proposes two settings files, saved in ACC once the lead approves.</li>
-          <li>The project is added to the bot, and its web pages are copied from NOVA102's.</li>
-          <li>The bot first runs in dry-run mode and writes nothing. After the lead reviews it, it switches to write mode.</li>
-        </ol></div>
+      <p class="what">A new project starts with an AI interview of its lead. The answers become two settings files, then the bot adds the project and its pages are copied from an existing project.</p>
       <div class="zoom"><button type="button" data-z="out" aria-label="Zoom out">-</button><output>100%</output><button type="button" data-z="in" aria-label="Zoom in">+</button><button type="button" data-z="fit">Fit</button></div>
     </div>
     <div class="viewport"><div class="sizer"><div class="canvas"></div></div></div>
@@ -1419,10 +1355,6 @@ const main = document.getElementById('main');
 const detail = document.getElementById('detail');
 let fromMap = false, lastY = 0, stale = false;
 
-document.getElementById('vlegend').innerHTML = '<span>Tags in a card\'s details:</span>' +
-  Object.keys(VERDICTS).map(v => '<span>' + chip(v) + esc(VERDICTS[v][1]) + '</span>').join('') +
-  '<span>Size of the work: ' + Object.keys(SIZES).map(s => '<b>' + esc(s) + '</b> ' + esc(SIZES[s])).join(', ') + '</span>';
-
 function openFromMap(key, id) {
   lastY = window.scrollY;
   fromMap = true;
@@ -1467,7 +1399,7 @@ function render(key, id) {
     '<header class="dhead"><span class="tag">' + esc(sec.querySelector('.tag').textContent) + ' · card ' + (i + 1) + ' of ' + list.length + '</span>' +
     '<p class="muted">' + esc(sec.querySelector('h2').textContent) + '</p>' +
     '<h1 tabindex="-1">' + esc(n.title) + '</h1>' +
-    (p ? '<div class="chips">' + chips(p) + '<span class="size">Size ' + esc(p.size) + ': ' + esc(SIZES[p.size]) + '</span></div>' : '') + '</header>';
+    (p ? '<div class="chips">' + chips(p) + '</div>' : '') + '</header>';
 
   if (p) {
     h += details +
@@ -1534,16 +1466,16 @@ window.addEventListener('hashchange', route);
 route();
 
 // Light or dark: follows the system setting until the viewer picks one, which is remembered.
-const docEl = document.documentElement, themeBtn = document.getElementById('theme');
+const docEl = document.documentElement, picks = document.querySelectorAll('[data-pick]');
 const lightQuery = matchMedia('(prefers-color-scheme: light)');
-const isLight = () => docEl.dataset.theme ? docEl.dataset.theme === 'light' : lightQuery.matches;
-const showTheme = () => { themeBtn.textContent = isLight() ? 'Dark mode' : 'Light mode'; };
+const current = () => docEl.dataset.theme || (lightQuery.matches ? 'light' : 'dark');
+const showTheme = () => picks.forEach(b => b.setAttribute('aria-pressed', String(b.dataset.pick === current())));
 try { const t = localStorage.getItem('theme'); if (t === 'light' || t === 'dark') docEl.dataset.theme = t; } catch (e) {}
 showTheme();
 lightQuery.addEventListener('change', showTheme);
-themeBtn.addEventListener('click', () => {
-  docEl.dataset.theme = isLight() ? 'dark' : 'light';
-  try { localStorage.setItem('theme', docEl.dataset.theme); } catch (e) {}
+picks.forEach(b => b.addEventListener('click', () => {
+  docEl.dataset.theme = b.dataset.pick;
+  try { localStorage.setItem('theme', b.dataset.pick); } catch (e) {}
   showTheme();
-});
+}));
 </script>

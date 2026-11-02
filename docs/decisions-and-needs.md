@@ -1,6 +1,6 @@
 # Decisions and needs
 
-What we decided for each flow, and what we need to get there. The [plan page](https://faiq-kl.github.io/campbell-cts-documentation/vm-to-webapp-plan.html) shows how each flow works today, card by card.
+What we decided for each flow, and what we need to get there. For how each flow works now, see [How it works today](how-it-works-today.md) or the [plan page](https://faiq-kl.github.io/campbell-cts-documentation/vm-to-webapp-plan.html).
 
 ## Rules
 

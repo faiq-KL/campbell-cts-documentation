@@ -10,4 +10,5 @@ Documentation for moving Campbell CTS production off the VM and into the webapp.
 
 Detailed notes for the team. They live in this repo only and are not published on the site.
 
+- [How it works today](https://github.com/faiq-KL/campbell-cts-documentation/blob/main/docs/how-it-works-today.md): each flow step by step, as production runs now.
 - [Decisions and needs](https://github.com/faiq-KL/campbell-cts-documentation/blob/main/docs/decisions-and-needs.md): what we decided for each flow, and what we need to get there.
