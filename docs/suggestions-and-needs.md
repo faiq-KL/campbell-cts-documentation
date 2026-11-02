@@ -65,7 +65,7 @@ Not carried over: the 2 finished stand-in digests and the 3 finished one-off job
 
 ### What we suggest
 
-- **Chat:** moves into the webapp for the client, the deputy and the teammates, on the same engine as the jobs, with the same words and procedures, such as 'start my tasks for the day'. Each person signs in. The deputy and the teammates keep their own Claude for other work.
+- **Chat:** moves into the webapp for the client and their teammates, on the same engine as the jobs, with the same words and procedures, such as 'start my tasks for the day'. Each person signs in. The client's teammates keep their own Claude for other work.
 - **Approvals:** typed in chat as today. The webapp carries them out and records who approved and when. Only the client or the stand-in can approve, and a stand-in is still set by a written note.
 - **Held items:** released by the webapp with the same commands, for register changes, page data and scan results.
 - **Approved changes:** written from chat only after approval, outside run times, with the same safety steps. This covers Coordination Schedule changes, 4D approval files and tracker notes.
@@ -79,7 +79,7 @@ Looked at and not suggested: filling the Lead Queue automatically, a stand-in ro
 
 ### What we need
 
-1. **Sign-ins and roles** in the webapp for the client, the deputy and the teammates, including the VKU team.
+1. **Sign-ins and roles** in the webapp for the client and their teammates, including the VKU team.
 2. **From the client:** their list of Claude app extras, and their answer on LQ-000: should a signed-in click on the Lead Queue count as approval?
 3. **Task Board:** The client's OK and a small portal change, so Claude can claim tasks with its own sign-in.
 4. **Trello:** API access for the prefab and Trello work.

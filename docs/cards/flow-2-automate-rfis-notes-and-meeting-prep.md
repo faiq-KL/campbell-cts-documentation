@@ -40,8 +40,8 @@ Timers that start the AI on these jobs. They write to real project files.
 
 | Part | Currently | Can be optimized | Suggestion | Tag |
 |---|---|---|---|---|
-| RFI and submittal sweep (weekdays 08:24) | Procore through Chrome with the deputy's login, where its only action is asking for cover PDFs. Files into ACC, loads ARCO's schedule updates, writes the sweep note, emails the client and the deputy. | Yes, it uses Procore's and Autodesk's APIs. | Procore's and Autodesk's APIs. The same note and email. | Webapp |
-| Project Memory and flags (weekdays 10:45) | Outlook, Teams, Fireflies and Procore, then the memory files in ACC and the Claude Project. Emails the flags to the client and the deputy. | Yes, it uses Microsoft's, Fireflies' and Procore's APIs. | Microsoft's, Fireflies' and Procore's APIs. The memory files still go to ACC. The same flags email. | Webapp |
+| RFI and submittal sweep (weekdays 08:24) | Procore through Chrome with a teammate's login, where its only action is asking for cover PDFs. Files into ACC, loads ARCO's schedule updates, writes the sweep note, emails the client and their teammate. | Yes, it uses Procore's and Autodesk's APIs. | Procore's and Autodesk's APIs. The same note and email. | Webapp |
+| Project Memory and flags (weekdays 10:45) | Outlook, Teams, Fireflies and Procore, then the memory files in ACC and the Claude Project. Emails the flags to the client and their teammate. | Yes, it uses Microsoft's, Fireflies' and Procore's APIs. | Microsoft's, Fireflies' and Procore's APIs. The memory files still go to ACC. The same flags email. | Webapp |
 | VKU check (:25 in the run windows) | Checks VKU's run in Newtron's ACC, the bot's records on the VM and the page builds on GitHub. Appends VKU's change log, emails the client. | Yes, it checks the run through the webapp and APIs. | Reads the run in the webapp, ACC and GitHub through their APIs. The same change log and email. | Webapp |
 
 **Watch out:**
@@ -66,7 +66,7 @@ Timers for two jobs that write notes and send emails.
 | Part | Currently | Can be optimized | Suggestion | Tag |
 |---|---|---|---|---|
 | Change log (:20, 10:20 to 12:20 and 17:20 to 19:20) | Reads the run log, the bot's database, today's log and the VM's timer, writes into the Claude Project. | Yes, it reads the webapp's run status and writes to its notes. | Reads the bot's status in the webapp, writes the same note to the webapp's notes. | Webapp |
-| Meeting prep and follow-up (weekdays, hourly 06:45 to 17:45) | Calendar, Outlook, Teams, Fireflies and project notes. Emails the client, plus the deputy when they attend. Saves each follow-up's proposed issues as a note in the Claude Project. | Yes, it uses Microsoft's and Fireflies' APIs. | Microsoft's and Fireflies' APIs. The same emails, and the same follow-up notes in the webapp's notes. | Webapp |
+| Meeting prep and follow-up (weekdays, hourly 06:45 to 17:45) | Calendar, Outlook, Teams, Fireflies and project notes. Emails the client, plus their teammate when they attend. Saves each follow-up's proposed issues as a note in the Claude Project. | Yes, it uses Microsoft's and Fireflies' APIs. | Microsoft's and Fireflies' APIs. The same emails, and the same follow-up notes in the webapp's notes. | Webapp |
 
 ## Check that every job ran
 
@@ -102,7 +102,7 @@ What the AI jobs read: Procore, email, Teams, meeting notes, GitHub and the mode
 
 All read only.
 
-- `Procore`: ARCO's website: new questions, approvals, reports, schedules. Signed in as the deputy, through the VM's Chrome (sweep) or the Claude app's browser (memory job)
+- `Procore`: ARCO's website: new questions, approvals, reports, schedules. Signed in as a teammate, through the VM's Chrome (sweep) or the Claude app's browser (memory job)
 - `Microsoft 365 · Teams · Fireflies`: The client's email, Teams chats and recorded meeting notes (Fireflies never used for VKU)
 - `Google Drive`: connected, but not seen in use
 - `conduit tools`: the Navisworks model
@@ -110,13 +110,13 @@ All read only.
 - `The bot's run log`: in ACC (Flow 1), read by the change-log job and the watchers
 - `Claude's task list`: the watchers check the other jobs ran
 
-**Today:** Procore (the deputy's login in Chrome), Microsoft 365 and Fireflies (Claude's connectors in the client's account), the run log in ACC, GitHub (hcg-bim-runner), Claude's task list, and Google Drive (connected, unused).
+**Today:** Procore (a teammate's login in Chrome), Microsoft 365 and Fireflies (Claude's connectors in the client's account), the run log in ACC, GitHub (hcg-bim-runner), Claude's task list, and Google Drive (connected, unused).
 
 **What could change:** Every connection becomes an official API or a ready-made tool server. Claude's own connectors only work inside claude.ai, so the webapp uses each company's API or its official tool server.
 
 | Part | Currently | Can be optimized | Suggestion | Tag |
 |---|---|---|---|---|
-| Procore | Chrome on the VM, the deputy's login. | Yes, read through Procore's API. | Procore's API, once ARCO's Procore admin connects our app. | Webapp |
+| Procore | Chrome on the VM, a teammate's login. | Yes, read through Procore's API. | Procore's API, once ARCO's Procore admin connects our app. | Webapp |
 | Outlook, Teams, calendar | Claude's Microsoft 365 connector, read only. | Yes, read through Microsoft's API. | Microsoft's API, with the client's consent. | Webapp |
 | Fireflies | Claude's connector. | Yes, read through Fireflies' own tool server. | Fireflies' official tool server, with the client's key. Never for VKU. | Webapp |
 | GitHub | Signed in as hcg-bim-runner on the VM. | Yes, read through GitHub's API. | GitHub's API, with the webapp's own access. | Webapp |
@@ -255,11 +255,11 @@ A small script on the VM sends the AI jobs' emails through Amazon.
 
 *Script, Not in git*
 
-Script on the VM that sends the jobs' emails through Amazon. Only to the client and the deputy.
+Script on the VM that sends the jobs' emails through Amazon. Only to the client and their teammate.
 
 - `ses_send.py → Amazon SES`
 
-**Today:** ses_send.py on the VM, not in git, sends through Amazon's email, only to the client and the deputy.
+**Today:** ses_send.py on the VM, not in git, sends through Amazon's email, only to the client and their teammate.
 
 **What could change:** The jobs' emails are sent by the webapp through Amazon's email, from the same sender to the same people. The same emails, sent by the webapp. The script is saved to a repo.
 
@@ -269,7 +269,7 @@ Script on the VM that sends the jobs' emails through Amazon. Only to the client 
 
 ## Receive summaries and alerts
 
-The client and the deputy get the jobs' summaries and alerts by email and phone.
+The client and their teammate get the jobs' summaries and alerts by email and phone.
 
 *People*
 
@@ -277,7 +277,7 @@ Get the summaries and alerts by email, plus a phone push from the heartbeat.
 
 **Today:** Summaries and alerts by email, plus a phone push from the heartbeat.
 
-**What could change:** The client and the deputy get the same emails, plus the heartbeat's push. Unchanged.
+**What could change:** The client and their teammate get the same emails, plus the heartbeat's push. Unchanged.
 
 | Part | Currently | Can be optimized | Suggestion | Tag |
 |---|---|---|---|---|

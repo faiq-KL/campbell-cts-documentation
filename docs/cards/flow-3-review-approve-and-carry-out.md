@@ -35,13 +35,13 @@ Unusual results the bot or AI did not write. Listed in run summaries, notes and 
 
 ## Make the project decisions
 
-The client makes the project decisions, and a deputy can stand in.
+The client makes the project decisions, and their teammate can stand in.
 
 *People*
 
-The client decides (the deputy has stood in). VKU has its own small team.
+The client decides (their teammate has stood in). VKU has its own small team.
 
-**Today:** The client decides. The deputy has stood in through a written note. VKU has its own small team.
+**Today:** The client decides. The client's teammate has stood in through a written note. VKU has its own small team.
 
 **What could change:** The same people decide in the same way. Unchanged. A stand-in is still set by a written note. Each person signs in to the webapp, so only the client or the stand-in can approve.
 
@@ -149,16 +149,16 @@ People working with Claude in the Nova BIM Schedule and VKU projects. Shared cha
 - `Teammates' own Claude`: with the company skills
 - `Claude's sandbox`: some tools ran on uploaded copies, not real files
 
-**Today:** People chat with Claude in the Nova BIM Schedule and VKU projects. The client's chats work through the VM. The deputy approved in their own Claude, in the shared project.
+**Today:** People chat with Claude in the Nova BIM Schedule and VKU projects. The client's chats work through the VM. A teammate approved in their own Claude, in the shared project.
 
-**What could change:** Chat moves into the webapp for the client, the deputy and the teammates. A chat page in the webapp, on the same engine as the jobs, with the same words and procedures, such as 'start my tasks for the day'. Each person signs in. Approvals are recorded with name and time. Task Board claims go through the portal's API.
+**What could change:** Chat moves into the webapp for the client and their teammates. A chat page in the webapp, on the same engine as the jobs, with the same words and procedures, such as 'start my tasks for the day'. Each person signs in. Approvals are recorded with name and time. Task Board claims go through the portal's API.
 
 | Part | Currently | Can be optimized | Suggestion | Tag |
 |---|---|---|---|---|
 | Start my tasks for the day | In the Claude app, reading the run log through the VM. | Yes, started from the webapp's chat. | In the webapp's chat. | Webapp |
 | Approvals | Typed in chat. Claude then carries out the exact approved action through the VM, such as the bot's commands. | Yes, the webapp records and carries them out. | Typed in the webapp's chat and recorded with name and time. Only the client or the stand-in can approve. The webapp carries them out. | Webapp |
 | Manual runs | Only when the client asks. | Yes, started from the webapp's chat. | From the webapp's chat, same rule. | Webapp |
-| The deputy and teammates | Their own Claude, on their own computers. | Yes, they sign in to the webapp. | Their own sign-in to the webapp. They keep their own Claude for other work. | Webapp |
+| The client's teammates | Their own Claude, on their own computers. | Yes, they sign in to the webapp. | Their own sign-in to the webapp. They keep their own Claude for other work. | Webapp |
 | Claude app extras (phone app, voice, artifacts) | In the Claude app. | Yes, the webapp's chat works on phones and takes files. | Suggested: the webapp's chat works in a phone's browser, takes files and images, and shows what Claude makes. Voice is added only if the client uses it. | Webapp |
 | Task Board claims | Before changing a shared file, the task is claimed on the Task Board, through a browser signed in as a person, or by a person by hand. | Yes, Claude claims it through the portal's API. | Claude claims it through the portal's API, with its own sign-in. Needs a small portal change. | Webapp |
 | Other chat work | Issue drafts for the client to approve. | Yes, done in the webapp's chat. | The same work in the webapp's chat. | Webapp |

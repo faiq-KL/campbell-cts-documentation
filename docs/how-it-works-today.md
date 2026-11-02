@@ -20,7 +20,7 @@ AI jobs run on timers all day. They file RFIs and submittals, keep the project n
 1. **Timers** start each job. Seven run in the Claude app on the VM, and the heartbeat runs in Claude's cloud.
 2. **The AI** (Claude, signed in as the client) does the job, using the team's skills and reading what it needs.
 3. It **writes the results**: documents and schedule updates in ACC, the tracker page's schedule section, and notes.
-4. It **emails** the client and the deputy, and no one else.
+4. It **emails** the client and their teammate, and no one else.
 5. The three watchers only check for problems. Their alarms start Flow 4.
 
 ## Flow 3: Review, approve and carry out

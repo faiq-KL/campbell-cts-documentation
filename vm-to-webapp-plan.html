@@ -396,7 +396,7 @@ const FLOWS = {
       { id: 'G3', type: 'sched', tl: 'Schedulers ×3', x: X[1], y: 940, title: 'Watchers', desc: 'Timers for three checks. They raise an alarm by email or phone push if something failed (Flow 4).', where: 'Claude account',
         items: [['NOVA102 RFI sweep watchdog (VM)', 'Weekdays 09:05', 'Did the sweep run and send its email?'], ['NOVA102 BIM Assistant run watchdog (VM)', '11:40 and 17:40', 'Did the bot finish and publish?'], ['BIM runner VM heartbeat (cloud)', '12:35 and 19:35', 'Runs in Claude\'s cloud: are the VM\'s jobs still running?']] },
       { id: 'READS', type: 'ext', tl: 'Service', x: X[1], y: 1260, title: 'What the AI reads', desc: 'All read only.', where: 'Outside',
-        items: [['Procore', 'ARCO\'s website: new questions, approvals, reports, schedules. Signed in as the deputy, through the VM\'s Chrome (sweep) or the Claude app\'s browser (memory job)'], ['Microsoft 365 · Teams · Fireflies', 'The client\'s email, Teams chats and recorded meeting notes (Fireflies never used for VKU)'], ['Google Drive', 'connected, but not seen in use'], ['conduit tools', 'the Navisworks model'], ['GitHub', 'checks pages were published (hcg-bim-runner account)'], ['The bot\'s run log', 'in ACC (Flow 1), read by the change-log job and the watchers'], ['Claude\'s task list', 'the watchers check the other jobs ran']] },
+        items: [['Procore', 'ARCO\'s website: new questions, approvals, reports, schedules. Signed in as a teammate, through the VM\'s Chrome (sweep) or the Claude app\'s browser (memory job)'], ['Microsoft 365 · Teams · Fireflies', 'The client\'s email, Teams chats and recorded meeting notes (Fireflies never used for VKU)'], ['Google Drive', 'connected, but not seen in use'], ['conduit tools', 'the Navisworks model'], ['GitHub', 'checks pages were published (hcg-bim-runner account)'], ['The bot\'s run log', 'in ACC (Flow 1), read by the change-log job and the watchers'], ['Claude\'s task list', 'the watchers check the other jobs ran']] },
       { id: 'SKILLS', type: 'skill', tl: 'Skills', x: X[1], y: 1680, title: 'Skills: the AI\'s instructions', desc: 'Instruction packs the AI loads, so every job follows the same procedure.', where: 'Claude account',
         items: [['hcg-bim-assistant-playbook', 'HCG\'s procedures: 13 skills (12 in the company-wide copy)'], ['conduit-aec', '5 skills for working with 3D models'], ['whats-on-my-plate', 'a teammate\'s tasks for the day, from the task board'], ['project-onboarding', 'for new projects. In the repo, not published']] },
       { id: 'AI', type: 'vm', tl: 'AI worker', x: X[2], y: 760, title: 'The AI assistant', desc: 'Claude, signed in as the client. Seven jobs run in the Claude app on the VM, the heartbeat in Claude\'s cloud. It follows each job\'s written instructions without asking.', where: 'On the VM',
@@ -404,8 +404,8 @@ const FLOWS = {
       { id: 'ACC', type: 'ext', tl: 'Service', x: X[3], y: 520, title: 'Project files in ACC / Forma', desc: 'The real project folder (as in Flow 1). The jobs file documents here.', where: 'Outside', items: [['ACC / Forma via Desktop Connector', 'the sync tool'], ['RFI and submittal PDFs', 'read by the sweep, with Bluebeam markups (notes drawn on PDFs)']] },
       { id: 'TRK', type: 'repo', tl: 'Repo', x: X[3], y: 780, title: 'Tracker page', desc: 'Only when ARCO renumbers its schedule: the sweep updates this page\'s schedule section and publishes it.', where: 'In git', items: [['Nova102-Tracker', 'SEED_P6M block in index.html']] },
       { id: 'NOTES', type: 'skill', tl: 'Claude Project', x: X[3], y: 1000, title: 'Project notes: Nova BIM Schedule', desc: 'The AI\'s shared notebook: instructions plus 357 files (sweep results, diary, change log, meeting notes).', where: 'Claude account', items: [['Nova BIM Schedule', 'the Claude Project']] },
-      { id: 'MAIL', type: 'vm', tl: 'Script', x: X[3], y: 1220, title: 'Email sender', desc: 'Script on the VM that sends the jobs\' emails through Amazon. Only to the client and the deputy.', where: 'Not in git', items: [['ses_send.py → Amazon SES']] },
-      { id: 'DAVID', type: 'people', tl: 'People', x: X[4], y: 1220, title: 'The client and the deputy', desc: 'Get the summaries and alerts by email, plus a phone push from the heartbeat.', where: '' }
+      { id: 'MAIL', type: 'vm', tl: 'Script', x: X[3], y: 1220, title: 'Email sender', desc: 'Script on the VM that sends the jobs\' emails through Amazon. Only to the client and their teammate.', where: 'Not in git', items: [['ses_send.py → Amazon SES']] },
+      { id: 'DAVID', type: 'people', tl: 'People', x: X[4], y: 1220, title: 'the client and their teammate', desc: 'Get the summaries and alerts by email, plus a phone push from the heartbeat.', where: '' }
     ],
     edges: [
       ['G1', 'AI', 'starts'], ['G2', 'AI', 'starts'], ['G3', 'AI', 'starts'],
@@ -419,7 +419,7 @@ const FLOWS = {
     nodes: [
       { id: 'HELD', type: 'ext', tl: 'Waiting', x: X[0], y: 30, title: 'Held for a person', desc: 'Unusual results the bot or AI did not write. Listed in run summaries, notes and emails. Nothing is written until someone decides.', where: 'Run log + notes',
         items: [['Register rows', 'a drawing status went down, or a revision disappeared'], ['Scan results', 'progress measured from new scans'], ['Broken page data', 'for example, zero Forma issues. Big jumps are published with a warning instead (a rule the client set)'], ['Finish dates with no PDF yet', 'the model shows the package issued, but its drawing PDF isn\'t in Forma. Once it is, the bot writes the date itself'], ['TimeLiner re-dates', '4D schedule dates to change, from the sweep'], ['Proposed Forma issues', 'from meeting follow-ups'], ['Flags marked "Decision: client"', 'from the project diary']] },
-      { id: 'LEAD', type: 'people', tl: 'People', x: X[1], y: 30, title: 'Project Lead and team', desc: 'The client decides (the deputy has stood in). VKU has its own small team.', where: '' },
+      { id: 'LEAD', type: 'people', tl: 'People', x: X[1], y: 30, title: 'Project Lead and team', desc: 'The client decides (their teammate has stood in). VKU has its own small team.', where: '' },
       { id: 'TRIAD', type: 'people', tl: 'People', x: X[1], y: 760, title: 'Triad signers', desc: 'Six people at Triad who approve, change or reject schedule cards.', where: '' },
       { id: 'LQ', type: 'repo', tl: 'Repo page', x: X[2], y: 420, title: 'Lead Queue', desc: 'One page listing every decision waiting for the client. The client approves, changes, holds or passes on each. The AI then carries it out in chat.', where: 'In git',
         items: [['Nova102-Action-Hub', 'page /lead'], ['lead/seed.json', 'the list, filled by hand from project notes'], ['LEAD_SYNC_CLIENT_ID', 'key for the AI to read it directly: not set up yet']] },
@@ -742,8 +742,8 @@ const PLAN = {
       today: "Three timed AI jobs in the client's Claude account, working through the VM.",
       plan: "The webapp's timer starts them. They use Procore's, Autodesk's, Microsoft's and Fireflies' APIs and write to the webapp's notes. Each one goes live after a side-by-side check against today.",
       parts: [
-        ["RFI and submittal sweep (weekdays 08:24)", "Files new RFIs and submittals from Procore into ACC, then emails a summary.", "Procore through Chrome with the deputy's login, where its only action is asking for cover PDFs. Files into ACC, loads ARCO's schedule updates, writes the sweep note, emails the client and the deputy.", "Procore's and Autodesk's APIs. The same note and email.", "moves", "Webapp", "it uses Procore's and Autodesk's APIs."],
-        ["Project Memory and flags (weekdays 10:45)", "Builds the project memory from email, Teams, meetings and Procore, and emails flags.", "Outlook, Teams, Fireflies and Procore, then the memory files in ACC and the Claude Project. Emails the flags to the client and the deputy.", "Microsoft's, Fireflies' and Procore's APIs. The memory files still go to ACC. The same flags email.", "moves", "Webapp", "it uses Microsoft's, Fireflies' and Procore's APIs."],
+        ["RFI and submittal sweep (weekdays 08:24)", "Files new RFIs and submittals from Procore into ACC, then emails a summary.", "Procore through Chrome with a teammate's login, where its only action is asking for cover PDFs. Files into ACC, loads ARCO's schedule updates, writes the sweep note, emails the client and their teammate.", "Procore's and Autodesk's APIs. The same note and email.", "moves", "Webapp", "it uses Procore's and Autodesk's APIs."],
+        ["Project Memory and flags (weekdays 10:45)", "Builds the project memory from email, Teams, meetings and Procore, and emails flags.", "Outlook, Teams, Fireflies and Procore, then the memory files in ACC and the Claude Project. Emails the flags to the client and their teammate.", "Microsoft's, Fireflies' and Procore's APIs. The memory files still go to ACC. The same flags email.", "moves", "Webapp", "it uses Microsoft's, Fireflies' and Procore's APIs."],
         ["VKU check (:25 in the run windows)", "Checks VKU's bot run, adds to its change log and emails the client.", "Checks VKU's run in Newtron's ACC, the bot's records on the VM and the page builds on GitHub. Appends VKU's change log, emails the client.", "Reads the run in the webapp, ACC and GitHub through their APIs. The same change log and email.", "moves", "Webapp", "it checks the run through the webapp and APIs."]
       ],
       watch: ["Today, the memory job's instructions still use the built-in browser, which lost its Procore sign-in. It may be writing 'Procore not read' every day."]
@@ -755,7 +755,7 @@ const PLAN = {
       plan: "The same jobs, timing, notes and emails.",
       parts: [
         ["Change log (:20, 10:20 to 12:20 and 17:20 to 19:20)", "Writes a note on each bot run into the Claude Project.", "Reads the run log, the bot's database, today's log and the VM's timer, writes into the Claude Project.", "Reads the bot's status in the webapp, writes the same note to the webapp's notes.", "moves", "Webapp", "it reads the webapp's run status and writes to its notes."],
-        ["Meeting prep and follow-up (weekdays, hourly 06:45 to 17:45)", "Preps the client for each meeting by email and saves follow-up issues as notes.", "Calendar, Outlook, Teams, Fireflies and project notes. Emails the client, plus the deputy when they attend. Saves each follow-up's proposed issues as a note in the Claude Project.", "Microsoft's and Fireflies' APIs. The same emails, and the same follow-up notes in the webapp's notes.", "moves", "Webapp", "it uses Microsoft's and Fireflies' APIs."]
+        ["Meeting prep and follow-up (weekdays, hourly 06:45 to 17:45)", "Preps the client for each meeting by email and saves follow-up issues as notes.", "Calendar, Outlook, Teams, Fireflies and project notes. Emails the client, plus their teammate when they attend. Saves each follow-up's proposed issues as a note in the Claude Project.", "Microsoft's and Fireflies' APIs. The same emails, and the same follow-up notes in the webapp's notes.", "moves", "Webapp", "it uses Microsoft's and Fireflies' APIs."]
       ]
     },
     G3: {
@@ -773,10 +773,10 @@ const PLAN = {
     READS: {
       verdict: "moves", size: "M", where: "The webapp",
       lead: "Every connection becomes an official API or a ready-made tool server.",
-      today: "Procore (the deputy's login in Chrome), Microsoft 365 and Fireflies (Claude's connectors in the client's account), the run log in ACC, GitHub (hcg-bim-runner), Claude's task list, and Google Drive (connected, unused).",
+      today: "Procore (a teammate's login in Chrome), Microsoft 365 and Fireflies (Claude's connectors in the client's account), the run log in ACC, GitHub (hcg-bim-runner), Claude's task list, and Google Drive (connected, unused).",
       plan: "Claude's own connectors only work inside claude.ai, so the webapp uses each company's API or its official tool server.",
       parts: [
-        ["Procore", "Read through Chrome on the VM, with the deputy's login.", "Chrome on the VM, the deputy's login.", "Procore's API, once ARCO's Procore admin connects our app.", "moves", "Webapp", "read through Procore's API."],
+        ["Procore", "Read through Chrome on the VM, with a teammate's login.", "Chrome on the VM, a teammate's login.", "Procore's API, once ARCO's Procore admin connects our app.", "moves", "Webapp", "read through Procore's API."],
         ["Outlook, Teams, calendar", "Read through Claude's Microsoft 365 connector.", "Claude's Microsoft 365 connector, read only.", "Microsoft's API, with the client's consent.", "moves", "Webapp", "read through Microsoft's API."],
         ["Fireflies", "Meeting notes, read through Claude's connector.", "Claude's connector.", "Fireflies' official tool server, with the client's key. Never for VKU.", "moves", "Webapp", "read through Fireflies' own tool server."],
         ["GitHub", "Read on the VM, signed in as hcg-bim-runner.", "Signed in as hcg-bim-runner on the VM.", "GitHub's API, with the webapp's own access.", "moves", "Webapp", "read through GitHub's API."],
@@ -855,7 +855,7 @@ const PLAN = {
     MAIL: {
       verdict: "moves", size: "S", where: "The webapp",
       lead: "The jobs' emails are sent by the webapp through Amazon's email, from the same sender to the same people.",
-      today: "ses_send.py on the VM, not in git, sends through Amazon's email, only to the client and the deputy.",
+      today: "ses_send.py on the VM, not in git, sends through Amazon's email, only to the client and their teammate.",
       plan: "The same emails, sent by the webapp. The script is saved to a repo.",
       parts: [
         ["Email script (ses_send.py)", "Sends the emails from the VM, and is not in git.", "On the VM, not in git.", "Saved to a repo. The webapp sends the same emails.", "moves", "Webapp", "the webapp sends the emails."]
@@ -863,7 +863,7 @@ const PLAN = {
     },
     DAVID: {
       verdict: "same", size: "S", where: "As today",
-      lead: "The client and the deputy get the same emails, plus the heartbeat's push.",
+      lead: "The client and their teammate get the same emails, plus the heartbeat's push.",
       today: "Summaries and alerts by email, plus a phone push from the heartbeat.",
       plan: "Unchanged.",
       parts: [
@@ -893,7 +893,7 @@ const PLAN = {
     LEAD: {
       verdict: "same", size: "S", where: "As today",
       lead: "The same people decide in the same way.",
-      today: "The client decides. The deputy has stood in through a written note. VKU has its own small team.",
+      today: "The client decides. The client's teammate has stood in through a written note. VKU has its own small team.",
       plan: "Unchanged. A stand-in is still set by a written note. Each person signs in to the webapp, so only the client or the stand-in can approve.",
       parts: [
         ["Stand-in", "Set by a written note from the client, kept in the project notes.", "A written note from the client, kept in the project notes.", "The same note, kept with the notes in git. The webapp follows it, so only the client or the stand-in can approve.", "moves", "Webapp", "the webapp checks who may approve."]
@@ -941,14 +941,14 @@ const PLAN = {
     },
     CHAT: {
       verdict: "moves", size: "L", where: "The webapp",
-      lead: "Chat moves into the webapp for the client, the deputy and the teammates.",
-      today: "People chat with Claude in the Nova BIM Schedule and VKU projects. The client's chats work through the VM. The deputy approved in their own Claude, in the shared project.",
+      lead: "Chat moves into the webapp for the client and their teammates.",
+      today: "People chat with Claude in the Nova BIM Schedule and VKU projects. The client's chats work through the VM. A teammate approved in their own Claude, in the shared project.",
       plan: "A chat page in the webapp, on the same engine as the jobs, with the same words and procedures, such as 'start my tasks for the day'. Each person signs in. Approvals are recorded with name and time. Task Board claims go through the portal's API.",
       parts: [
         ["Start my tasks for the day", "Starts the day in the Claude app, reading the run log through the VM.", "In the Claude app, reading the run log through the VM.", "In the webapp's chat.", "moves", "Webapp", "started from the webapp's chat."],
         ["Approvals", "Typed in chat, then Claude carries out exactly what was approved.", "Typed in chat. Claude then carries out the exact approved action through the VM, such as the bot's commands.", "Typed in the webapp's chat and recorded with name and time. Only the client or the stand-in can approve. The webapp carries them out.", "moves", "Webapp", "the webapp records and carries them out."],
         ["Manual runs", "Started from chat, only when the client asks.", "Only when the client asks.", "From the webapp's chat, same rule.", "moves", "Webapp", "started from the webapp's chat."],
-        ["The deputy and teammates", "Use their own Claude on their own computers.", "Their own Claude, on their own computers.", "Their own sign-in to the webapp. They keep their own Claude for other work.", "moves", "Webapp", "they sign in to the webapp."],
+        ["The client's teammates", "Use their own Claude on their own computers.", "Their own Claude, on their own computers.", "Their own sign-in to the webapp. They keep their own Claude for other work.", "moves", "Webapp", "they sign in to the webapp."],
         ["Claude app extras (phone app, voice, artifacts)", "The phone app, voice and artifacts in the Claude app.", "In the Claude app.", "Suggested: the webapp's chat works in a phone's browser, takes files and images, and shows what Claude makes. Voice is added only if the client uses it.", "open", "Webapp", "the webapp's chat works on phones and takes files."],
         ["Task Board claims", "A task is claimed on the Task Board before a shared file changes.", "Before changing a shared file, the task is claimed on the Task Board, through a browser signed in as a person, or by a person by hand.", "Claude claims it through the portal's API, with its own sign-in. Needs a small portal change.", "moves", "Webapp", "Claude claims it through the portal's API."],
         ["Other chat work", "Drafts issues for the client to approve.", "Issue drafts for the client to approve.", "The same work in the webapp's chat.", "moves", "Webapp", "done in the webapp's chat."],
@@ -1107,11 +1107,11 @@ const CARD_TEXT = {
     TRK: ["Update the tracker page", "When ARCO renumbers its schedule, the tracker page's schedule links are updated."],
     NOTES: ["Keep the project notes", "357 notes in the Claude Project that the AI reads and writes for every chat and job."],
     MAIL: ["Send the emails", "A small script on the VM sends the AI jobs' emails through Amazon."],
-    DAVID: ["Receive summaries and alerts", "The client and the deputy get the jobs' summaries and alerts by email and phone."]
+    DAVID: ["Receive summaries and alerts", "The client and their teammate get the jobs' summaries and alerts by email and phone."]
   },
   people: {
     HELD: ["Hold risky changes for a person", "Risky changes wait here until the client approves them."],
-    LEAD: ["Make the project decisions", "The client makes the project decisions, and a deputy can stand in."],
+    LEAD: ["Make the project decisions", "The client makes the project decisions, and their teammate can stand in."],
     TRIAD: ["Sign off schedule cards", "Six people at Triad approve schedule cards on their sign-off page."],
     LQ: ["Queue decisions for the client", "The Lead Queue page lists 137 decisions waiting for the client."],
     HUBD: ["Record Triad's sign-offs", "A page that saves each Triad sign-off, which Claude applies after the client approves."],
