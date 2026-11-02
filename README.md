@@ -4,7 +4,7 @@ Documentation for moving Campbell CTS production off the VM and into the webapp.
 
 ## Pages
 
-- [VM to Webapp Plan](vm-to-webapp-plan.html): how production works today, in seven flows. The top shows how many nodes in flows 1 to 4 could move to the webapp, stay on the VM or are not needed, and how many points have each priority. Click any node to see each point in one line, whether it can be optimized, where it would run (Webapp, VM or Not needed) and its priority. Priorities are saved in your browser only.
+- [VM to Webapp Plan](vm-to-webapp-plan.html): how production works today, in seven flows. The top shows how many nodes in flows 1 to 4 could move to the webapp, stay on the VM or are not needed, and how many nodes have each priority. Click any node to see each of its points in one line, whether it can be optimized and why, and where it would run (Webapp, VM or Not needed). Set the node's priority at the top of its dialog. Priorities are saved in your browser only.
 
 ## Docs
 

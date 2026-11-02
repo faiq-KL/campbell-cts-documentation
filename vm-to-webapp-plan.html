@@ -159,15 +159,15 @@ dialog#card::backdrop { background: rgba(0, 0, 0, .55); }
 .dh h2 { font-size: 22px; margin-top: 4px; }
 .dh p { margin: 4px 0 0; color: var(--muted); max-width: 72ch; }
 .tw { overflow-x: auto; border: 1px solid var(--node-line); border-radius: 10px; }
-.tw table { width: 100%; min-width: 560px; border-collapse: collapse; font-size: 14px; line-height: 1.45; }
+.tw table { width: 100%; min-width: 480px; border-collapse: collapse; font-size: 14px; line-height: 1.45; }
 .tw th { text-align: left; font: 600 11px var(--mono); letter-spacing: .07em; text-transform: uppercase; color: var(--muted); padding: 10px 12px; border-bottom: 1px solid var(--node-line); }
 .tw td { padding: 10px 12px; border-top: 1px solid var(--node-line); vertical-align: top; }
 .tw tbody tr:first-child td { border-top: 0; }
-.tw td:nth-child(1) { width: 50%; color: var(--muted); }
+.tw td:nth-child(1) { width: 55%; color: var(--muted); }
 .tw td:nth-child(1) b { color: var(--fg); font-weight: 600; }
-.tw td:nth-child(3) { width: 1%; }
 .tg { display: block; width: fit-content; margin-top: 6px; font: 600 10.5px/1.7 var(--mono); letter-spacing: .05em; text-transform: uppercase; color: var(--fg); background: var(--bg); border: 1px solid var(--node-line); border-radius: 99px; padding: 0 8px; }
-.tw select { font: 500 13px var(--sans); color: var(--fg); background: var(--bg); border: 1px solid var(--node-line); border-radius: 6px; padding: 5px 8px; }
+.prio { display: flex; gap: 8px; align-items: center; margin-top: 10px; font: 600 11px var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.dbody select { font: 500 13px var(--sans); color: var(--fg); background: var(--bg); border: 1px solid var(--node-line); border-radius: 6px; padding: 5px 8px; }
 .dbody h3 { margin: 0; font: 600 12px var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
 .refs { margin: 0; padding-left: 20px; display: grid; gap: 4px; }
 .refs a { color: var(--c-ext); }
@@ -1380,23 +1380,30 @@ const PRIORITIES = [['', 'None'], ['high', 'High'], ['medium', 'Medium'], ['low'
 // ponytail: priorities are kept in this browser only. Sharing them needs a backend or the docs.
 let fromMap = false, priorities = {};
 try { priorities = JSON.parse(localStorage.getItem('priorities')) || {}; } catch (e) {}
+const savePriorities = () => { try { localStorage.setItem('priorities', JSON.stringify(priorities)); } catch (e) {} };
+// Priorities used to be set per point (flow/card/part). Each card keeps the highest one its points had.
+const RANK = { high: 3, medium: 2, low: 1 };
+for (const [k, v] of Object.entries(priorities)) {
+  const m = /^(\w+\/\w+)\//.exec(k);
+  if (!m) continue;
+  if ((RANK[v] || 0) > (RANK[priorities[m[1]]] || 0)) priorities[m[1]] = v;
+  delete priorities[k];
+}
+savePriorities();
 
 function openFromMap(key, id) {
   fromMap = true;
   location.hash = 'card/' + key + '/' + id;
 }
 
-// A card's points: [part, what it does now in one line, Yes or No with a short reason, where it would run,
-// can it be optimized]. The full suggestion is in the card docs. Cards in flows not explored yet show each
-// item that says something beyond its name.
+// A card's points: [part, what it does now in one line, Yes or No with a short reason, where it would run].
+// The full suggestion is in the card docs. Cards in flows not explored yet show each item that says
+// something beyond its name.
 function points(key, n) {
   const p = (PLAN[key] || {})[n.id];
-  if (p) return p.parts.map(([part, line, , , verdict, where, why]) => {
-    const yes = verdict !== 'same';
-    return [part, line, (yes ? 'Yes' : 'No') + (why ? ', ' + why : ''), where, yes];
-  });
+  if (p) return p.parts.map(([part, line, , , verdict, where, why]) => [part, line, (verdict === 'same' ? 'No' : 'Yes') + (why ? ', ' + why : ''), where]);
   const sched = n.type === 'sched';
-  return (n.items || []).map(([a, b, c]) => [a, sched ? [b, c].filter(Boolean).join('. ') : b || '', 'Not explored yet', '', false]).filter(r => r[1]);
+  return (n.items || []).map(([a, b, c]) => [a, sched ? [b, c].filter(Boolean).join('. ') : b || '', 'Not explored yet', '']).filter(r => r[1]);
 }
 const tag = t => t ? '<span class="tg">' + esc(t) + '</span>' : '';
 
@@ -1404,42 +1411,42 @@ function render(key, id) {
   const n = FLOWS[key].nodes.find(m => m.id === id);
   const sec = document.getElementById('flow-' + key);
   const flow = sec.querySelector('.tag').textContent + ': ' + sec.querySelector('h2').textContent;
-  const rows = points(key, n).map(([part, line, can, where, yes]) => {
-    const pk = key + '/' + id + '/' + part;
-    return '<tr><td><b>' + esc(part) + '</b><br>' + esc(line) + '</td><td>' + esc(can) + tag(where) + '</td><td>' +
-      (yes ? '<select data-pk="' + esc(pk) + '" aria-label="Priority for ' + esc(part) + '">' +
-        PRIORITIES.map(([v, t]) => '<option value="' + v + '"' + ((priorities[pk] || '') === v ? ' selected' : '') + '>' + t + '</option>').join('') +
-        '</select>' : '') + '</td></tr>';
-  }).join('');
+  const rows = points(key, n).map(([part, line, can, where]) =>
+    '<tr><td><b>' + esc(part) + '</b><br>' + esc(line) + '</td><td>' + esc(can) + tag(where) + '</td></tr>').join('');
+  // One priority per card, only in the flows worked out so far, so the counter adds up to their nodes.
+  const pk = key + '/' + id;
+  const prio = PLAN[key] ? '<label class="prio">Priority <select>' +
+    PRIORITIES.map(([v, t]) => '<option value="' + v + '"' + ((priorities[pk] || '') === v ? ' selected' : '') + '>' + t + '</option>').join('') +
+    '</select></label>' : '';
   const refs = [['Card details', 'cards/' + slug(flow) + '.md#' + slug(n.title)], ['How it works today', 'how-it-works-today.md#' + slug(flow)]]
     .concat(PLAN[key] ? [['Suggestions and needs', 'suggestions-and-needs.md#' + slug(flow)]] : []);
   dlg.innerHTML = '<div class="dbody"><header class="dh"><div><span class="tag">' + esc(flow) + '</span><h2 id="card-title">' + esc(n.title) + '</h2>' +
-    (n.line ? '<p>' + esc(n.line) + '</p>' : '') + '</div>' +
+    (n.line ? '<p>' + esc(n.line) + '</p>' : '') + prio + '</div>' +
     '<button type="button" class="btn" data-close aria-label="Close">✕</button></header>' +
-    (rows ? '<div class="tw"><table><thead><tr><th>Currently</th><th>Can be optimized</th><th>Priority</th></tr></thead><tbody>' + rows + '</tbody></table></div>'
+    (rows ? '<div class="tw"><table><thead><tr><th>Currently</th><th>Can be optimized</th></tr></thead><tbody>' + rows + '</tbody></table></div>'
       : '<p class="muted">Not explored yet.</p>') +
     '<h3>References</h3><ul class="refs">' + refs.map(([t, u]) => '<li><a href="' + DOCS + u + '" target="_blank" rel="noopener">' + t + '</a></li>').join('') + '</ul></div>';
   dlg.querySelector('[data-close]').onclick = () => dlg.close();
-  dlg.querySelectorAll('select').forEach(sel => sel.onchange = () => {
-    if (sel.value) priorities[sel.dataset.pk] = sel.value; else delete priorities[sel.dataset.pk];
-    try { localStorage.setItem('priorities', JSON.stringify(priorities)); } catch (e) {}
+  const sel = dlg.querySelector('.prio select');
+  if (sel) sel.onchange = () => {
+    if (sel.value) priorities[pk] = sel.value; else delete priorities[pk];
+    savePriorities();
     stats();
-  });
+  };
 }
 
-// The counts at the top of the page: where the cards of flows 1 to 4 would go, and how many of the points
-// that can be optimized have each priority in this browser.
+// The counts at the top of the page: where the nodes of flows 1 to 4 would go, and how many of them have
+// each priority in this browser.
 const PLACES = [['moves', 'suggested for the webapp'], ['windows', 'stay on the VM'], ['goes', 'not needed'], ['same', 'stay as they are']];
-const OPTIMIZABLE = Object.entries(PLAN).flatMap(([k, cards]) => Object.entries(cards).flatMap(([id, p]) =>
-  p.parts.filter(r => r[4] !== 'same').map(r => k + '/' + id + '/' + r[0])));
+const NODES = Object.entries(PLAN).flatMap(([k, cards]) => Object.keys(cards).map(id => k + '/' + id));
 function stats() {
   const cards = Object.values(PLAN).flatMap(Object.values);
   const tile = (n, t) => '<div class="stat"><b>' + n + '</b><span>' + t + '</span></div>';
-  const set = OPTIMIZABLE.map(pk => priorities[pk] || '');
+  const set = NODES.map(pk => priorities[pk] || '');
   document.getElementById('stats').innerHTML =
     '<div><h3>Nodes in flows 1 to 4</h3><div class="tiles">' + tile(cards.length, 'in total') +
     PLACES.map(([v, t]) => tile(cards.filter(p => p.verdict === v).length, t)).join('') + '</div></div>' +
-    '<div><h3>Points that can be optimized</h3><div class="tiles">' + tile(OPTIMIZABLE.length, 'in total') +
+    '<div><h3>Nodes by priority</h3><div class="tiles">' + tile(NODES.length, 'in total') +
     [...PRIORITIES.slice(1), PRIORITIES[0]].map(([v, t]) => tile(set.filter(x => x === v).length, t.toLowerCase())).join('') + '</div></div>';
 }
 stats();
