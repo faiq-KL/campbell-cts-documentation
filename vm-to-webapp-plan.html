@@ -127,8 +127,7 @@ code { background: var(--chip); }
 .tiles { display: flex; flex-wrap: wrap; gap: 8px; }
 .stat { display: grid; gap: 2px; min-width: 120px; padding: 10px 14px; background: var(--panel); border: 1px solid var(--node-line); border-radius: 10px; }
 .stat b { font: 600 22px var(--sans); }
-.stat span, .stats .note { font-size: 13px; color: var(--muted); }
-.stats .note { margin: 0; }
+.stat span { font-size: 13px; color: var(--muted); }
 .top { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; justify-content: space-between; }
 .theme { display: inline-flex; border: 1px solid var(--node-line); border-radius: 8px; overflow: hidden; }
 .theme button { font: 500 14px var(--sans); color: var(--muted); background: var(--panel); border: 0; padding: 7px 14px; cursor: pointer; }
@@ -1431,8 +1430,7 @@ function stats() {
   document.getElementById('stats').innerHTML =
     '<h3>Nodes in flows 1 to 4</h3><div class="tiles">' + tile(cards.length, 'In total') +
     PLACES.map(([v, t]) => tile(cards.filter(p => p.verdict === v).length, t)).join('') + '</div>' +
-    '<h3>Priorities</h3><div class="tiles">' + [...PRIORITIES.slice(1), PRIORITIES[0]].map(([v, t]) => tile(set.filter(x => x === v).length, t)).join('') + '</div>' +
-    '<p class="muted note">Out of the ' + OPTIMIZABLE.length + ' points that can be optimized. Saved in this browser only.</p>';
+    '<h3>Priorities</h3><div class="tiles">' + [...PRIORITIES.slice(1), PRIORITIES[0]].map(([v, t]) => tile(set.filter(x => x === v).length, t)).join('') + '</div>';
 }
 stats();
 
