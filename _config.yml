@@ -1,0 +1,3 @@
+# The team docs stay in the repo. The public site publishes only the pages.
+exclude:
+  - docs
