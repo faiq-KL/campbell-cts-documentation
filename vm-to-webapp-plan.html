@@ -1,0 +1,1623 @@
+<title>VM to Webapp Plan</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a word list, then seven left-to-right workflow canvases (n8n style) with numbered steps, then what is still needed from the VM. Deliberately single dark theme. */
+:root {
+  --bg: #17191c;
+  --panel: #1f2226;
+  --node: #262a2f;
+  --node-line: #3a4047;
+  --fg: #e6e8eb;
+  --muted: #9aa2ac;
+  --dot: #2c3036;
+  --c-repo: #3fb37f;
+  --c-sched: #f0a030;
+  --c-skill: #9b8cf8;
+  --c-ext: #5aa2e6;
+  --c-vm: #e8685a;
+  --c-people: #d68ad6;
+  --sans: "IBM Plex Sans", "Segoe UI", Arial, sans-serif;
+  --mono: "IBM Plex Mono", Consolas, monospace;
+  color-scheme: dark;
+}
+body {
+  background: var(--bg); color: var(--fg); font-family: var(--sans); font-size: 15px; line-height: 1.5;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 24px 64px;
+}
+.wrap { display: grid; gap: 30px; max-width: 1500px; margin: 0 auto; }
+h1 { font-weight: 700; font-size: clamp(24px, 4vw, 34px); margin: 0; line-height: 1.15; text-wrap: balance; }
+h2 { font-weight: 700; font-size: 22px; margin: 0; text-wrap: balance; }
+p { margin: 0; max-width: 75ch; }
+.muted { color: var(--muted); }
+code { font: 13px var(--mono); background: rgba(255,255,255,.06); padding: 1px 5px; border-radius: 4px; }
+.toc { display: flex; flex-wrap: wrap; gap: 8px; }
+.toc a { font: 500 13px var(--sans); color: var(--fg); text-decoration: none; background: var(--panel); border: 1px solid var(--node-line); border-radius: 99px; padding: 5px 12px; }
+.toc a:hover { border-color: var(--muted); }
+.toc a:focus-visible { outline: 2px solid var(--c-ext); outline-offset: 2px; }
+.legend { display: flex; flex-wrap: wrap; gap: 8px 16px; font-size: 13px; color: var(--muted); }
+.legend span { display: inline-flex; align-items: center; gap: 7px; }
+.legend i { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }
+.words { display: grid; gap: 12px; border-top: 1px solid var(--node-line); padding-top: 24px; scroll-margin-top: 12px; }
+.gloss { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 330px), 1fr)); gap: 8px 24px; margin: 0; }
+.gloss div { font-size: 14px; color: var(--muted); line-height: 1.45; }
+.gloss dt { display: inline; color: var(--fg); font-weight: 600; }
+.gloss dd { display: inline; margin: 0; }
+.flow { display: grid; gap: 12px; border-top: 1px solid var(--node-line); padding-top: 24px; scroll-margin-top: 12px; }
+.flow-head { display: flex; flex-wrap: wrap; gap: 10px 18px; align-items: end; justify-content: space-between; }
+.flow-head > div { display: grid; gap: 4px; min-width: 0; }
+.tag { font: 600 12px var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--c-sched); }
+ol.how { margin: 6px 0 0; padding-left: 22px; display: grid; gap: 3px; color: var(--muted); max-width: 100ch; }
+ol.how b { color: var(--fg); font-weight: 600; }
+.zoom { display: flex; gap: 6px; }
+.zoom button { font: 500 13px var(--sans); color: var(--fg); background: var(--panel); border: 1px solid var(--node-line); border-radius: 6px; padding: 6px 11px; cursor: pointer; min-width: 38px; }
+.zoom button:hover { border-color: var(--muted); }
+.zoom button:focus-visible { outline: 2px solid var(--c-ext); outline-offset: 2px; }
+.zoom output { font: 13px var(--mono); color: var(--muted); align-self: center; min-width: 46px; text-align: right; }
+.viewport { position: relative; max-height: 80vh; min-height: 300px; overflow: auto; border: 1px solid var(--node-line); border-radius: 10px; background-color: var(--bg); background-image: radial-gradient(var(--dot) 1.2px, transparent 1.2px); background-size: 22px 22px; cursor: grab; }
+.viewport.dragging { cursor: grabbing; }
+.sizer { position: relative; }
+.canvas { position: absolute; left: 0; top: 0; transform-origin: 0 0; }
+svg.edges { position: absolute; left: 0; top: 0; overflow: visible; pointer-events: none; }
+svg.edges path { fill: none; stroke-width: 2.2; opacity: .8; transition: opacity .15s; }
+svg.edges path.dash { stroke-dasharray: 7 6; }
+svg.edges circle.port { fill: var(--bg); stroke-width: 2; transition: opacity .15s; }
+.elabel { position: absolute; transform: translate(-50%, -50%); font: 11px/1.25 var(--mono); color: var(--fg); background: var(--bg); border: 1px solid var(--node-line); border-radius: 5px; padding: 2px 6px; max-width: 100px; width: max-content; text-align: center; pointer-events: none; transition: opacity .15s; }
+.node { position: absolute; width: 280px; background: var(--node); border: 1px solid var(--node-line); border-radius: 10px; padding: 11px 13px 13px; display: grid; gap: 5px; cursor: pointer; box-shadow: 0 2px 12px rgba(0,0,0,.35); transition: opacity .15s, border-color .15s; }
+.node:hover { border-color: var(--muted); }
+.node:focus-visible { outline: 2px solid var(--c-ext); outline-offset: 3px; }
+.node .nh { display: flex; align-items: center; gap: 8px; }
+.node .ic { width: 26px; height: 26px; border-radius: 6px; display: grid; place-items: center; flex: none; }
+.node .ic svg { width: 15px; height: 15px; }
+.node .ty { font: 600 11px var(--mono); letter-spacing: .07em; text-transform: uppercase; }
+.node .wh { margin-left: auto; font: 10px var(--mono); color: var(--muted); border: 1px solid var(--node-line); border-radius: 99px; padding: 1px 7px; white-space: nowrap; }
+.node .wh.risk { color: #f3b1a8; border-color: #6b3a35; }
+.se { font: 700 10.5px/1.7 var(--mono); letter-spacing: .08em; padding: 0 8px; border-radius: 99px; }
+.se-start { background: #8fe3b0; color: #0f2a1a; }
+.se-end { background: var(--fg); color: var(--bg); }
+.node .se { position: absolute; top: -11px; left: 12px; }
+.node .nt { font-weight: 600; font-size: 16px; line-height: 1.25; }
+.node .nd { font-size: 13px; color: var(--muted); line-height: 1.4; }
+.node ul { list-style: none; margin: 2px 0 0; padding: 0; display: grid; gap: 4px; }
+.node li { font: 11.5px var(--mono); color: var(--fg); background: rgba(255,255,255,.05); border-radius: 4px; padding: 3px 6px; overflow-wrap: anywhere; display: grid; gap: 1px; }
+.node li small { font: 11px var(--mono); color: var(--c-sched); }
+.node li em { font: normal 11.5px var(--sans); color: var(--muted); line-height: 1.35; }
+.t-repo .ic { background: color-mix(in srgb, var(--c-repo) 22%, transparent); color: var(--c-repo); } .t-repo .ty { color: var(--c-repo); } .t-repo { border-left: 3px solid var(--c-repo); }
+.t-sched .ic { background: color-mix(in srgb, var(--c-sched) 22%, transparent); color: var(--c-sched); } .t-sched .ty { color: var(--c-sched); } .t-sched { border-left: 3px solid var(--c-sched); }
+.t-skill .ic { background: color-mix(in srgb, var(--c-skill) 22%, transparent); color: var(--c-skill); } .t-skill .ty { color: var(--c-skill); } .t-skill { border-left: 3px solid var(--c-skill); }
+.t-ext .ic { background: color-mix(in srgb, var(--c-ext) 22%, transparent); color: var(--c-ext); } .t-ext .ty { color: var(--c-ext); } .t-ext { border-left: 3px solid var(--c-ext); }
+.t-vm .ic { background: color-mix(in srgb, var(--c-vm) 22%, transparent); color: var(--c-vm); } .t-vm .ty { color: var(--c-vm); } .t-vm { border-left: 3px solid var(--c-vm); }
+.t-people .ic { background: color-mix(in srgb, var(--c-people) 22%, transparent); color: var(--c-people); } .t-people .ty { color: var(--c-people); } .t-people { border-left: 3px solid var(--c-people); }
+.canvas.focus .node:not(.on) { opacity: .22; }
+.canvas.focus svg.edges path:not(.on), .canvas.focus svg.edges circle.port:not(.on) { opacity: .06; }
+.canvas.focus .elabel:not(.on) { opacity: 0; }
+.canvas.focus svg.edges path.on { opacity: 1; stroke-width: 2.8; }
+.missing { display: grid; gap: 26px; border-top: 1px solid var(--node-line); padding-top: 26px; scroll-margin-top: 12px; }
+.mgroup { display: grid; gap: 10px; }
+.mgroup h3 { margin: 0; font-size: 17px; font-weight: 600; }
+ol.mlist { margin: 0; padding: 0; list-style: none; display: grid; border: 1px solid var(--node-line); border-radius: 8px; overflow: hidden; counter-reset: m var(--start, 0); }
+ol.mlist li { counter-increment: m; display: grid; grid-template-columns: 34px minmax(0, 1fr); gap: 12px; padding: 12px 14px; border-bottom: 1px solid var(--node-line); background: var(--panel); align-items: start; }
+ol.mlist li:last-child { border-bottom: 0; }
+ol.mlist li::before { content: counter(m); font: 12px var(--mono); color: var(--muted); padding-top: 2px; }
+ol.mlist .w { min-width: 0; display: grid; gap: 4px; }
+ol.mlist .w b { font-weight: 600; }
+ol.mlist .w p { color: var(--muted); font-size: 14px; max-width: 110ch; }
+ol.mlist .w p i { font-style: normal; font-weight: 600; color: var(--fg); margin-right: 6px; }
+ol.mlist .w code { font: 12px var(--mono); color: var(--fg); overflow-wrap: anywhere; }
+@media (max-width: 720px) {
+  ol.mlist li { grid-template-columns: 28px minmax(0, 1fr); }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+/* Plan page additions: verdict tags on the cards, the Flow 1 summary, and the details screen. */
+[hidden] { display: none !important; }
+.vd { font: 700 10.5px/1.7 var(--mono); letter-spacing: .05em; text-transform: uppercase; padding: 0 7px; border-radius: 99px; border: 1px solid; white-space: nowrap; }
+.v-moves { color: #8fe3b0; border-color: #2f7a52; background: #13291d; }
+.v-windows { color: #c4b8ff; border-color: #5b4fa8; background: #1e1a33; }
+.v-open { color: #f5c46b; border-color: #8a6420; background: #2a2010; }
+.v-same { color: #9cc8f2; border-color: #2f5f8f; background: #142334; }
+.v-goes { color: #c3c9d0; border-color: #59616b; background: #24282d; }
+.v-parked, .v-dropped, .v-unused { color: var(--muted); border-color: var(--node-line); background: var(--bg); }
+.v-parked { border-style: dashed; }
+.node .vds { position: absolute; top: -11px; right: 12px; display: flex; gap: 4px; }
+.node .go { font: 500 12px var(--sans); color: var(--c-ext); margin-top: 3px; }
+.node:hover .go { text-decoration: underline; }
+.vlegend .vd { margin-right: 3px; }
+.vlegend b { color: var(--fg); font-weight: 600; }
+.plan { display: grid; gap: 14px; background: var(--panel); border: 1px solid var(--node-line); border-radius: 10px; padding: 18px; scroll-margin-top: 12px; }
+.plan h3 { margin: 0; font-size: 18px; font-weight: 700; }
+.paths { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); gap: 12px; }
+.path { border: 1px solid #5b4fa8; border-radius: 8px; padding: 12px 14px; display: grid; gap: 4px; align-content: start; background: #1e1a33; }
+.path b { color: #c4b8ff; }
+.path small { color: var(--muted); font-size: 13px; }
+.wrap { grid-template-columns: minmax(0, 1fr); gap: 14px; }
+details.sec, details.flow, details.words, details.missing { display: block; border-top: 1px solid var(--node-line); padding-top: 14px; }
+details > summary { cursor: pointer; list-style: none; display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; }
+details > summary::-webkit-details-marker { display: none; }
+details > summary::before { content: "\25B8"; color: var(--muted); font-size: 14px; width: 12px; }
+details[open] > summary::before { content: "\25BE"; }
+details[open] > summary { margin-bottom: 14px; }
+details > summary h2 { font-size: 19px; }
+details > summary:focus-visible { outline: 2px solid var(--c-ext); outline-offset: 3px; border-radius: 4px; }
+details.flow[open] > * + *, details.missing[open] > * + * { margin-top: 14px; }
+.how-h { margin: 0; font: 600 12px var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.state { font: 700 10.5px/1.7 var(--mono); letter-spacing: .05em; text-transform: uppercase; padding: 0 7px; border-radius: 99px; border: 1px solid var(--node-line); color: var(--muted); }
+.state.done { color: #8fe3b0; border-color: #2f7a52; background: #13291d; }
+.flow-head > .zoom { display: flex; gap: 6px; align-items: center; }
+#howto .legend + .legend, #howto .src { margin-top: 10px; }
+.notes { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 12px; }
+.note { border: 1px solid var(--node-line); border-radius: 8px; padding: 12px 14px; display: grid; gap: 6px; align-content: start; background: var(--panel); }
+.note h3, .note h4 { margin: 0; font: 600 12px var(--mono); letter-spacing: .08em; text-transform: uppercase; }
+.note ul, .note ol { margin: 0; padding-left: 20px; display: grid; gap: 4px; font-size: 14px; }
+.note.watch { border-color: #8a6420; } .note.watch h3 { color: #f5c46b; }
+.plan > ul { margin: 0; padding-left: 20px; display: grid; gap: 8px; max-width: 100ch; }
+.plan > p { max-width: 100ch; }
+.note.need { border-color: #2f5f8f; } .note.need h3, .note.need h4 { color: #9cc8f2; }
+.note.ask { border-color: #5b4fa8; } .note.ask h3, .note.ask h4 { color: #c4b8ff; }
+.detail { max-width: 1160px; margin: 0 auto; display: grid; gap: 22px; }
+.dnav { display: flex; flex-wrap: wrap; gap: 8px; justify-content: space-between; align-items: center; }
+.dnav .pn { display: flex; flex-wrap: wrap; gap: 8px; min-width: 0; }
+.btn { font: 500 14px var(--sans); color: var(--fg); background: var(--panel); border: 1px solid var(--node-line); border-radius: 8px; padding: 8px 14px; cursor: pointer; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.btn:hover:not([disabled]) { border-color: var(--muted); }
+.btn:focus-visible { outline: 2px solid var(--c-ext); outline-offset: 2px; }
+.btn[disabled] { opacity: .4; cursor: default; }
+.dhead { display: grid; gap: 6px; }
+.dhead h1:focus { outline: none; }
+.dhead .chips { display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center; }
+.size { font: 12px var(--mono); color: var(--muted); }
+.lead { font-size: 17px; max-width: 85ch; }
+.cmp { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.box { background: var(--panel); border: 1px solid var(--node-line); border-radius: 10px; padding: 14px 16px; display: grid; gap: 8px; align-content: start; }
+.box h3, .part h2 { margin: 0; font: 600 12px var(--mono); letter-spacing: .08em; text-transform: uppercase; }
+.box.today h3, .part h2 { color: var(--muted); }
+.box.ours { border-color: #2f7a52; }
+.box.ours h3 { color: #8fe3b0; }
+.box.pending { border-style: dashed; }
+.lives { font: 12px var(--mono); color: var(--muted); }
+.orig { background: var(--node); border: 1px solid var(--node-line); border-radius: 10px; padding: 14px 16px; display: grid; gap: 10px; }
+.orig .oh { display: flex; align-items: center; gap: 8px; }
+.orig .ic { width: 26px; height: 26px; border-radius: 6px; display: grid; place-items: center; flex: none; }
+.orig .ic svg { width: 15px; height: 15px; }
+.orig .ty { font: 600 11px var(--mono); letter-spacing: .07em; text-transform: uppercase; }
+.orig .wh { margin-left: auto; font: 11px var(--mono); color: var(--muted); border: 1px solid var(--node-line); border-radius: 99px; padding: 1px 8px; white-space: nowrap; }
+.orig > p { max-width: 90ch; }
+.orig ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.orig li { font: 13px var(--mono); background: rgba(255,255,255,.05); border-radius: 6px; padding: 7px 10px; display: grid; gap: 2px; overflow-wrap: anywhere; }
+.orig li b { font-weight: 500; }
+.orig li small { font: 12px var(--mono); color: var(--c-sched); }
+.orig li em { font: normal 14px/1.45 var(--sans); color: var(--muted); }
+.part { display: grid; gap: 10px; }
+.parts { display: grid; border: 1px solid var(--node-line); border-radius: 10px; overflow: hidden; }
+.prow { display: grid; grid-template-columns: minmax(150px, 1fr) 1.5fr 1.8fr 116px; gap: 14px; padding: 11px 14px; border-bottom: 1px solid var(--node-line); background: var(--panel); font-size: 14px; line-height: 1.45; }
+.opts .prow { grid-template-columns: minmax(150px, 1fr) 1.4fr 1.6fr; }
+.prow:last-child { border-bottom: 0; }
+.prow.ph { background: transparent; font: 600 11px var(--mono); letter-spacing: .07em; text-transform: uppercase; color: var(--muted); }
+.prow b { font-weight: 600; }
+.prow > span:nth-child(2) { color: var(--muted); }
+.prow .lbl { display: none; font-style: normal; }
+@media (max-width: 760px) {
+  .cmp { grid-template-columns: 1fr; }
+  .prow, .opts .prow { grid-template-columns: 1fr; gap: 4px; }
+  .prow.ph { display: none; }
+  .prow .lbl { display: block; font: 600 10.5px var(--mono); letter-spacing: .07em; text-transform: uppercase; color: var(--muted); }
+  .dnav .pn { width: 100%; }
+  .dnav .pn .btn { flex: 1 1 0; min-width: 0; }
+}
+</style>
+
+<div class="wrap" id="main">
+  <header style="display:grid;gap:12px">
+    <h1>VM to Webapp Plan</h1>
+    <p class="muted">The production map with the decision for every card. Open a section, then click a card for its details.</p>
+    
+  </header>
+
+  <details class="sec" id="howto">
+    <summary><h2>How to read this page</h2></summary>
+    <div class="legend">
+      <span><i style="background:var(--c-sched)"></i>Scheduler (runs on a timer)</span>
+      <span><i style="background:var(--c-repo)"></i>Repo (code on GitHub)</span>
+      <span><i style="background:var(--c-skill)"></i>Skill or Claude Project</span>
+      <span><i style="background:var(--c-ext)"></i>Outside service</span>
+      <span><i style="background:var(--c-vm)"></i>Only on the VM / not in git</span>
+      <span><i style="background:var(--c-people)"></i>People</span>
+      <span><b class="se se-start">START</b><b class="se se-end">END</b>where each flow begins, and where it can finish</span>
+      <span>Lines run left to right, from a dot to an arrowhead. Solid: sends. Dashed: reads, or rare.</span>
+    </div>
+    <div class="legend vlegend" id="vlegend"></div>
+    <p class="muted src">Sources: the 15 repos, David's scheduled-task export, the Nova BIM Schedule export, the VM walkthrough and VM copy, and the official documentation of Anthropic, Autodesk, Microsoft and Fireflies.</p>
+  </details>
+
+  <details class="words" id="words">
+    <summary><h2>Words used on this page</h2></summary>
+    <dl class="gloss">
+      <div><dt>NOVA102</dt> <dd>The main project, a data-centre building (also called IND-102). <b>VKU</b> is a smaller second project, run the same way.</dd></div>
+      <div><dt>HCG</dt> <dd>David's team. It keeps the electrical 3D model and the project paperwork up to date. <b>David Campbell</b> leads. <b>Colten Browning</b> is his teammate and stood in for him while he was away.</dd></div>
+      <div><dt>ARCO, Triad, BES, CMMC</dt> <dd>ARCO is the general contractor. Triad is the electrical contractor. BES and CMMC are design firms.</dd></div>
+      <div><dt>3D model, Revit, Navisworks</dt> <dd>The building as a detailed digital model. The electrical model is built in Revit. Navisworks combines all trades' models to find clashes and play the schedule.</dd></div>
+      <div><dt>Clash</dt> <dd>Two things in the combined model hitting each other, like a pipe through a beam.</dd></div>
+      <div><dt>conduit</dt> <dd>Two meanings. In the model, a pipe that carries cables. Also David's software that lets programs and the AI work inside Revit and Navisworks.</dd></div>
+      <div><dt>ACC / Forma</dt> <dd>Autodesk's online project folder and issue list. Every project file lives here. Desktop Connector keeps a synced copy on the VM.</dd></div>
+      <div><dt>Forma issue</dt> <dd>A tracked problem in Forma, like a ticket, with an owner and a due date.</dd></div>
+      <div><dt>Procore</dt> <dd>ARCO's project website for questions, approvals, reports and schedules.</dd></div>
+      <div><dt>RFI, submittal</dt> <dd>An RFI is a formal question to the designers, with an official answer. A submittal is product or drawing detail sent for approval before buying or installing.</dd></div>
+      <div><dt>Work package, Coordination Schedule</dt> <dd>A work package is one chunk of construction work. The Coordination Schedule is the master spreadsheet of all work packages, with their drawings, status and dates.</dd></div>
+      <div><dt>P6, Lookahead</dt> <dd>P6 is ARCO's master construction schedule. The Lookahead is the next 6 to 12 weeks of work.</dd></div>
+      <div><dt>4D, 5D</dt> <dd>4D links the 3D model to the schedule, so you can watch the build over time. 5D adds quantities.</dd></div>
+      <div><dt>Laser scan</dt> <dd>A 3D scan of what is actually built, compared with the model to measure progress.</dd></div>
+      <div><dt>VM</dt> <dd>The rented Windows computer in Amazon's cloud where production runs (EC2AMAZ-AR6A3VE). Times are US Central Time (CT).</dd></div>
+      <div><dt>Repo, main branch</dt> <dd>A repo is a folder of code on GitHub. Saving to its main branch makes the change live.</dd></div>
+      <div><dt>Scheduled task, skill, Claude Project</dt> <dd>A scheduled task is an AI job on a timer. A skill is a set of instructions the AI loads. A Claude Project is a shared space of notes the AI reads and writes.</dd></div>
+      <div><dt>Rule 1</dt> <dd>What things do stays the same. Only where they run changes. Any change is decided one at a time.</dd></div>
+      <div><dt>One design</dt> <dd>We plan only the finished setup, not a before and after. Approvals and tests must happen before it goes live.</dd></div>
+      <div><dt>API first</dt> <dd>If an official API exists, we use it. A desktop program stays only where no API exists.</dd></div>
+      <div><dt>API</dt> <dd>A way for our app to talk to another system directly. Each company must connect our app to its account first.</dd></div>
+      <div><dt>Bot</dt> <dd>Our Python program (hcg-bim-assistant) that updates the project files and pages twice a day. It doesn't use AI itself.</dd></div>
+      <div><dt>Webapp</dt> <dd>Our app on our own servers. It runs the bot, Claude (chat, approvals and the AI jobs) and the notes. The 10 pages stay as they are.</dd></div>
+      <div><dt>Windows computer</dt> <dd>A new, smaller cloud computer for what only runs on Windows: Revit, Navisworks, conduit and the file helper. Nobody needs to open it. The VM is retired.</dd></div>
+      <div><dt>Agent SDK</dt> <dd>Anthropic's engine behind Claude Code, run inside our webapp. It powers chat, approvals and the AI jobs.</dd></div>
+      <div><dt>Tool server (MCP)</dt> <dd>A standard way to give Claude a set of tools. Some companies publish their own, like Fireflies and GitHub. We write ours for Autodesk, Procore and the bot.</dd></div>
+      <div><dt>Private link</dt> <dd>A private connection between the webapp and the Windows computer, closed to the internet.</dd></div>
+      <div><dt>File helper</dt> <dd>A small program on the Windows computer that moves Navisworks' files to and from ACC through Autodesk's API, in place of Desktop Connector.</dd></div>
+      <div><dt>NWF, NWD</dt> <dd>Navisworks files. The NWF lists which models to combine, plus the clash checks and the 4D timeline. The NWD is a full snapshot of the combined model.</dd></div>
+    </dl>
+  </details>
+
+  <details class="flow" id="flow-robot">
+    <summary><span class="tag">Flow 1</span><h2>Data pipeline</h2><span class="state done">Decided</span></summary>
+    <p class="muted">The bot reads the models and project files, then updates the schedule files and pages. Weekdays at 09:00 and 16:00 CT.</p>
+    <div class="flow-head">
+      <div><h3 class="how-h">How it works today</h3>
+        <ol class="how">
+          <li>A Windows timer on the VM starts the bot (<b>hcg-bim-assistant</b>).</li>
+          <li>The bot opens each 3D model through <b>conduit</b>, read only, and finds what changed.</li>
+          <li>It also reads the project's spreadsheets, drawings, RFI folders, clash report, laser scans and Forma issues.</li>
+          <li>It writes the results to the project files in ACC (after a backup) and to a run log.</li>
+          <li>It updates 7 of the 10 web pages, and Cloudflare puts them online. The other 3 are updated by hand (the Action Hub also has a newer bot step).</li>
+          <li>Results that fail its safety checks are held for David instead of written. It emails David when a run is blocked, slow, failed or finished, and shows pop-ups on the VM.</li>
+        </ol></div>
+      <div class="zoom"><button type="button" data-z="out" aria-label="Zoom out">-</button><output>100%</output><button type="button" data-z="in" aria-label="Zoom in">+</button><button type="button" data-z="fit">Fit</button></div>
+    </div>
+    <div class="viewport"><div class="sizer"><div class="canvas"></div></div></div>
+    <div class="plan" id="plan-robot">
+      <h3>What we decided</h3>
+      <ul>
+          <li><b>Where it runs:</b> the bot's own code runs in the webapp on Chicago time, with its memory and settings at the same values. Only the Revit and Navisworks steps run on the Windows computer, sent over the private link. The pop-up clicker and the session keeper stay there. The Claude keep-alive goes.</li>
+          <li><b>Timer:</b> weekdays at 09:00 and 16:00 Chicago time, holidays included, NOVA102 then VKU, at most once per run time. A missed run starts when the webapp is back. Manual runs come from chat, only when David asks, and count as the next run.</li>
+          <li><b>One timing change:</b> the 30-minute morning wait is dropped, so morning results arrive 30 minutes earlier. One setting brings it back.</li>
+          <li><b>Files in:</b> every input comes from ACC through Autodesk's API, including Forma issues and RFIs, with no Chrome. Issued drawings take Forma's own upload date. David has the final say, because some Actual Finish dates can shift.</li>
+          <li><b>Files out:</b> the same files go to the same ACC folders through the API, with the same 6 safety steps and the same backups. ACC's history will show our app's account as the author.</li>
+          <li><b>Navisworks' files:</b> the file helper moves them to and from ACC through Autodesk's API. Desktop Connector goes.</li>
+          <li><b>Scans, 4D and 5D:</b> the scan check, the 4D viewer, 4D progress and the 5D workbook run in the webapp with the same code, on a worker sized for the biggest scan. The Revit export and the Navisworks timeline snapshot stay on the Windows computer.</li>
+          <li><b>Alerts:</b> the same emails through Amazon's email, from the same sender, to David only. Teams stays off.</li>
+          <li><b>Pages:</b> the 10 pages stay exactly as they are. The webapp publishes the same data to the same 7 with its own GitHub access, so GitHub's history shows its name, and runs the same live check. Pages kept by hand stay by hand.</li>
+          <li><b>Cloudflare:</b> stays as it is. The live-check key and the tracker sync script move to the webapp. Claude claims Task Board items through the portal's API, with its own sign-in.</li>
+      </ul>
+      <p class="muted">Noted for later: the bot's Revit reading can move to Autodesk's online Revit (Automation API) after a side-by-side test. Parked: clash checking in ACC instead of Navisworks, and a Run now button. Dropped: one app replacing the 10 pages, and Autodesk's free data service.</p>
+      <div class="notes">
+        <section class="note need"><h4>What we need</h4><ol>
+          <li><b>Triad, Newtron and ARCO</b> connect our app to their Autodesk accounts: read access to the project files, and write access only where the bot writes today. David tells us who their Autodesk admins are.</li>
+          <li><b>An Autodesk account for the Windows computer</b>, not David's, with Revit, Navisworks Manage and Forma Design Collaboration licences, added to the three companies' projects.</li>
+          <li><b>From David:</b> which Navisworks licence the VM uses and when it renews, who opens the NWD, his OK to run conduit on the new computer with a network mode, and his OK on the drawing dates after a comparison shows how many move.</li>
+          <li><b>To build:</b> conduit's network mode or bridge, the file helper, and the private link.</li>
+          <li><b>From the VM:</b> everything on the <a href='#missing'>What we still need from the VM</a> list, starting with the clash export step and the newest Navisworks bridge source. Also the bot's memory and settings, the tracker sync script and the email script.</li>
+          <li><b>Access for the webapp:</b> Amazon email, and a Cloudflare key for the live check.</li>
+          <li><b>Task Board:</b> David's OK and a small portal change, so Claude can claim tasks with its own sign-in.</li>
+        </ol></section>
+      </div>
+    </div>
+  </details>
+
+  <details class="flow" id="flow-ai">
+    <summary><span class="tag">Flow 2</span><h2>Scheduled AI agents</h2><span class="state done">Decided</span></summary>
+    <p class="muted">Timed AI jobs that file documents, write notes and send emails, all day.</p>
+    <div class="flow-head">
+      <div><h3 class="how-h">How it works today</h3>
+        <ol class="how">
+          <li><b>Timers</b> start each job. Seven run in the Claude app on the VM, and the heartbeat runs in Claude's cloud.</li>
+          <li><b>The AI</b> (Claude, signed in as David) does the job, using the team's skills and reading what it needs.</li>
+          <li>It <b>writes the results</b>: documents and schedule updates in ACC, the tracker page's schedule section, and notes.</li>
+          <li>It <b>emails</b> David and Colten, and no one else.</li>
+          <li>The three watchers only check for problems. Their alarms start Flow 4.</li>
+        </ol></div>
+      <div class="zoom"><button type="button" data-z="out" aria-label="Zoom out">-</button><output>100%</output><button type="button" data-z="in" aria-label="Zoom in">+</button><button type="button" data-z="fit">Fit</button></div>
+    </div>
+    <div class="viewport"><div class="sizer"><div class="canvas"></div></div></div>
+    <div class="plan" id="plan-ai">
+      <h3>What we decided</h3>
+      <ul>
+          <li><b>Engine:</b> Claude runs in the webapp on Anthropic's Agent SDK, the engine behind Claude Code, with an API key. It is paid first from the API credit in David's Claude plan. There is no Claude app on any computer, so the keep-alive goes.</li>
+          <li><b>Jobs:</b> the 7 timed jobs that use the VM run in the webapp with the same AI, instructions, timing, notes and emails: the RFI and submittal sweep, Project Memory and flags, the change log, the VKU check, meeting prep, and the sweep and run watchdogs.</li>
+          <li><b>Heartbeat:</b> stays outside the webapp, because a watcher must never run on the thing it watches.</li>
+          <li><b>Connections:</b> official APIs or official tool servers for Procore, Autodesk, Microsoft 365, Fireflies (never for VKU) and GitHub. Claude's own connectors only work inside claude.ai.</li>
+          <li><b>Notes:</b> the 357 project files and the VKU notes become plain files in a private git repo, with the same names, so no instruction changes. Claude's project memory is copied in once, and chat history is kept in the webapp. Claude opens notes by name and searches inside them. A meaning-based search is added only if a test shows misses.</li>
+          <li><b>Skills and rule book:</b> the same skills, loaded by the webapp from git. The rule book stays as it is.</li>
+          <li><b>Filing and emails:</b> the sweep files into the same ACC folders through the API and updates the tracker page from the webapp. Emails go out through Amazon's email, from the same sender to the same people.</li>
+          <li><b>No double sends:</b> every job's send logs and saved state are copied over, so no job starts fresh and sends twice.</li>
+          <li><b>Going live:</b> each job goes live only after a side-by-side check against today.</li>
+      </ul>
+      <p class="muted">Not carried over: the 2 finished acting-lead digests and the 3 finished one-off jobs. Their text is kept on record. Google Drive is connected but unused, so there is nothing to replace unless David says otherwise. Not taken: Managed Agents, the Claude app on a computer, and plain API calls.</p>
+      <div class="notes">
+        <section class="note need"><h4>What we need</h4><ol>
+          <li><b>Anthropic:</b> an API key, and David's Claude plan, which sets the monthly API credit.</li>
+          <li><b>Procore:</b> David's OK to use its API, since he set a no-API rule, and ARCO's Procore admin connecting our app.</li>
+          <li><b>Microsoft:</b> David's consent for Outlook, Teams and calendar. Newtron's IT may need to approve too.</li>
+          <li><b>Fireflies:</b> David's key. Hourly meeting prep likely needs the Business plan, since Free and Pro allow only 50 API requests a day.</li>
+          <li><b>Autodesk:</b> the same connections as Flow 1, for the sweep's filing and the VKU check.</li>
+          <li><b>From the VM:</b> every job's send logs and saved state, and the email script.</li>
+          <li><b>From David's Claude account:</b> the notes, the VKU notes, Claude's project memory and the whats-on-my-plate skill. David tells us where the skills starter folder is.</li>
+          <li><b>From David:</b> a screenshot of his Connectors page, whether anything uses Google Drive, and whether Greenhead (pinned in his Claude account) is part of this system.</li>
+        </ol></section>
+      </div>
+    </div>
+  </details>
+
+  <details class="flow" id="flow-people">
+    <summary><span class="tag">Flow 3</span><h2>Human in the loop</h2><span class="state done">Decided</span></summary>
+    <p class="muted">Every day, people check what the bot held back, approve, and ask Claude to do the work.</p>
+    <div class="flow-head">
+      <div><h3 class="how-h">How it works today</h3>
+        <ol class="how">
+          <li>The bot and the AI hold anything unusual instead of writing it.</li>
+          <li>David decides in a Claude chat or on the Lead Queue page.</li>
+          <li>Triad's signers approve or reject schedule cards on the sign-off board.</li>
+          <li>In chat, the AI carries out exactly what was approved.</li>
+          <li>David's rulings go into the rule book (<b>david-kb</b>), so future jobs follow them.</li>
+          <li>Teammates start their day in chat, and claim tasks on the Task Board before changing shared files.</li>
+        </ol></div>
+      <div class="zoom"><button type="button" data-z="out" aria-label="Zoom out">-</button><output>100%</output><button type="button" data-z="in" aria-label="Zoom in">+</button><button type="button" data-z="fit">Fit</button></div>
+    </div>
+    <div class="viewport"><div class="sizer"><div class="canvas"></div></div></div>
+    <div class="plan" id="plan-people">
+      <h3>What we decided</h3>
+      <ul>
+          <li><b>Chat:</b> moves into the webapp for David, Colten and the teammates, on the same engine as the jobs, with the same words and procedures, such as 'start my tasks for the day'. Each person signs in. Colten and the teammates keep their own Claude for other work.</li>
+          <li><b>Approvals:</b> typed in chat as today. The webapp carries them out and records who approved and when. Only the lead or the stand-in can approve, and a stand-in is still set by a written note.</li>
+          <li><b>Held items:</b> released by the webapp with the same commands, for register changes, page data and scan results.</li>
+          <li><b>Approved changes:</b> written from chat only after approval, outside run times, with the same safety steps. This covers Coordination Schedule changes, 4D approval files and tracker notes.</li>
+          <li><b>Forma issues:</b> created through Autodesk's Issues API, still as drafts. No sign-in token is copied from a browser anymore.</li>
+          <li><b>Work done when asked:</b> 4D builds, clash reviews and quantities reach Revit and Navisworks through conduit on the Windows computer. Document control, RFI questions, prefab and Trello work, and Forma correspondence use Autodesk's, Procore's and Trello's APIs.</li>
+          <li><b>Unchanged:</b> the six Triad signers and their sign-off page (applied only after the lead approves), the Lead Queue (filled by hand), replies to BES, ARCO, CMMC and Triad (drafted by Claude, sent by David), and rule changes (approved by David).</li>
+          <li><b>Pages kept by hand:</b> stay by hand, with their scripts in the webapp. The RFI Sweep stays on David's PC.</li>
+      </ul>
+      <p class="muted">Dropped: filling the Lead Queue automatically, a stand-in role set for a date range, and the RFI Sweep's search index on our server. Not taken: keeping chat in the Claude app, with or without a connector to the webapp.</p>
+      <div class="notes">
+        <section class="note need"><h4>What we need</h4><ol>
+          <li><b>Sign-ins and roles</b> in the webapp for David, Colten and the teammates, including the VKU team.</li>
+          <li><b>From David:</b> his list of Claude app extras, and his answer on LQ-000: should a signed-in click on the Lead Queue count as approval?</li>
+          <li><b>Trello:</b> API access for the prefab and Trello work.</li>
+          <li><b>Autodesk and Procore:</b> the connections from Flows 1 and 2, including Autodesk's Issues API for Forma issues.</li>
+          <li><b>The tracker sync script</b> saved into a repo, for the tracker notes.</li>
+        </ol></section>
+      </div>
+    </div>
+  </details>
+
+  <details class="flow" id="flow-break">
+    <summary><span class="tag">Flow 4</span><h2>Incident response</h2><span class="state done">Decided</span></summary>
+    <p class="muted">When a run or a job goes wrong: who hears about it and how it gets fixed.</p>
+    <div class="flow-head">
+      <div><h3 class="how-h">How it works today</h3>
+        <ol class="how">
+          <li>A watcher or the bot alerts David by email or phone push.</li>
+          <li>David logs into the VM and checks the run log, the Claude app, Revit, and the Procore and Forma sign-ins.</li>
+          <li>If the VM is down, he restarts it in Amazon's AWS console.</li>
+          <li>If a step failed, it is re-run only when David asks, outside run times.</li>
+          <li>Last resort: run the jobs on David's PC instead, never on both.</li>
+          <li>Two things fix themselves: the keep-alive reopens the Claude app and Chrome, and the bot restarts a frozen Revit.</li>
+        </ol></div>
+      <div class="zoom"><button type="button" data-z="out" aria-label="Zoom out">-</button><output>100%</output><button type="button" data-z="in" aria-label="Zoom in">+</button><button type="button" data-z="fit">Fit</button></div>
+    </div>
+    <div class="viewport"><div class="sizer"><div class="canvas"></div></div></div>
+    <div class="plan" id="plan-break">
+      <h3>What we decided</h3>
+      <ul>
+          <li><b>Alarms:</b> the same watchers and the bot's alert emails, now from the webapp. They only report, they never fix.</li>
+          <li><b>Independent alarm:</b> the heartbeat stays outside the webapp, so David still hears when the webapp itself is down.</li>
+          <li><b>Who decides:</b> David, or the acting lead, as today.</li>
+          <li><b>Fixing:</b> starts from the webapp's run status, logs and job results. The Claude app and the Procore and Forma sign-ins are gone.</li>
+          <li><b>Windows problems:</b> rare Revit, Navisworks or Windows problems are fixed by us on the Windows computer, not by David.</li>
+          <li><b>Re-running a step:</b> a chat request, only when David asks, outside run times, with the same skip rule.</li>
+      </ul>
+      <div class="notes">
+        <section class="note need"><h4>What we need</h4><ol>
+          <li><b>Rewritten directions:</b> the 'what to do' part of every watcher's email, pointing at the webapp and the Windows computer instead of the VM. Everything else in those emails stays the same. David sees the final wording.</li>
+        </ol></section>
+      </div>
+    </div>
+  </details>
+
+  <details class="flow" id="flow-biz">
+    <summary><span class="tag">Flow 5</span><h2>Conduit sales and support</h2><span class="state">Not worked out yet</span></summary>
+    <p class="muted">The website that sells Conduit and supports its customers. A separate business, not the construction project.</p>
+    <div class="flow-head">
+      <div><h3 class="how-h">How it works today</h3>
+        <ol class="how">
+          <li>David's software, <b>conduit</b>, is also sold to other companies.</li>
+          <li>Installers are built and signed on David's PC, or built by GitHub.</li>
+          <li>A script uploads each release to Keygen, which holds licence keys and files.</li>
+          <li>Customers enter their licence key on campbellcts.com and download.</li>
+          <li>The site's AI chat answers questions and emails David when needed. A daily summary reaches him at 07:00 CT.</li>
+          <li>Conduit's AI skills reach everyone in David's company through the marketplace repo.</li>
+        </ol></div>
+      <div class="zoom"><button type="button" data-z="out" aria-label="Zoom out">-</button><output>100%</output><button type="button" data-z="in" aria-label="Zoom in">+</button><button type="button" data-z="fit">Fit</button></div>
+    </div>
+    <div class="viewport"><div class="sizer"><div class="canvas"></div></div></div>
+  </details>
+
+  <details class="flow" id="flow-change">
+    <summary><span class="tag">Flow A</span><h2>Dev to production</h2><span class="state">Not worked out yet</span></summary>
+    <p class="muted">How a code change goes from a coding session to the live system.</p>
+    <div class="flow-head">
+      <div><h3 class="how-h">How it works today</h3>
+        <ol class="how">
+          <li>David and AI coding sessions change the code on GitHub.</li>
+          <li>Saving a page repo's main branch makes Cloudflare put it live within minutes. Most page repos have no test branch.</li>
+          <li>The website goes live the same way, through Netlify.</li>
+          <li>The bot saves fresh page data to main twice a day (as <b>hcg-bim-runner</b>).</li>
+          <li>The VM runs its own copy of the code. Some bot fixes were made on the VM itself and saved to GitHub from there. How other changes reach the VM is unknown. One bot file and changes to the Navisworks bridge exist only on the VM.</li>
+          <li>AI skills and job instructions are edited by hand in the Claude app, not through GitHub.</li>
+          <li>A dev copy of the VM was made. Only its file names are known.</li>
+        </ol></div>
+      <div class="zoom"><button type="button" data-z="out" aria-label="Zoom out">-</button><output>100%</output><button type="button" data-z="in" aria-label="Zoom in">+</button><button type="button" data-z="fit">Fit</button></div>
+    </div>
+    <div class="viewport"><div class="sizer"><div class="canvas"></div></div></div>
+  </details>
+
+  <details class="flow" id="flow-setup">
+    <summary><span class="tag">Flow B</span><h2>Project onboarding</h2><span class="state">Not worked out yet</span></summary>
+    <p class="muted">How a new construction project gets set up.</p>
+    <div class="flow-head">
+      <div><h3 class="how-h">How it works today</h3>
+        <ol class="how">
+          <li>The project lead fills in an intake form and is interviewed by the onboarding AI chat.</li>
+          <li>The chat checks each answer twice on the live model, then proposes two settings files, saved in ACC once the lead approves.</li>
+          <li>The project is added to the bot, and its web pages are copied from NOVA102's.</li>
+          <li>The bot first runs in dry-run mode and writes nothing. After the lead reviews it, it switches to write mode.</li>
+        </ol></div>
+      <div class="zoom"><button type="button" data-z="out" aria-label="Zoom out">-</button><output>100%</output><button type="button" data-z="in" aria-label="Zoom in">+</button><button type="button" data-z="fit">Fit</button></div>
+    </div>
+    <div class="viewport"><div class="sizer"><div class="canvas"></div></div></div>
+  </details>
+
+  <details class="missing" id="missing">
+    <summary><h2>What we still need from the VM</h2></summary>
+    <div style="display:grid;gap:8px">
+      <p class="muted">Still missing after the VM copy. Look or copy only. Never copy passwords or keys.</p>
+      <p class="muted">Already in our folders, so not listed: the VM copy (bot settings, run history and logs, timers and their scripts, the email sender, the Procore scripts, send logs, and both projects' Manifest, Profile and guides), the AI's main instructions, the instructions for the 10 timed AI jobs, and the lists of jobs and skills, and the connectors each job uses.</p>
+    </div>
+
+    <div class="mgroup">
+      <h3>Code that isn't in any repo</h3>
+      <ol class="mlist" style="--start:0">
+        <li><div class="w"><b>Clash export step</b>
+          <p><i>Where</i><code>C:\Users\Administrator\repos\hcg-bim-assistant\site_feeds\navis_export_clash_xml.py</code></p>
+          <p><i>What it is</i>The bot step that exports the clash report from Navisworks every morning.</p>
+          <p><i>Why we need it</i>Production runs it, but it was never saved to GitHub. Without it, a copy of the bot can't do the morning clash export.</p></div></li>
+        <li><div class="w"><b>Navisworks bridge</b>
+          <p><i>Where</i><code>C:\Users\Administrator\mcp\navisworks\</code> (<code>server.py</code> and the <code>src\</code> folder, not <code>bin\</code> or <code>obj\</code>)</p>
+          <p><i>What it is</i>The add-in and small server the bot uses to drive Navisworks.</p>
+          <p><i>Why we need it</i>It differs from the copy in the conduit repo, and its clash export action isn't in any repo.</p></div></li>
+        <li><div class="w"><b>Issue Tracker inputs and scan seeds</b>
+          <p><i>Where</i><code>C:\Users\Administrator\mcp\_pctest\nova102\</code> (the files, not just the folder names)</p>
+          <p><i>What it is</i>Input files for the Issue Tracker and the BES and Triad feed. <code>runner.json</code> also points to 4 scan seed folders here (<code>scans</code>, <code>scans925</code>, <code>scans928</code>, <code>scans1001</code>) that didn't show up in the copy.</p>
+          <p><i>Why we need it</i>The Issue Tracker and the Action Hub's Triad records are built from these files, and we need to know whether the scan seed folders exist.</p></div></li>
+      </ol>
+    </div>
+
+    <div class="mgroup">
+      <h3>Other VM files</h3>
+      <ol class="mlist" style="--start:3">
+        <li><div class="w"><b>Our add-ins and Conduit's version</b>
+          <p><i>Where</i><code>C:\Users\Administrator\AppData\Roaming\Autodesk\Revit\Addins\2025\</code> and <code>2026\</code>, plus listings of <code>C:\Program Files\Autodesk\Navisworks Manage 2026\Plugins\</code> and <code>C:\Users\Administrator\AppData\Local\Conduit\</code></p>
+          <p><i>What it is</i>The Conduit and OpenGuard add-in files, and which version of Conduit is installed.</p>
+          <p><i>Why we need it</i>The copy only had Autodesk's own add-ins. Conduit's version is the last unknown about which code the VM runs.</p></div></li>
+        <li><div class="w"><b>Pop-up and hold records</b>
+          <p><i>Where</i><code>C:\HCGBIM\revit_dialog_watcher.log</code>, <code>C:\HCGBIM\status\</code>, listings of <code>C:\HCGBIM\held\</code> and <code>C:\HCGBIM\approved\</code>, and <code>C:\HCG-BIM-Assistant\rfi-sweep\watchdog\</code> if it exists</p>
+          <p><i>What it is</i>Which pop-ups the watcher clicked or left alone, what is held for David, what he has approved, and the sweep watchdog's send log.</p>
+          <p><i>Why we need it</i>Shows where unattended runs get stuck, and what is waiting for a decision.</p></div></li>
+        <li><div class="w"><b>The Claude app's real settings</b>
+          <p><i>Where</i><code>C:\Users\Administrator\AppData\Local\Packages\Claude_pzs8sxrjxfjjc\LocalCache\Roaming\Claude\</code> (if it exists)</p>
+          <p><i>What it is</i>The settings the Claude app actually uses on the VM. It's a Microsoft Store app, so it may keep them here instead of the usual folder.</p>
+          <p><i>Why we need it</i>The copied settings list only 3 Conduit servers, with no Navisworks and no Windows-MCP.</p></div></li>
+        <li><div class="w"><b>ACC sync account</b>
+          <p><i>Where</i>Autodesk Desktop Connector on the VM</p>
+          <p><i>What it is</i>Which Autodesk account syncs the project folders to the VM.</p>
+          <p><i>Why we need it</i>A dev VM must never sync with the same account, or it could change real project files.</p></div></li>
+      </ol>
+    </div>
+
+    <div class="mgroup">
+      <h3>Claude app (signed in as David)</h3>
+      <ol class="mlist" style="--start:7">
+        <li><div class="w"><b>Nova BIM Schedule project files</b>
+          <p><i>Where</i>Claude app → Projects → Nova BIM Schedule</p>
+          <p><i>What it is</i>The AI's shared notebook: 357 files of methods, logs, decisions and notes. We have the instructions and about a dozen docs.</p>
+          <p><i>Why we need it</i>They record how things were set up and fixed. Start with <code>DOC_INDEX.md</code> (the index of all docs), then the notes on the VM outage and on the Revit restart pop-up fix.</p></div></li>
+        <li><div class="w"><b>VKU Project</b>
+          <p><i>Where</i>Claude app → Projects → VKU Project</p>
+          <p><i>What it is</i>VKU's instructions and 8 files: a start-here guide, scope and schedule references, a knowledge log, a change log, setup notes and 2 spreadsheets. We only have their names.</p>
+          <p><i>Why we need it</i>Shows how VKU's setup differs from NOVA102's.</p></div></li>
+        <li><div class="w"><b>Skill text: whats-on-my-plate</b>
+          <p><i>Where</i>Claude app → Settings → Skills</p>
+          <p><i>What it is</i>The skill teammates use to see, take, finish or reassign tasks on the Team Task Board.</p>
+          <p><i>Why we need it</i>It isn't in any repo, and it changes the Task Board.</p></div></li>
+        <li><div class="w"><b>Connectors page: the full list and accounts</b>
+          <p><i>Where</i>Claude app → Customize → Connectors (a screenshot is enough)</p>
+          <p><i>What it is</i>Every connector on David's account and which account each one uses. The jobs show three: Microsoft 365, Fireflies and Google Drive. GitHub on the VM is a command-line sign-in (hcg-bim-runner), not a Claude connector. The local Conduit settings came with the VM copy.</p>
+          <p><i>Why we need it</i>The walkthrough never shows this page, so we can't be sure there are only three. Connectors decide whose email, files and meetings the AI can read.</p></div></li>
+        <li><div class="w"><b>Google Drive: what uses it</b>
+          <p><i>Where</i>Ask David</p>
+          <p><i>What it is</i>Google Drive is connected to every timed job, but no job's instructions and no project document use it.</p>
+          <p><i>Why we need it</i>If nothing uses it, there is nothing to replace in the webapp. If something does, we need to know what, so it isn't lost.</p></div></li>
+      </ol>
+    </div>
+  </details>
+
+</div>
+
+<div id="detail" class="detail" hidden></div>
+
+<script>
+const ICONS = {
+  repo: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="4" cy="3.5" r="1.7"/><circle cx="4" cy="12.5" r="1.7"/><circle cx="12" cy="5.5" r="1.7"/><path d="M4 5.2v5.6M12 7.2c0 2.6-4 2.3-7.4 4"/></svg>',
+  sched: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="8" cy="8" r="6.2"/><path d="M8 4.5V8l2.6 1.6"/></svg>',
+  skill: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2.5 3h4.2A1.8 1.8 0 0 1 8.5 4.8V13a1.5 1.5 0 0 0-1.5-1.5H2.5zM13.5 3H10.3A1.8 1.8 0 0 0 8.5 4.8V13a1.5 1.5 0 0 1 1.5-1.5h3.5z"/></svg>',
+  ext: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4.5 12.5h7.2a2.8 2.8 0 0 0 .3-5.6A4 4 0 0 0 4.3 7.6a2.5 2.5 0 0 0 .2 4.9z"/></svg>',
+  vm: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="2" y="2.5" width="12" height="8.5" rx="1.2"/><path d="M5.5 13.5h5M8 11v2.5"/></svg>',
+  people: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="6" cy="5.5" r="2.3"/><path d="M1.8 13.5a4.2 4.2 0 0 1 8.4 0"/><circle cx="11.5" cy="6" r="1.8"/><path d="M11 9.6a3.4 3.4 0 0 1 3.6 3.9"/></svg>'
+};
+const COLOR = { repo: 'var(--c-repo)', sched: 'var(--c-sched)', skill: 'var(--c-skill)', ext: 'var(--c-ext)', vm: 'var(--c-vm)', people: 'var(--c-people)' };
+const X = [40, 480, 920, 1360, 1800, 2240, 2680];
+const NW = 280;
+
+// Card fields: id, colour type, type label, x, y, plain name, description, where it lives,
+// items: [actual name, note] or, for schedulers, [actual name, time, what it does].
+// Every link goes from a column to one further right.
+// start / end: the cards where a flow begins and where it can finish (drawn as START and END tags).
+const FLOWS = {
+  robot: {
+    start: ['TIMER'], end: ['ACC', 'DAVID', 'USERS'],
+    nodes: [
+      { id: 'TIMER', type: 'sched', tl: 'Schedulers ×4', x: X[0], y: 30, title: 'Timers on the VM', desc: 'Windows Task Scheduler. A manual re-run (only when David asks) uses a one-off task.', where: 'On the VM',
+        items: [['\\HCG BIM Assistant\\Daily run', 'Weekdays 09:00 and 16:00 CT, and at sign-in', 'Starts the bot: NOVA102 first (60 to 90 min), then VKU. Each slot runs once a day at most.'], ['\\HCG BIM Assistant\\Dialog watcher', 'At sign-in', 'Clicks safe answers on Revit and Navisworks pop-ups so runs don\'t stall. Never clicks save, sync or publish. Script not in git.'], ['\\HCG BIM Assistant\\Claude keep-alive', 'Every 10 min, and at sign-in', 'Reopens the Claude app and Chrome if they closed.'], ['\\HCG BIM Assistant\\Keep desktop session', 'Every 5 min', 'If the remote desktop disconnects, keeps the VM\'s screen session alive so Revit and the pop-up clicker keep working.']] },
+      { id: 'MODELS', type: 'ext', tl: 'Service', x: X[0], y: 330, title: '3D models', desc: 'The NOVA102 and VKU electrical models in Revit and Navisworks, opened one at a time. Read only: never saved back to the shared models.', where: 'On the VM' },
+      { id: 'CON', type: 'repo', tl: 'Repo', x: X[1], y: 330, title: 'conduit: the link to Revit and Navisworks', desc: 'David\'s software that lets the bot (and the AI) open and read Revit and Navisworks. Installed on the VM as add-ins and small servers.', where: 'In git', items: [['conduit', 'the repo']] },
+      { id: 'INPUTS', type: 'ext', tl: 'Service', x: X[1], y: 580, title: 'Other things the bot reads', desc: 'Read only. All come from the VM\'s synced copy of the project folder, except Forma issues and RFIs, which it downloads from the Forma website. Spreadsheets are read from a copy.', where: 'Outside',
+        items: [['Project Manifest + Profile', 'settings files: where everything is, and how to read it'], ['Coordination Schedule', 'the work-package spreadsheet'], ['Issued drawing PDFs', 'IFR / IFC / IFF folders (issued for review, construction or fabrication)'], ['RFI and submittal folders', 'their status: open, in review, answered'], ['Forma issues and RFIs', 'from ARCO\'s and Triad\'s Forma projects, through the bot\'s own Chrome'], ['RFI sweep state file', 'Procore items from the morning AI sweep (Flow 2)'], ['Clash report (XML)', 'the 09:00 run re-runs the clash tests and exports it. The newest export is read, the run\'s or the lead\'s'], ['New laser scans (.e57)'], ['4D approval files', 'schedule changes David approved (Flow 3)']] },
+      { id: 'ROB', type: 'repo', tl: 'Repo', x: X[2], y: 30, title: 'The bot: hcg-bim-assistant', desc: 'A Python program. For each project it finds what changed in the model, matches drawings to work packages and updates the spreadsheets. It also builds the clash list, the issue-tracker and task-board data and a BES / Triad feed, checks new scans, and applies approved 4D changes in the morning. Results that fail its safety checks are held for David.', where: 'In git',
+        items: [['hcg-bim-assistant', 'the repo (main branch: master)'], ['runner.json', 'its settings, only on the VM'], ['HCGBIM.OpenGuard add-in', 'small Revit add-in that avoids one known error when opening a model']] },
+      { id: 'SCAN', type: 'repo', tl: 'Repo tools', x: X[3], y: 600, title: 'Scan and 4D tools', desc: 'The bot\'s last two steps: a 4D timeline snapshot, and the 4D refresh, which also writes the 5D quantity workbooks. The scan page is updated by hand after David approves a scan.', where: 'In git',
+        items: [['Nova102-Scan-Tracker/tools', 'scripts in the scan page\'s repo']] },
+      { id: 'ACC', type: 'ext', tl: 'Service', x: X[3], y: 880, title: 'Project files in ACC / Forma', desc: 'The real project folder in Autodesk\'s cloud, synced to the VM. The bot writes:', where: 'Outside',
+        items: [['ACC / Forma via Desktop Connector', 'the sync tool'], ['Coordination Schedule', 'backed up before every write'], ['Model Impact Tracker, materials workbook', 'what changed and what it affects'], ['Lookahead, RFI & Submittal Impact Register', 'upcoming work, and what blocks it'], ['Model inventories and diffs, clash report', 'model parts and the day\'s differences'], ['Navisworks NWF / NWD', 'combined model files, saved with approved 4D changes'], ['5D quantity crosswalks', 'quantities per work package'], ['Run log', 'one summary per run: what updated, what was held']] },
+      { id: 'ALERT', type: 'ext', tl: 'Service', x: X[3], y: 1330, title: 'Run alerts', desc: 'Progress and problems, during each run.', where: 'Outside',
+        items: [['Amazon SES', 'email to David, from bim-assistant@campbellcts.com'], ['Windows pop-ups', 'on the VM'], ['Teams', 'not used: the Teams link in runner.json is empty']] },
+      { id: 'PAGES', type: 'repo', tl: 'Repos ×10', x: X[4], y: 20, title: 'The 10 web pages', desc: 'Each page is its own repo. New data saved to its main branch goes live within minutes. The bot updates the first 7. The last 3 are updated by hand.', where: 'In git',
+        items: [['HCG-BIM-Portal', 'front door: sign-in, team task board, issue tracker and run status (from the bot), trial pages for equipment, commissioning, closeout, operations, maintenance and prefab'], ['Nova102-Tracker', 'drawing progress per work package, plus field progress from scans'], ['Nova102-Impact-Dashboard', 'model changes (bot), plus punch list, open items and expectation gaps (by hand)'], ['VKU-Tracker', 'drawing progress for VKU'], ['VKU-Impact-Dashboard', 'model changes for VKU'], ['HCG-Portfolio-Dashboard', 'all projects on one page, for leadership'], ['Nova102-4D-Viewer', '3D model with a timeline, refreshed by the bot'], ['Nova102-Action-Hub', 'BES and Triad to-do lists, Triad sign-off board, Lead Queue, 4D view. Updated by hand. A bot step for its Triad records exists, not yet seen running. Emails are drafts only for now'], ['Nova102-Scan-Tracker', 'built vs planned, from scans. Updated by hand'], ['Nova102-RFI-Sweep', 'answered questions. Updated by hand from David\'s PC']] },
+      { id: 'DAVID', type: 'people', tl: 'People', x: X[4], y: 1400, title: 'David', desc: 'The only person on the bot\'s alert list (runner.json).', where: '' },
+      { id: 'CF', type: 'ext', tl: 'Service', x: X[5], y: 200, title: 'Cloudflare: hosting and sign-in', desc: 'Puts each page online and checks who may open it (emailed code or Microsoft login). The bot checks its updates went live.', where: 'Outside',
+        items: [['Cloudflare', 'the hosting company'], ['4 small databases', 'what people type into the pages: notes, tasks, owners, records, sign-offs, Lead Queue decisions'], ['1 file bucket', 'laser-scan files'], ['Page libraries', 'some pages load code from public sites (jsDelivr, cdnjs)']] },
+      { id: 'USERS', type: 'people', tl: 'People', x: X[6], y: 200, title: 'Page users', desc: 'HCG\'s team and leadership, plus BES and Triad (their own items only). They also add notes, tasks and sign-offs.', where: '' }
+    ],
+    edges: [
+      ['TIMER', 'ROB', 'starts'], ['MODELS', 'CON', 'opens'], ['CON', 'ROB', 'reads the model'], ['INPUTS', 'ROB', 'also reads', 1],
+      ['ROB', 'PAGES', 'data for 7 of 10'], ['ROB', 'SCAN', 'runs as last steps'], ['SCAN', 'PAGES', '4D data'],
+      ['PAGES', 'CF', 'publish'], ['CF', 'USERS', 'web pages'],
+      ['ROB', 'ACC', 'spreadsheets, NWF, run log'], ['ROB', 'ALERT', 'alerts'], ['ALERT', 'DAVID', 'email']
+    ]
+  },
+  ai: {
+    start: ['G1', 'G2', 'G3'], end: ['ACC', 'TRK', 'NOTES', 'DAVID'],
+    nodes: [
+      { id: 'KB', type: 'repo', tl: 'Repo', x: X[0], y: 1700, title: 'The rule book: david-kb', desc: 'Every HCG procedure in plain English. David\'s rulings are written here first, then the skills are rebuilt from it.', where: 'In git', items: [['david-kb', 'the repo']] },
+      { id: 'G1', type: 'sched', tl: 'Schedulers ×3', x: X[1], y: 30, title: 'Jobs that change project files', desc: 'Timers that start the AI on these jobs. They write to real project files.', where: 'Claude account',
+        items: [['NOVA102 daily RFI & submittal sweep (VM)', 'Weekdays 08:24', 'Checks Procore for new questions (RFIs), approvals (submittals) and reports, and files each into the right ACC folder. Asks Procore for cover PDFs, its only action there. When ARCO posts a new schedule, it loads the dates (after a backup), re-links the work packages and updates the slip-history workbook. If ARCO renumbered activities, it also updates the Nova102-Tracker page. Its notes feed the bot.'], ['NOVA102 Project Memory update + flags (VM)', 'Weekdays 10:45', 'Reads email, Teams, meeting notes and Procore, then updates the project diary and "flags" (things David may be missing).'], ['VKU BIM Assistant shadow + run summary email (VM)', ':25 past each hour after a VKU run', 'Checks the VKU run, writes VKU\'s change log and emails David a summary.']] },
+      { id: 'G2', type: 'sched', tl: 'Schedulers ×2', x: X[1], y: 620, title: 'Jobs that write notes', desc: 'Timers for two jobs that write notes and send emails.', where: 'Claude account',
+        items: [['NOVA102 change log from the BIM Assistant run log (VM)', ':20 past each hour after a run', 'Copies the bot\'s run summary into the day\'s note.'], ['Meeting prep + follow-up (all of David\'s meetings) (VM)', 'Weekdays, :45 past each hour, 06:45 to 17:45', 'Emails a prep outline before each meeting. After a recorded meeting, emails a summary with proposed Forma issues for David to approve (it never creates them).']] },
+      { id: 'G3', type: 'sched', tl: 'Schedulers ×3', x: X[1], y: 940, title: 'Watchers', desc: 'Timers for three checks. They raise an alarm by email or phone push if something failed (Flow 4).', where: 'Claude account',
+        items: [['NOVA102 RFI sweep watchdog (VM)', 'Weekdays 09:05', 'Did the sweep run and send its email?'], ['NOVA102 BIM Assistant run watchdog (VM)', '11:40 and 17:40', 'Did the bot finish and publish?'], ['BIM runner VM heartbeat (cloud)', '12:35 and 19:35', 'Runs in Claude\'s cloud: are the VM\'s jobs still running?']] },
+      { id: 'READS', type: 'ext', tl: 'Service', x: X[1], y: 1260, title: 'What the AI reads', desc: 'All read only.', where: 'Outside',
+        items: [['Procore', 'ARCO\'s website: new questions, approvals, reports, schedules. Signed in as Colten, through the VM\'s Chrome (sweep) or the Claude app\'s browser (memory job)'], ['Microsoft 365 · Teams · Fireflies', 'David\'s email, Teams chats and recorded meeting notes (Fireflies never used for VKU)'], ['Google Drive', 'connected, but not seen in use'], ['conduit tools', 'the Navisworks model'], ['GitHub', 'checks pages were published (hcg-bim-runner account)'], ['The bot\'s run log', 'in ACC (Flow 1), read by the change-log job and the watchers'], ['Claude\'s task list', 'the watchers check the other jobs ran']] },
+      { id: 'SKILLS', type: 'skill', tl: 'Skills', x: X[1], y: 1680, title: 'Skills: the AI\'s instructions', desc: 'Instruction packs the AI loads, so every job follows the same procedure.', where: 'Claude account',
+        items: [['hcg-bim-assistant-playbook', 'HCG\'s procedures: 13 skills (12 in the company-wide copy)'], ['conduit-aec', '5 skills for working with 3D models'], ['whats-on-my-plate', 'a teammate\'s tasks for the day, from the task board'], ['project-onboarding', 'for new projects. In the repo, not published']] },
+      { id: 'AI', type: 'vm', tl: 'AI worker', x: X[2], y: 760, title: 'The AI assistant', desc: 'Claude, signed in as David. Seven jobs run in the Claude app on the VM, the heartbeat in Claude\'s cloud. It follows each job\'s written instructions without asking.', where: 'On the VM',
+        items: [['Claude desktop app', 'a keep-alive task reopens it and Chrome every 10 minutes (an update once closed it and the jobs stopped for 3½ days)'], ['Windows-MCP', 'lets it read the VM\'s files, logs and Task Scheduler'], ['Project Manifest', 'every folder path comes from it'], ['Not running', '8 paused copies tied to David\'s PC (the Flow 4 backup), and 3 finished one-off jobs']] },
+      { id: 'ACC', type: 'ext', tl: 'Service', x: X[3], y: 520, title: 'Project files in ACC / Forma', desc: 'The real project folder (as in Flow 1). The jobs file documents here.', where: 'Outside', items: [['ACC / Forma via Desktop Connector', 'the sync tool'], ['RFI and submittal PDFs', 'read by the sweep, with Bluebeam markups (notes drawn on PDFs)']] },
+      { id: 'TRK', type: 'repo', tl: 'Repo', x: X[3], y: 780, title: 'Tracker page', desc: 'Only when ARCO renumbers its schedule: the sweep updates this page\'s schedule section and publishes it.', where: 'In git', items: [['Nova102-Tracker', 'SEED_P6M block in index.html']] },
+      { id: 'NOTES', type: 'skill', tl: 'Claude Project', x: X[3], y: 1000, title: 'Project notes: Nova BIM Schedule', desc: 'The AI\'s shared notebook: instructions plus 357 files (sweep results, diary, change log, meeting notes).', where: 'Claude account', items: [['Nova BIM Schedule', 'the Claude Project']] },
+      { id: 'MAIL', type: 'vm', tl: 'Script', x: X[3], y: 1220, title: 'Email sender', desc: 'Script on the VM that sends the jobs\' emails through Amazon. Only to David and Colten.', where: 'Not in git', items: [['ses_send.py → Amazon SES']] },
+      { id: 'DAVID', type: 'people', tl: 'People', x: X[4], y: 1220, title: 'David and Colten', desc: 'Get the summaries and alerts by email, plus a phone push from the heartbeat.', where: '' }
+    ],
+    edges: [
+      ['G1', 'AI', 'starts'], ['G2', 'AI', 'starts'], ['G3', 'AI', 'starts'],
+      ['READS', 'AI', 'reads', 1], ['SKILLS', 'AI', 'know-how'], ['KB', 'SKILLS', 'skills built from'],
+      ['AI', 'ACC', 'files, schedule, diary'], ['AI', 'TRK', 'P6 block'], ['AI', 'NOTES', 'writes notes'], ['AI', 'MAIL', 'emails'],
+      ['MAIL', 'DAVID', 'email']
+    ]
+  },
+  people: {
+    start: ['HELD', 'TRIAD', 'ONREQ'], end: ['OUT1', 'OUT2', 'OUT3', 'OUT4'],
+    nodes: [
+      { id: 'HELD', type: 'ext', tl: 'Waiting', x: X[0], y: 30, title: 'Held for a person', desc: 'Unusual results the bot or AI did not write. Listed in run summaries, notes and emails. Nothing is written until someone decides.', where: 'Run log + notes',
+        items: [['Register rows', 'a drawing status went down, or a revision disappeared'], ['Scan results', 'progress measured from new scans'], ['Broken page data', 'for example, zero Forma issues. Big jumps are published with a warning instead (a rule David set)'], ['Finish dates with no PDF yet', 'the model shows the package issued, but its drawing PDF isn\'t in Forma. Once it is, the bot writes the date itself'], ['TimeLiner re-dates', '4D schedule dates to change, from the sweep'], ['Proposed Forma issues', 'from meeting follow-ups'], ['Flags marked "Decision: David"', 'from the project diary']] },
+      { id: 'LEAD', type: 'people', tl: 'People', x: X[1], y: 30, title: 'Project Lead and team', desc: 'David decides (Colten has stood in for him). VKU team: Kyle and Mikael.', where: '' },
+      { id: 'TRIAD', type: 'people', tl: 'People', x: X[1], y: 760, title: 'Triad signers', desc: 'Six people at Triad (Logan, Brandon, Justin, Brian, Seth, Trey) who approve, change or reject schedule cards.', where: '' },
+      { id: 'LQ', type: 'repo', tl: 'Repo page', x: X[2], y: 420, title: 'Lead Queue', desc: 'One page listing every decision waiting for David. He approves, changes, holds or passes on each. The AI then carries it out in chat.', where: 'In git',
+        items: [['Nova102-Action-Hub', 'page /lead'], ['lead/seed.json', 'the list, filled by hand from project notes'], ['LEAD_SYNC_CLIENT_ID', 'key for the AI to read it directly: not set up yet']] },
+      { id: 'HUBD', type: 'repo', tl: 'Repo', x: X[2], y: 760, title: 'Sign-off board', desc: 'Saves each Triad decision with the signer\'s email. It never changes the schedule. The AI applies sign-offs in chat.', where: 'In git', items: [['Nova102-Action-Hub', 'page /triad-board']] },
+      { id: 'ONREQ', type: 'skill', tl: 'Procedures', x: X[2], y: 980, title: 'Work done when asked', desc: 'Not daily. Started on request, each following its rule-book procedure.', where: 'Git + Claude account',
+        items: [['BIM-10 prefab and field', 'prefab checks, shop schedules, the supplier\'s Trello board'], ['BIM-12 clash and issues', 'clash reviews, filing the lead\'s clash report, clash issues in Forma (hidden until a person publishes them)'], ['BIM-13 field BOM', 'material quantities from Navisworks'], ['BIM-11 4D builds', '4D model rebuilds, with a person watching'], ['BIM-04 document control', 'drawings in hand, and publishing drawings to Forma'], ['BIM-08 RFI and submittal questions', 'answers about RFIs and submittals'], ['Forma correspondence', 'filing emails and letters in Forma (including a catch-up batch)']] },
+      { id: 'CHAT', type: 'vm', tl: 'AI in chat', x: X[3], y: 230, title: 'AI chat sessions', desc: 'People working with Claude in the Nova BIM Schedule and VKU projects. Shared changes are claimed on the Task Board first, and kept out of the bot\'s run times (09:00 to 10:15 and 16:00 to 17:15).', where: 'Claude account',
+        items: [['"Start my tasks for the day"', 'a teammate\'s first message: run summary and QC checklist'], ['Decisions and approvals', 'David approves exact changes'], ['Task Board, issue drafts, Monday expectation gap check', 'other chat work'], ['Manual run steps', 'only when David asks'], ['Teammates\' own Claude', 'with the company skills'], ['Claude\'s sandbox', 'some tools ran on uploaded copies, not real files']] },
+      { id: 'OUT1', type: 'ext', tl: 'Service', x: X[4], y: 30, title: 'Approved changes, issues and replies', desc: 'Only what was approved is written.', where: 'Outside',
+        items: [['Coordination Schedule', 'finish dates, held rows, Triad-approved cards'], ['4D approval files', 'applied by the next morning\'s bot run'], ['Tracker shared state', 'page data, saved with tracker_sync_cf.py on the VM'], ['Forma issues', 'clash issues stay hidden until a person publishes them. Questions to Triad go out open'], ['Replies to BES, ARCO, CMMC, Triad', 'drafted by the AI, sent after David checks the evidence']] },
+      { id: 'OUT2', type: 'repo', tl: 'Repo commands', x: X[4], y: 300, title: 'Release held items', desc: 'Commands that publish what the bot held, once approved.', where: 'In git',
+        items: [['python -m orchestrator site-feed-approve', 'held page data'], ['python -m orchestrator scan-approve', 'held scan results']] },
+      { id: 'OUT3', type: 'repo', tl: 'Repos', x: X[4], y: 500, title: 'Pages kept by hand', desc: 'Pages, or parts of pages, the bot does not update.', where: 'In git',
+        items: [['Nova102-RFI-Sweep', 'from David\'s PC (it holds the search index)'], ['Nova102-Scan-Tracker', 'after a scan is approved'], ['Nova102-Impact-Dashboard', 'punch list, open items, expectation gaps'], ['Nova102-Action-Hub', 'main to-do list and Lead Queue items'], ['HCG-Portfolio-Dashboard', 'decisions and highlights']] },
+      { id: 'OUT4', type: 'repo', tl: 'Repo', x: X[4], y: 860, title: 'Rule changes', desc: 'David\'s rulings update the rule book, then the skills and workbooks are rebuilt.', where: 'In git',
+        items: [['david-kb', 'the rule book'], ['kb.py build', 'ClickUp workbooks and flowcharts'], ['kb.py plugin', 'the playbook skills']] }
+    ],
+    edges: [
+      ['HELD', 'LEAD', 'run summary, emails'], ['LEAD', 'CHAT', 'decides in chat'], ['LEAD', 'LQ', 'decides here too'],
+      ['TRIAD', 'HUBD', 'sign off'], ['HUBD', 'CHAT', 'sign-offs to apply', 1], ['LQ', 'CHAT', 'approved items', 1], ['ONREQ', 'CHAT', 'run in chat'],
+      ['CHAT', 'OUT1', 'carries out'], ['CHAT', 'OUT2', 'runs'], ['CHAT', 'OUT3', 'updates'], ['CHAT', 'OUT4', 'records rulings']
+    ]
+  },
+  change: {
+    start: ['DEVS', 'ROBOTC', 'ACCESS'], end: ['CLAUDEPUB', 'LIVE', 'VMCOPY', 'DEVCLONE'],
+    nodes: [
+      { id: 'DEVS', type: 'people', tl: 'People + AI', x: X[0], y: 30, title: 'David and AI coding sessions', desc: 'Where code changes come from.', where: '',
+        items: [['orchestrator preview-sites', 'private preview of the pages, never publishes'], ['npm run deploy (HCG-BIM-Portal)', 'puts the portal live from a computer, skipping GitHub'], ['hcg-bim-assistant/.claude/agents', '8 helper roles for AI coding sessions'], ['TASKS.md, PROGRESS.md, *_KICKOFF.md', 'build plan, work log and start notes for AI coding sessions']] },
+      { id: 'ROBOTC', type: 'repo', tl: 'Bot', x: X[0], y: 520, title: 'The bot\'s saved data', desc: 'Twice a day the bot saves fresh data to 7 page repos\' main branch, which puts it live.', where: 'On the VM', items: [['hcg-bim-runner', 'the bot\'s GitHub account']] },
+      { id: 'ACCESS', type: 'repo', tl: 'Repo config', x: X[1], y: 280, title: 'Who may sign in', desc: 'Lists of who may see each page. A script run by hand copies them to Cloudflare.', where: 'In git',
+        items: [['HCG-BIM-Portal/config/access.json', 'copied with tools/sync_access.py'], ['Nova102-Action-Hub/config/people.json', 'the Action Hub\'s list']] },
+      { id: 'CLAUDEPUB', type: 'skill', tl: 'Claude', x: X[1], y: 560, title: 'Claude company account', desc: 'AI skills and job instructions are not updated from GitHub.', where: 'Claude account',
+        items: [['Skills and plugins', 'uploaded by hand ("DC Publish")'], ['conduit-marketplace', 'synced by Cowork (Claude\'s skill sharing)'], ['Scheduled task instructions', 'edited in the Claude app']] },
+      { id: 'GH', type: 'ext', tl: 'Service', x: X[1], y: 860, title: 'GitHub', desc: 'Where all 15 repos live.', where: 'Outside',
+        items: [['DCampbellCTS', 'the owning account'], ['Most page repos', 'no branches: changes go straight to main, which is live'], ['Repos with branches and pull requests', 'conduit, conduit-marketplace, david-kb, campbellcts-site, hcg-bim-assistant'], ['hcg-bim-assistant', 'main branch is called master']] },
+      { id: 'CFB', type: 'ext', tl: 'Service', x: X[2], y: 30, title: 'Cloudflare builds', desc: 'Puts each page repo\'s main branch live automatically, and enforces sign-in.', where: 'Outside', items: [['Cloudflare Workers Builds + Access']] },
+      { id: 'NET', type: 'ext', tl: 'Service', x: X[2], y: 300, title: 'Netlify', desc: 'Puts the company website live from its main branch.', where: 'Outside', items: [['campbellcts-site']] },
+      { id: 'VMCOPY', type: 'vm', tl: 'On the VM', x: X[2], y: 560, title: 'The VM\'s own copies of the code', desc: 'The code the bot really runs. Some bot fixes were made here and pushed to GitHub as hcg-bim-runner. How other changes arrive is unknown.', where: 'On the VM',
+        items: [['hcg-bim-assistant checkout', 'C:\\Users\\Administrator\\repos\\hcg-bim-assistant, plus one file not in GitHub (navis_export_clash_xml.py)'], ['Conduit servers', 'installed programs in AppData\\Local\\Conduit (Revit, point cloud, fabrication)'], ['Navisworks bridge', 'a local build in C:\\Users\\Administrator\\mcp\\navisworks, with changes not in any repo'], ['HCGBIM.OpenGuard add-in', 'the bot\'s Revit add-in'], ['Copies of the page repos', 'in C:\\Users\\Administrator\\repos and C:\\HCGBIM\\publish. The bot pushes from these']] },
+      { id: 'LIVE', type: 'people', tl: 'Live', x: X[3], y: 120, title: 'Live pages and website', desc: 'What the team, BES, Triad, leadership and customers see.', where: '' },
+      { id: 'DEVCLONE', type: 'vm', tl: 'Dev copy', x: X[3], y: 560, title: 'A dev copy of the VM', desc: 'A test copy of the VM exists. Its notes are in the Claude Project, and we only have their names.', where: 'Not in git',
+        items: [['Dev copy runbook'], ['Notes on creating the dev copy'], ['cts_dev_clone_userdata.ps1', 'start-up script for the copy'], ['Notes on the dev account'], ['Notes on access to the dev copy'], ['Prompt for the dev copy desktop'], ['sandbox_README_for_colten.md']] }
+    ],
+    edges: [
+      ['DEVS', 'GH', 'push'], ['DEVS', 'CFB', 'npm run deploy, skips git'], ['ROBOTC', 'GH', 'data to main'], ['ACCESS', 'CFB', 'sign-in list'],
+      ['GH', 'CFB', 'main = live'], ['GH', 'NET', 'main = live'], ['GH', 'VMCOPY', 'copied to the VM (how?)', 1], ['VMCOPY', 'DEVCLONE', 'copied'],
+      ['DEVS', 'CLAUDEPUB', 'uploads skills, edits tasks'],
+      ['CFB', 'LIVE', 'automatic'], ['NET', 'LIVE', 'website']
+    ]
+  },
+  biz: {
+    start: ['CON', 'CRON'], end: ['ORG', 'CUST', 'SVC', 'DAVID'],
+    nodes: [
+      { id: 'CON', type: 'repo', tl: 'Repo', x: X[0], y: 200, title: 'The product: conduit', desc: 'The same Revit and Navisworks tools the bot uses, sold to other companies.', where: 'In git', items: [['conduit', 'the repo']] },
+      { id: 'MKT', type: 'repo', tl: 'Repo', x: X[1], y: 30, title: 'Skill delivery', desc: 'A script (conduit/tools/publish-marketplace.ps1) copies the skills here by pull request. Once merged, Cowork shares them.', where: 'In git', items: [['conduit-marketplace', 'the repo']] },
+      { id: 'BUILD', type: 'repo', tl: 'Repo tools', x: X[1], y: 280, title: 'Release build', desc: 'Builds the installers on David\'s PC and signs them with a key only that PC has, so Windows trusts them.', where: 'In git',
+        items: [['conduit/build/Build-Release.ps1', 'builds a release'], ['build/Build-Addins.ps1', 'builds and signs the Revit add-ins'], ['build/Build-TesterKit.ps1', 'one kit with every installer, for testers'], ['Claude and ChatGPT packages', 'each product is built for both'], ['NuGet, DigiCert', 'outside services the build uses']] },
+      { id: 'GHA', type: 'sched', tl: 'Scheduler', x: X[1], y: 700, title: 'Release build in the cloud', desc: 'The other way to build: GitHub builds on a clean machine.', where: 'In git',
+        items: [['GitHub Actions: Build release packages', 'On a version tag (v…), or by hand', 'No version tags exist in our copy yet.']] },
+      { id: 'ORG', type: 'skill', tl: 'Skills', x: X[2], y: 30, title: 'Company Claude', desc: 'Cowork shares the skills with everyone in David\'s company account.', where: 'Claude account', items: [['Conduit for AEC', 'the skill bundle']] },
+      { id: 'PUB', type: 'repo', tl: 'Repo tool', x: X[2], y: 280, title: 'Release upload', desc: 'David runs it by hand, with a Keygen token, to upload each release.', where: 'In git', items: [['conduit/tools/publish-release.ps1']] },
+      { id: 'KEYGEN', type: 'ext', tl: 'Service', x: X[3], y: 280, title: 'Keygen: licences and downloads', desc: 'Online licensing service. Holds licence keys and release files. Licence events email David through the website.', where: 'Outside', items: [['Keygen']] },
+      { id: 'CRON', type: 'sched', tl: 'Scheduler', x: X[3], y: 900, title: 'Support digest', desc: 'A daily summary of the website\'s support chats.', where: 'In git',
+        items: [['support-digest (Netlify function)', 'Daily 12:00 UTC (06:00 or 07:00 CT, depending on daylight saving)', 'Emails the summary to David.']] },
+      { id: 'SITE', type: 'repo', tl: 'Repo', x: X[4], y: 280, title: 'Company website: campbellcts.com', desc: 'Hosted on Netlify: product pages, licensed downloads and an AI support chat.', where: 'In git',
+        items: [['campbellcts-site', 'the repo'], ['netlify/functions/kb/*.md', 'what the support chat knows'], ['tools/build_blog.py', 'builds the blog, run by hand']] },
+      { id: 'CUST', type: 'people', tl: 'People', x: X[5], y: 200, title: 'Customers and testers', desc: 'Customers download with a licence key and can use the support chat. Testers get a tester kit and a free trial key.', where: '' },
+      { id: 'SVC', type: 'ext', tl: 'Service', x: X[5], y: 520, title: 'Services behind the chat', desc: 'Used by the support chat.', where: 'Outside', items: [['Anthropic API', 'the AI that answers'], ['Supabase', 'stores the chat log'], ['Resend', 'sends the emails']] },
+      { id: 'DAVID', type: 'people', tl: 'People', x: X[5], y: 900, title: 'David', desc: 'Gets support escalations, licence alerts and the daily digest.', where: '' }
+    ],
+    edges: [
+      ['CON', 'MKT', 'skills, via a pull request'], ['MKT', 'ORG', 'synced on merge'], ['CON', 'BUILD', 'builds'], ['BUILD', 'PUB', 'packages'], ['CON', 'GHA', 'or builds here'], ['GHA', 'PUB', 'packages'],
+      ['PUB', 'KEYGEN', 'upload'], ['KEYGEN', 'SITE', 'checks key, signed link'], ['SITE', 'CUST', 'downloads, chat'],
+      ['SITE', 'SVC', 'chat'], ['SITE', 'DAVID', 'escalations, licence alerts'], ['CRON', 'DAVID', 'daily email']
+    ]
+  },
+  setup: {
+    start: ['LEADP'], end: ['GOLIVE'],
+    nodes: [
+      { id: 'LEADP', type: 'people', tl: 'People', x: X[0], y: 30, title: 'Project lead', desc: 'Fills in the intake form, answers the interview and approves every setting. Nothing is copied from another project.', where: '' },
+      { id: 'FORM', type: 'ext', tl: 'Service', x: X[0], y: 270, title: 'Intake form and project docs', desc: 'In the project\'s ACC folder.', where: 'Outside',
+        items: [['<CODE>_Intake_Form.docx', 'the intake form (guide UG-02A)'], ['START_HERE, scope and schedule references, grid map', 'project facts in plain English'], ['User guides UG-00 to UG-12', 'how-to guides for the team']] },
+      { id: 'ONB', type: 'skill', tl: 'Skill + repo tools', x: X[1], y: 90, title: 'Onboarding chat', desc: 'An AI chat that interviews the lead and checks each answer twice on the live model.', where: 'Git + Claude account',
+        items: [['project-onboarding', 'the skill'], ['python -m onboarding', 'checks the Manifest, lists models, reads drawing naming rules'], ['api/ + frontend/', 'a local setup screen, not seen in use']] },
+      { id: 'CONF', type: 'ext', tl: 'Service', x: X[2], y: 90, title: 'Project settings in ACC', desc: 'The two files every run and chat reads. Changed only with the lead\'s OK.', where: 'Outside',
+        items: [['BIM_Project_Manifest.json', 'where things are: folders, files, models, page repos'], ['BIM_Project_Profile.yaml', 'how to read them: areas, naming rules, spreadsheet columns (checked by schemas/project-profile.schema.json)']] },
+      { id: 'VMSET', type: 'vm', tl: 'On the VM', x: X[3], y: 30, title: 'Added to the bot', desc: 'The project joins the bot\'s daily run.', where: 'On the VM',
+        items: [['python -m orchestrator add-project', 'the command'], ['runner.json', 'gets the project\'s times, repos and steps'], ['.hcg/owner.json', 'first publish marks the VM as owner']] },
+      { id: 'NEWPAGES', type: 'repo', tl: 'Repos', x: X[3], y: 330, title: 'New pages, set up by hand', desc: 'Copied from NOVA102\'s pages (as VKU\'s were), each with its own Cloudflare site and sign-in list.', where: 'In git',
+        items: [['<Project>-Tracker, <Project>-Impact-Dashboard', 'the project\'s pages'], ['HCG-BIM-Portal/config/sites.json + access.json', 'adds the pages and users to the portal'], ['HCG-Portfolio-Dashboard/data/<code>.json', 'adds the project to the leadership page']] },
+      { id: 'GOLIVE', type: 'repo', tl: 'Bot', x: X[4], y: 180, title: 'Dry run, then write', desc: 'The bot first runs without writing. After the lead reviews it, it may write.', where: 'In git', items: [['write_back.mode: dry_run → write', 'the switch in the Profile']] }
+    ],
+    edges: [
+      ['LEADP', 'ONB', 'interview'], ['FORM', 'ONB', 'reads', 1], ['ONB', 'CONF', 'proposed settings'],
+      ['CONF', 'VMSET', 'registered'], ['CONF', 'NEWPAGES', 'pages added'],
+      ['VMSET', 'GOLIVE', 'first runs'], ['NEWPAGES', 'GOLIVE', 'published']
+    ]
+  },
+  break: {
+    start: ['SIG'], end: ['FIX', 'AWS', 'PCFB', 'RERUN'],
+    nodes: [
+      { id: 'SIG', type: 'sched', tl: 'Schedulers', x: X[0], y: 30, title: 'Who raises the alarm', desc: 'They only report. None of them fixes anything.', where: 'Claude account + VM',
+        items: [['NOVA102 BIM Assistant run watchdog (VM)', '11:40 and 17:40', 'The bot\'s run is missing, failed or incomplete.'], ['NOVA102 RFI sweep watchdog (VM)', 'Weekdays 09:05', 'The sweep failed, sent no email, or Procore is signed out.'], ['VKU BIM Assistant shadow + run summary email (VM)', ':25 past each hour after a run', 'Problem email for VKU.'], ['BIM runner VM heartbeat (cloud)', '12:35 and 19:35', 'Phone push if the VM\'s jobs stopped.'], ['The bot\'s own alerts', 'during each run', 'Email and pop-up.']] },
+      { id: 'DAV7', type: 'people', tl: 'People', x: X[1], y: 140, title: 'David, or the acting lead', desc: 'Reads the alert and decides what to do.', where: '' },
+      { id: 'FIX', type: 'vm', tl: 'On the VM', x: X[2], y: 30, title: 'Fix it on the VM', desc: 'Remote desktop into the VM, then check:', where: 'On the VM',
+        items: [['logs\\progress_<date>.log', 'how far the run got'], ['Is the Claude app open?', 'switch back on any switched-off jobs'], ['Do Revit 2025 / 2026 respond?', 'if not, restart them'], ['Is Procore signed in?', 'in the VM\'s Chrome and the Claude app\'s browser'], ['Is the Forma download signed in?', 'sign in with: python -m site_feeds.forma_export --signin']] },
+      { id: 'AWS', type: 'ext', tl: 'Service', x: X[2], y: 420, title: 'AWS console', desc: 'Amazon\'s control panel. Starts or reboots the VM if it is stopped or frozen (region us-east-2).', where: 'Outside' },
+      { id: 'PCFB', type: 'vm', tl: 'Fallback', x: X[2], y: 600, title: 'David\'s PC (backup)', desc: 'Last resort: switch on the PC\'s Daily run task and paused job copies. Never both machines at once, or everything runs twice.', where: 'Not in git' },
+      { id: 'RERUN', type: 'repo', tl: 'Repo', x: X[3], y: 30, title: 'Re-run a step', desc: 'Only when David asks, outside run times, through a one-off task. Each step skips itself if it already ran today.', where: 'In git', items: [['hcg-bim-assistant', 'the bot\'s repo']] }
+    ],
+    edges: [
+      ['SIG', 'DAV7', 'email, push'], ['DAV7', 'FIX', 'remote desktop'], ['DAV7', 'AWS', 'if the VM is down'],
+      ['DAV7', 'PCFB', 'last resort', 1], ['FIX', 'RERUN', 'if a step failed']
+    ]
+  }
+};
+
+
+// The decision for each card, by flow, as taken with the user.
+// One design (no switch-over day), API first, Rule 1 (no functionality changes).
+// A card with no entry here is not worked out yet.
+// verdict: a key of VERDICTS. parts: [part, today, in the new design, verdict]. options: an extra table with its own columns.
+const VERDICTS = {
+  moves: ["Webapp", "moves to the webapp"],
+  windows: ["Windows computer", "runs on the Windows computer, which nobody needs to open"],
+  same: ["Same as today", "nothing changes"],
+  open: ["To decide", "a suggestion is made, the decision is still open"],
+  goes: ["Goes away", "not needed in the new design"],
+  parked: ["Parked", "set aside, can come back"],
+  dropped: ["Dropped", "looked at and not taken"],
+  unused: ["Not used", "not used today, and stays that way"]
+};
+const SIZES = { S: "days", M: "weeks", "M to L": "weeks to a month or more", L: "a month or more" };
+
+const PLAN = {
+  robot: {
+    TIMER: {
+      verdict: "moves", size: "S", where: "The webapp",
+      lead: "The webapp's timer starts the runs at the same times as today.",
+      today: "Four Windows timers on the VM: the Daily run (weekdays 09:00 and 16:00 CT), the pop-up clicker, the Claude keep-alive and the desktop-session keeper.",
+      plan: "The webapp starts each run at 09:00 and 16:00 Chicago time on weekdays, holidays included, NOVA102 then VKU, at most once per run time, with the same time limits. It uses Chicago wall-clock time, so a clock change can't shift it. A missed run starts when the webapp is back. Manual runs come from the webapp's chat, only when David asks.",
+      parts: [
+        ["Daily run", "Weekdays 09:00 and 16:00 CT on the VM. Since the clock change it likely fires an hour early.", "The webapp's timer, in Chicago time.", "moves"],
+        ["The 30-minute morning wait", "A leftover from David's laptop.", "Dropped. Results arrive 30 minutes earlier. One setting brings it back.", "goes"],
+        ["Pop-up clicker", "Answers Revit and Navisworks pop-ups so runs don't stall.", "Stays on the Windows computer.", "windows"],
+        ["Desktop-session keeper", "Keeps the screen session alive for Revit and Navisworks.", "Stays on the Windows computer.", "windows"],
+        ["Claude keep-alive", "Reopens the Claude app and Chrome.", "Goes. No Claude app or Chrome on the Windows computer.", "goes"],
+        ["Manual runs", "A one-off task, only when David asks. It counts as the next run time.", "From the webapp's chat, with the same rule.", "moves"],
+        ["Run now button", "Does not exist.", "Dropped for now. Manual runs come from chat.", "parked"]
+      ],
+      watch: ["Since the clock change the VM's timer likely fires at 08:00 and 15:00, so the 09:00 run comes late and there is no 16:00 run. Only David can fix it on the VM."]
+    },
+    MODELS: {
+      verdict: "windows", size: "S", where: "The Windows computer",
+      lead: "Revit and Navisworks stay on the Windows computer, for the bot and for chat.",
+      today: "Each run opens NOVA102's 3 models and VKU's 1 model in Revit, one at a time, read only. Each morning Navisworks loads NOVA102 - Triad.nwf (54 models), runs 69 clash tests, exports the clash report, applies approved 4D changes and saves the NWF and NWD.",
+      plan: "The same Revit reading and Navisworks steps, on the Windows computer. The webapp sends the jobs over the private link and gets the results back. Navisworks has no online version, so it can only run there.",
+      parts: [
+        ["Bot's Revit reading", "Desktop Revit on the VM.", "Desktop Revit on the Windows computer.", "windows"],
+        ["Chat's live Revit", "Chats ask the open model through conduit.", "The same Revit, asked from the webapp's chat.", "windows"],
+        ["Navisworks morning step", "On the VM.", "On the Windows computer.", "windows"],
+        ["Clash checking in ACC instead of Navisworks", "Not used.", "Parked. Different clash results, no 4D, no quantities.", "parked"]
+      ],
+      options: {
+        title: "Where the bot reads Revit, as weighed",
+        head: ["Option", "What it means", "Decision"],
+        rows: [
+          ["Desktop Revit on the Windows computer", "As today, next to chat's Revit.", "Chosen."],
+          ["Autodesk's online Revit (Automation API)", "The bot's reading runs in Autodesk's cloud. Revit 2025, 2026 and cloud models are supported. Paid in Autodesk credits, about 2 Flex tokens per processing hour.", "Noted as possible. Needs a reading package without a screen and a side-by-side test."],
+          ["Autodesk's free data service", "Parts lists from published model versions only.", "Dropped."]
+        ],
+        note: "Revit must stay on the Windows computer for chat anyway, so the online option would not remove it."
+      },
+      watch: ["Under Autodesk's current terms, BIM Collaborate Pro no longer includes Navisworks Manage for new purchases and renewals."],
+      needs: ["An Autodesk account for the Windows computer, not David's, with Revit, Navisworks Manage and Forma Design Collaboration licences, added to Triad's, ARCO's and Newtron's projects."]
+    },
+    CON: {
+      verdict: "windows", size: "M", where: "The Windows computer",
+      lead: "conduit stays on the Windows computer and is reached from the webapp over the private link.",
+      today: "David's software that lets Claude work inside Revit and Navisworks. On the VM it talks only to the Claude app on the same computer. OpenGuard fixes one known Revit error when the bot opens TEMP-POWER.",
+      plan: "The same conduit on the Windows computer, with a small network mode or bridge so the webapp's Claude and bot can reach it. It answers only inside the private link, never on the internet.",
+      parts: [
+        ["Revit add-in and tool", "Used by the Claude app on the VM.", "Reached from the webapp.", "windows"],
+        ["Navisworks bridge", "A newer local build on the VM, ahead of the repo.", "Copied as it is, source saved to a repo.", "windows"],
+        ["OpenGuard", "Fixes TEMP-POWER's error, in the run's session only.", "Copied as it is.", "windows"],
+        ["Point cloud and fabrication tools", "Used by chats.", "Reached from the webapp.", "windows"],
+        ["Network mode or bridge", "Not needed today.", "New, so the webapp can reach conduit.", "windows"]
+      ],
+      needs: ["David's OK to run conduit on the new computer with a network mode.", "The Navisworks bridge's newest source from the VM."]
+    },
+    INPUTS: {
+      verdict: "moves", size: "M", where: "The webapp, through Autodesk's API",
+      lead: "The webapp reads the bot's inputs straight from ACC through Autodesk's API.",
+      today: "Read from the VM's synced copy of the project folders. Forma issues and RFIs are exported by a bot-controlled Chrome.",
+      plan: "Autodesk's API for all of them. The files stay the master copies in ACC. Triad, Newtron and ARCO connect our app to their Autodesk accounts.",
+      parts: [
+        ["Project Manifest and Profile", "From the synced folder.", "From ACC through the API.", "moves"],
+        ["Coordination Schedule", "From the synced folder.", "From ACC through the API.", "moves"],
+        ["Issued drawing PDFs", "Dated by the VM's file date. These dates become Actual Finish dates.", "Dated by Forma's own upload date, the preferred option. It can differ by minutes or days, so David has the final say.", "moves"],
+        ["RFI and submittal folders", "The folder an RFI sits in is its status.", "The same folders, read through the API.", "moves"],
+        ["Forma issues and RFIs", "Chrome on the VM exports Excel files.", "Autodesk's Issues and RFIs APIs. No Chrome.", "moves"],
+        ["Clash report", "Saved by the Navisworks step.", "Sent from the Windows computer to the webapp.", "moves"],
+        ["New laser scans", "In the synced scan folder.", "From ACC through the API.", "moves"],
+        ["4D approval files", "Written by chats, read by the morning Navisworks step.", "Written by the webapp's chat, sent with the morning Navisworks job.", "moves"]
+      ],
+      watch: ["Autodesk's support page says Forma's date and Desktop Connector's file date can differ by minutes or days."]
+    },
+    ROB: {
+      verdict: "moves", size: "L", where: "The webapp, with model steps on Windows",
+      lead: "The bot's thinking moves to the webapp. The Windows computer keeps only the Revit and Navisworks steps.",
+      today: "A Python program on the VM. Each run reads the models, matches drawings to work packages, updates spreadsheets and pages, builds the clash, issue and 4D feeds, and holds risky results for the lead.",
+      plan: "The webapp runs the same code on Chicago time, sends model jobs to the Windows computer over the private link and gets the results back. Its memory (orchestrator.db) and settings (runner.json) move with the same values.",
+      parts: [
+        ["Revit reading and Navisworks step", "On the VM.", "On the Windows computer.", "windows"],
+        ["Matching, register plan, workbooks, feeds", "On the VM.", "In the webapp, same code.", "moves"],
+        ["Memory and settings", "orchestrator.db and runner.json on the VM.", "In the webapp, same values.", "moves"],
+        ["Held items", "Released by commands run on the VM from chat.", "Released by the webapp, from chat.", "moves"],
+        ["File dates", "From the synced files.", "From ACC through the API.", "moves"],
+        ["Clock", "The VM runs on Chicago time.", "The bot's work runs on Chicago time.", "moves"]
+      ],
+      watch: ["The clash export step was never saved to GitHub. Copy it from the VM first (missing item 1)."]
+    },
+    SCAN: {
+      verdict: "moves", size: "M", where: "The webapp, with the Revit export on Windows",
+      lead: "The scan check and the 4D and 5D tools run in the webapp. Only the Revit conduit export and the Navisworks timeline snapshot stay on the Windows computer.",
+      today: "When a new scan lands, the bot exports the conduits from Revit, compares the scan with them on a 1.5 cm grid, and holds the result for the lead. The 4D viewer and the 5D quantity workbook refresh after each run.",
+      plan: "The Windows computer exports the conduits. The webapp gets the scan from ACC through the API and runs the same comparison. The Scan Tracker page stays a by-hand step after approval.",
+      parts: [
+        ["Conduit export", "Revit on the VM.", "Revit on the Windows computer.", "windows"],
+        ["Scan comparison", "Python on the VM.", "The same code in the webapp, on a worker sized for the biggest scan.", "moves"],
+        ["Held scan result and its release", "On the VM.", "In the webapp.", "moves"],
+        ["Scan Tracker page", "Rebuilt by hand after approval.", "Still by hand after approval.", "same"],
+        ["4D viewer, 4D progress, 5D workbook", "After each run, on the VM.", "In the webapp, same code and times.", "moves"],
+        ["Timeline snapshot", "Navisworks, each morning.", "Navisworks on the Windows computer.", "windows"]
+      ],
+      watch: ["Scan files are big. Measure peak memory before sizing the webapp's worker."]
+    },
+    ACC: {
+      verdict: "moves", size: "M", where: "The webapp, through Autodesk's API",
+      lead: "The same files land in the same ACC folders, written by the webapp through Autodesk's API with the same safety steps.",
+      today: "The bot writes into the VM's synced folder: the Coordination Schedule (backed up first), workbooks, inventories, the clash report, 5D workbooks, the run log, and the NWF and NWD.",
+      plan: "The webapp downloads the file, checks it, writes a scratch copy, confirms ACC still has the version it downloaded, uploads, and checks the upload. Backups stay. The NWF and NWD are uploaded by the file helper on the Windows computer.",
+      parts: [
+        ["Coordination Schedule", "6 safety steps.", "The same 6 steps, through the API.", "moves"],
+        ["Backups", "Copies before every write.", "Kept.", "same"],
+        ["Workbooks, inventories, clash report, 5D, run log", "The synced folder.", "Through the API.", "moves"],
+        ["NWF and NWD", "Saved by Navisworks, uploaded by Desktop Connector.", "Saved by Navisworks, uploaded by the file helper through the API.", "windows"],
+        ["Desktop Connector", "Syncs whole project folders on the VM.", "Goes. The file helper moves only Navisworks' files.", "goes"]
+      ],
+      watch: ["ACC's version history will show our app's account as the author."],
+      needs: ["Write rights for our app only where the bot writes today."]
+    },
+    ALERT: {
+      verdict: "moves", size: "S", where: "The webapp",
+      lead: "The webapp sends the same alert emails. The run-finished pop-up needs a new home.",
+      today: "During each run the bot emails David through Amazon's email and shows pop-ups on the VM. Teams is switched off.",
+      plan: "The same emails through Amazon's email, from the same sender to the same person. David never looks at the Windows computer, so the pop-up's job moves to the webapp.",
+      parts: [
+        ["Alert emails", "From bim-assistant@campbellcts.com to David.", "The same, from the webapp.", "moves"],
+        ["Run-finished pop-up", "On the VM's screen. A click opens the summary.", "Suggested: a webapp notification on phone or browser that opens the summary.", "open"],
+        ["Teams", "Switched off.", "Stays off.", "unused"],
+        ["Progress lines", "A file on the VM.", "The webapp's run status.", "moves"]
+      ],
+      needs: ["Amazon email access for the webapp."]
+    },
+    PAGES: {
+      verdict: "same", size: "S", where: "As today: GitHub and Cloudflare",
+      lead: "The 10 pages stay exactly as they are. Only the bot's publishing moves to the webapp.",
+      today: "10 pages, each its own GitHub repo, put online by Cloudflare behind a sign-in. The bot pushes new data into 7 of them and checks each update went live. The rest are kept by hand.",
+      plan: "The webapp writes the same data into the same 7 repos with the same code, through GitHub's API with its own access, and runs the same live check.",
+      parts: [
+        ["Publishing to 7 pages", "Git pushes from the VM.", "From the webapp, with its own GitHub access.", "moves"],
+        ["Live check", "Build status, then the page opened with a key.", "The same, from the webapp.", "moves"],
+        ["The pages themselves", "On Cloudflare.", "Unchanged: same addresses, look, sign-in and data.", "same"],
+        ["Pages kept by hand", "Action Hub, Scan Tracker, parts of the dashboards, RFI Sweep (David's PC).", "Still by hand, now from the webapp's chat. RFI Sweep stays on David's PC.", "same"],
+        ["One app replacing the 10 pages", "Not today.", "Dropped for good.", "dropped"]
+      ]
+    },
+    DAVID: {
+      verdict: "same", size: "S", where: "As today",
+      lead: "David keeps getting the same alerts at the same address.",
+      today: "The only person on the bot's alert list.",
+      plan: "The same, now sent by the webapp.",
+      parts: [
+        ["Alert list", "David only.", "David only.", "same"]
+      ]
+    },
+    CF: {
+      verdict: "same", size: "S", where: "As today",
+      lead: "Cloudflare stays as it is. The keys and scripts the bot and chats use move to the webapp.",
+      today: "Puts each page online and checks who may open it. Holds the pages' 4 small databases, including the Task Board, and 1 scan file bucket.",
+      plan: "Unchanged. The live-check key and the tracker sync script move to the webapp. The BIM Assistant claims tasks on the Task Board through the portal's own API, with its own sign-in.",
+      parts: [
+        ["Hosting, sign-in, databases, file bucket", "Cloudflare.", "Unchanged.", "same"],
+        ["Live-check key", "On the VM.", "In the webapp's secure settings.", "moves"],
+        ["Tracker sync script (tracker_sync_cf.py)", "Only on the VM, not in a repo.", "Rescued into a repo, run by the webapp.", "moves"],
+        ["Task Board claims by Claude", "Through a signed-in browser, or by hand.", "Through the portal's API, with the BIM Assistant's own sign-in. Needs a small portal change.", "moves"]
+      ]
+    },
+    USERS: {
+      verdict: "same", size: "S", where: "As today",
+      lead: "Nothing changes for the people who use the pages.",
+      today: "HCG's team and leadership, plus BES and Triad, who see their own items only.",
+      plan: "The same pages, addresses, sign-in and data.",
+      parts: [
+        ["Page users", "As today.", "As today.", "same"]
+      ]
+    }
+  },
+
+  ai: {
+    KB: {
+      verdict: "same", size: "S", where: "In git, as today",
+      lead: "The rule book stays in git. The skills are built from it.",
+      today: "Every HCG procedure in plain English, in the david-kb repo. kb.py builds the ClickUp workbooks and flowcharts. Its plugin command rebuilds the 13 playbook skills by hand, from a starter folder that isn't in git, and David uploads them.",
+      plan: "Unchanged rule book. The webapp loads the skills from git. Whether they rebuild by themselves when the rule book changes is still open.",
+      parts: [
+        ["david-kb", "Procedures and David's rulings.", "Unchanged.", "same"],
+        ["kb.py build", "ClickUp workbooks and flowcharts.", "Unchanged.", "same"],
+        ["Skills rebuild (kb.py plugin)", "By hand, then uploaded by David.", "Suggested: rebuilt from the rule book whenever it changes, once the starter folder is in git.", "open"]
+      ]
+    },
+    G1: {
+      verdict: "moves", size: "M", where: "The webapp",
+      lead: "All three run in the webapp with their AI, the same instructions and the same timing, through official APIs.",
+      today: "Three timed AI jobs in David's Claude account, working through the VM.",
+      plan: "The webapp's timer starts them. They use Procore's, Autodesk's, Microsoft's and Fireflies' APIs and write to the webapp's notes. Each one goes live after a side-by-side check against today.",
+      parts: [
+        ["RFI and submittal sweep (weekdays 08:24)", "Procore through Chrome with Colten's login, files into ACC, loads ARCO's schedule updates, writes the sweep note, emails David and Colten.", "Procore's and Autodesk's APIs. The same note and email.", "moves"],
+        ["Project Memory and flags (weekdays 10:45)", "Outlook, Teams, Fireflies and Procore, then the memory files in ACC and the project.", "Microsoft's, Fireflies' and Procore's APIs. The memory files still go to ACC.", "moves"],
+        ["VKU check (:25 in the run windows)", "Checks VKU's run in Newtron's ACC, appends VKU's change log, emails David.", "Reads the run in the webapp and ACC through the API.", "moves"]
+      ],
+      watch: ["Today, the memory job's instructions still use the built-in browser, which lost its Procore sign-in. It may be writing 'Procore not read' every day."]
+    },
+    G2: {
+      verdict: "moves", size: "S", where: "The webapp",
+      lead: "Both run in the webapp with their AI and write to the webapp's notes.",
+      today: "The change log writes each run's summary into the day's note. Meeting prep emails an outline before each of David's meetings and a follow-up with proposed issues after recorded ones.",
+      plan: "The same jobs, timing, notes and emails.",
+      parts: [
+        ["Change log (:20, 10:20 to 12:20 and 17:20 to 19:20)", "Reads the run log, the bot's database, today's log and the VM's timer, writes into the Claude Project.", "Reads the bot's status in the webapp, writes the same note to the webapp's notes.", "moves"],
+        ["Meeting prep and follow-up (weekdays, hourly 06:45 to 17:45)", "Calendar, Outlook, Teams, Fireflies and project notes. Emails David, plus Colten when he attends.", "Microsoft's and Fireflies' APIs. The same emails.", "moves"]
+      ]
+    },
+    G3: {
+      verdict: "moves", size: "S", where: "The webapp, with the heartbeat outside it",
+      lead: "The two watchdogs run in the webapp. The heartbeat must stay outside the webapp.",
+      today: "The sweep watchdog (09:05) and the run watchdog (11:40, 17:40) work through the VM. The heartbeat (12:35, 19:35) runs in Claude's cloud and alerts David by push and email.",
+      plan: "The same checks, in the webapp. The heartbeat keeps watching from outside.",
+      parts: [
+        ["Sweep watchdog (09:05)", "Checks the sweep's run, files and note on the VM.", "The same checks, in the webapp.", "moves"],
+        ["Run watchdog (11:40 and 17:40)", "The run log, the portal's GitHub history, the VM's timer.", "The same, with the webapp's schedule in place of the timer.", "moves"],
+        ["Heartbeat (12:35 and 19:35)", "In Claude's cloud, checking the VM's jobs.", "Suggested: a small task in David's Claude account that checks the webapp's status page, with the same push and email.", "open"]
+      ],
+      watch: ["A watcher must never live on the thing it watches (the lesson of the VM outage)."]
+    },
+    READS: {
+      verdict: "moves", size: "M", where: "The webapp",
+      lead: "Every connection becomes an official API or a ready-made tool server.",
+      today: "Procore (Colten's login in Chrome), Microsoft 365 and Fireflies (Claude's connectors in David's account), the run log in ACC, GitHub (hcg-bim-runner), Claude's task list, and Google Drive (connected, unused).",
+      plan: "Claude's own connectors only work inside claude.ai, so the webapp uses each company's API or its official tool server.",
+      parts: [
+        ["Procore", "Chrome on the VM, Colten's login.", "Procore's API, once ARCO's Procore admin connects our app.", "moves"],
+        ["Outlook, Teams, calendar", "Claude's Microsoft 365 connector, read only.", "Microsoft's API, with David's consent.", "moves"],
+        ["Fireflies", "Claude's connector.", "Fireflies' official tool server, with David's key. Never for VKU.", "moves"],
+        ["GitHub", "Signed in as hcg-bim-runner on the VM.", "GitHub's API, with the webapp's own access.", "moves"],
+        ["Google Drive", "Connected, not used.", "Nothing to replace, unless David says otherwise.", "goes"]
+      ],
+      watch: ["Fireflies' docs say Free and Pro plans allow only 50 API requests a day. Hourly meeting prep likely needs Business."]
+    },
+    SKILLS: {
+      verdict: "moves", size: "S", where: "The webapp, from git",
+      lead: "The same skills, loaded by the webapp from git.",
+      today: "HCG's playbook (13 skills, built from the rule book), conduit-aec (5), whats-on-my-plate, and project-onboarding.",
+      plan: "The webapp's engine loads the same skills from git.",
+      parts: [
+        ["Playbook (13 skills)", "Uploaded by hand to David's Claude account.", "Loaded by the webapp from git.", "moves"],
+        ["conduit-aec (5 skills)", "From the company's plugin store.", "Loaded by the webapp.", "moves"],
+        ["whats-on-my-plate", "Only in David's Claude account.", "Copied into git first.", "moves"]
+      ]
+    },
+    AI: {
+      verdict: "moves", size: "L", where: "The webapp",
+      lead: "Claude runs in the webapp: one engine for chat, approvals and the timed jobs. No Claude app on any computer.",
+      today: "The Claude app on the VM, signed in as David. Seven jobs work through the VM, the heartbeat runs in Claude's cloud, and a keep-alive reopens the app.",
+      plan: "The webapp runs Anthropic's Agent SDK, the engine behind Claude Code, with an API key. It is paid first from the API credit included in David's plan. Tools are standard tool servers, so the engine could be swapped later. It reaches the Windows computer only through the private link.",
+      parts: [
+        ["Claude app and keep-alive", "On the VM.", "Goes.", "goes"],
+        ["The jobs' send logs and saved state", "On the VM.", "Copied into the webapp, so no job starts fresh and sends duplicates.", "moves"],
+        ["Finished jobs (2 acting-lead digests, 3 one-offs)", "Listed, not running.", "Not carried over. Their text is kept on record.", "goes"],
+        ["8 paused job copies on David's PC", "The emergency backup.", "Depends on the PC backup decision (Flow 4).", "open"]
+      ],
+      options: {
+        title: "Where Claude runs, as weighed",
+        head: ["Option", "What it means", "Decision"],
+        rows: [
+          ["Agent SDK in the webapp", "Claude Code's engine on our own server.", "Chosen."],
+          ["Managed Agents", "Anthropic hosts the engine.", "Not taken. Beta, can't reach the Windows computer directly, notes limited to 100 kB per file."],
+          ["Claude app on a computer", "As today.", "Not taken. It keeps the app and David's sign-in on a computer."],
+          ["Plain API calls", "Our code does the steps, Claude only writes.", "Not taken. Behaviour would change."]
+        ],
+        note: "Chosen because it reaches the Windows computer privately and keeps the notes as plain files."
+      }
+    },
+    ACC: {
+      verdict: "moves", size: "S", where: "The webapp, through Autodesk's API",
+      lead: "The jobs file into the same ACC folders through Autodesk's API.",
+      today: "The sweep files RFI and submittal PDFs into the VM's synced folders and reads their markups.",
+      plan: "The same folders, through the API.",
+      parts: [
+        ["Filing and reading PDFs", "The VM's synced folders.", "Autodesk's API.", "moves"]
+      ]
+    },
+    TRK: {
+      verdict: "moves", size: "S", where: "The webapp",
+      lead: "When ARCO renumbers its schedule, the sweep updates the tracker page from the webapp.",
+      today: "The sweep edits the schedule section of the Nova102-Tracker page (SEED_P6M) and pushes it with git.",
+      plan: "The same edit, pushed from the webapp.",
+      parts: [
+        ["Tracker page schedule section", "Edited and pushed from the VM.", "Edited and pushed from the webapp.", "moves"]
+      ]
+    },
+    NOTES: {
+      verdict: "moves", size: "M", where: "The webapp, in git",
+      lead: "The notes become plain files in a private git repo, with the same names, so no instruction changes.",
+      today: "A Claude Project with instructions and 357 files (340 notes, 15 standards, 2 spreadsheets), plus a VKU Project. Chats find them with Claude's built-in search. Jobs open them by name.",
+      plan: "Claude opens notes by name and searches inside them, the way Claude Code works. Every change is kept as a version. A meaning-based search is added only if a test shows misses.",
+      parts: [
+        ["Nova BIM Schedule notes (357)", "In the Claude Project.", "In git, same names.", "moves"],
+        ["VKU Project notes", "In the Claude Project.", "In git.", "moves"],
+        ["Claude's own project memory", "In David's account.", "Copied once into a memory file.", "moves"],
+        ["Chat history", "In David's account.", "In the webapp, searchable.", "moves"],
+        ["Memory files in ACC", "Written by the memory job.", "Still written, through the API.", "same"]
+      ],
+      watch: ["Claude Projects have no export API, so the one-time copy needs a method."]
+    },
+    MAIL: {
+      verdict: "moves", size: "S", where: "The webapp",
+      lead: "The jobs' emails are sent by the webapp through Amazon's email, from the same sender to the same people.",
+      today: "ses_send.py on the VM, not in git, sends through Amazon's email, only to David and Colten.",
+      plan: "The same emails, sent by the webapp. The script is saved to a repo.",
+      parts: [
+        ["Email script (ses_send.py)", "On the VM, not in git.", "Saved to a repo. The webapp sends the same emails.", "moves"]
+      ]
+    },
+    DAVID: {
+      verdict: "same", size: "S", where: "As today",
+      lead: "David and Colten get the same emails, plus the heartbeat's push.",
+      today: "Summaries and alerts by email, plus a phone push from the heartbeat.",
+      plan: "Unchanged.",
+      parts: [
+        ["Emails and push", "As today.", "As today.", "same"]
+      ]
+    }
+  },
+
+  people: {
+    HELD: {
+      verdict: "moves", size: "S", where: "The webapp, from chat",
+      lead: "Held items work as today. The lead approves in the webapp's chat and the webapp releases them.",
+      today: "Register rows that would go backwards, page data that fails its checks, and scan results are held for the lead.",
+      plan: "The lead approves in chat, as today. The webapp runs the same release commands and records who approved and when.",
+      parts: [
+        ["Release a held register change (approve-regression)", "Run on the VM.", "Run by the webapp.", "moves"],
+        ["Release held page data (site-feed-approve)", "Run on the VM.", "Run by the webapp.", "moves"],
+        ["Release a held scan result (scan-approve)", "Run on the VM.", "Run by the webapp.", "moves"]
+      ]
+    },
+    LEAD: {
+      verdict: "same", size: "S", where: "As today",
+      lead: "The same people decide in the same way.",
+      today: "David decides. Colten has stood in through a written note. The VKU team is Kyle and Mikael.",
+      plan: "Unchanged. A stand-in is still set by a written note. Each person signs in to the webapp, so only the lead or the stand-in can approve.",
+      parts: [
+        ["Stand-in lead", "A written note.", "The same.", "same"],
+        ["A stand-in role set for a date range", "Not today.", "Dropped.", "dropped"]
+      ]
+    },
+    TRIAD: {
+      verdict: "same", size: "S", where: "As today",
+      lead: "The six Triad signers keep using the same sign-off page.",
+      today: "Logan, Brandon, Justin, Brian, Seth and Trey approve, change or mark schedule cards Not ours.",
+      plan: "Unchanged.",
+      parts: [
+        ["Triad signers", "The sign-off page.", "Unchanged.", "same"]
+      ]
+    },
+    LQ: {
+      verdict: "same", size: "S", where: "As today",
+      lead: "The Lead Queue stays as it is, filled by hand.",
+      today: "A page listing every decision waiting for David (137 items), filled by hand into lead/seed.json. A click does not count as approval yet.",
+      plan: "Unchanged, filled from the webapp's chat.",
+      parts: [
+        ["lead/seed.json", "Filled by hand.", "Unchanged.", "same"],
+        ["Filling it automatically", "Not today.", "Dropped.", "dropped"]
+      ]
+    },
+    HUBD: {
+      verdict: "same", size: "S", where: "As today",
+      lead: "The sign-off board stays as it is. Sign-offs are applied only after the lead approves.",
+      today: "Saves each Triad decision with the signer's email. Claude applies validated cards in chat after the lead approves.",
+      plan: "Unchanged, applied from the webapp's chat.",
+      parts: [
+        ["Applying sign-offs", "By Claude in chat, after the lead approves.", "The same, in the webapp's chat.", "same"]
+      ]
+    },
+    ONREQ: {
+      verdict: "moves", size: "M", where: "The webapp's chat",
+      lead: "Work done when asked runs in the webapp's chat. Revit and Navisworks work reaches the Windows computer through conduit.",
+      today: "4D builds (BIM-11), clash reviews (BIM-12), quantities (BIM-13), document control (BIM-04), RFI questions (BIM-08), Forma correspondence, and prefab and Trello work (BIM-10), in chats using the VM.",
+      plan: "The same procedures from the webapp's chat, through conduit and the official APIs.",
+      parts: [
+        ["BIM-11, BIM-12, BIM-13", "Navisworks and Revit on the VM, through conduit.", "Through conduit on the Windows computer.", "moves"],
+        ["BIM-04, BIM-08, BIM-10, Forma correspondence", "Chats working through the VM.", "Autodesk's, Procore's and Trello's APIs.", "moves"]
+      ],
+      watch: ["4D builds are watched by a person today. The webapp needs a way to show Navisworks' view."]
+    },
+    CHAT: {
+      verdict: "moves", size: "L", where: "The webapp",
+      lead: "Chat moves into the webapp for David, Colten and the teammates.",
+      today: "People chat with Claude in the Nova BIM Schedule and VKU projects. David's chats work through the VM. Colten approved in his own Claude, in the shared project.",
+      plan: "A chat page in the webapp, on the same engine as the jobs, with the same words and procedures, such as 'start my tasks for the day' and 'Approve' with the item's number. Each person signs in. Approvals are recorded with name and time.",
+      parts: [
+        ["Start my tasks for the day", "In the Claude app.", "In the webapp's chat.", "moves"],
+        ["Approvals", "Typed in chat, then Claude runs the bot's commands on the VM.", "Typed in the webapp's chat, then the webapp carries them out.", "moves"],
+        ["Manual runs", "Only when David asks.", "From the webapp's chat, same rule.", "moves"],
+        ["Colten and teammates", "Their own Claude, on their own computers.", "Their own sign-in to the webapp. They keep their own Claude for other work.", "moves"],
+        ["Claude app extras (phone app, voice, artifacts)", "In the Claude app.", "David lists what he uses, so the webapp can match it.", "open"]
+      ],
+      options: {
+        title: "Chat options, as weighed",
+        head: ["Option", "What it means", "Decision"],
+        rows: [
+          ["Our own chat in the webapp", "A chat page built on the same engine as the jobs.", "Chosen."],
+          ["As today, on the Windows computer", "The Claude app working through that computer.", "Not taken. It keeps the app and David's sign-in on that computer."],
+          ["Claude app plus a connector", "Claude reaches the webapp through a list of tools.", "Not taken. Chat would stay in the Claude app, not in our webapp."]
+        ],
+        note: "Chosen so that nobody needs a computer with the Claude app."
+      }
+    },
+    OUT1: {
+      verdict: "moves", size: "M", where: "The webapp",
+      lead: "Approved changes are written from the webapp, only after approval, outside run times, with the same safety steps.",
+      today: "Coordination Schedule changes, 4D approval files, tracker notes, Forma issues and reply drafts, written from chats using the VM.",
+      plan: "The same changes from the webapp's chat, through Autodesk's API.",
+      parts: [
+        ["Coordination Schedule changes", "From chats using the VM.", "From the webapp's chat, through the API.", "moves"],
+        ["4D approval files", "On the VM.", "Written by the webapp's chat, sent with the morning Navisworks job.", "moves"],
+        ["Tracker shared notes", "tracker_sync_cf.py on the VM.", "The rescued script, run by the webapp.", "moves"],
+        ["Forma issues", "Clicked in Forma's 3D viewer, then edited with a copied sign-in token.", "Autodesk's Issues API, still created as drafts.", "moves"],
+        ["Replies to BES, ARCO, CMMC, Triad", "Drafted by Claude, sent by David after checking.", "The same.", "same"]
+      ],
+      watch: ["Today's clash-issue method copies a sign-in token from the browser, against the rule 'never capture auth tokens'. The API removes the need."]
+    },
+    OUT2: {
+      verdict: "moves", size: "S", where: "The webapp",
+      lead: "The two release commands run in the webapp.",
+      today: "site-feed-approve and scan-approve, run on the VM.",
+      plan: "The same commands, run by the webapp from chat.",
+      parts: [
+        ["Release held page data (site-feed-approve)", "On the VM.", "In the webapp.", "moves"],
+        ["Release a held scan result (scan-approve)", "On the VM.", "In the webapp.", "moves"]
+      ]
+    },
+    OUT3: {
+      verdict: "same", size: "S", where: "As today",
+      lead: "Pages kept by hand stay by hand. Their scripts run in the webapp.",
+      today: "Action Hub, Scan Tracker, and parts of the dashboards and the portfolio, with their own scripts. The RFI Sweep is updated from David's PC, which holds its search index.",
+      plan: "The same pages, kept by hand from the webapp's chat. The RFI Sweep stays on David's PC.",
+      parts: [
+        ["Scripts for the pages kept by hand", "On the VM.", "In the webapp.", "moves"],
+        ["RFI Sweep", "From David's PC.", "Unchanged.", "same"],
+        ["RFI Sweep's index on our server", "Not today.", "Dropped.", "dropped"]
+      ]
+    },
+    OUT4: {
+      verdict: "same", size: "S", where: "In git, as today",
+      lead: "Rule changes go into the rule book as today.",
+      today: "Claude proposes the rule-book change in chat. David approves, and the rule book is updated.",
+      plan: "The same, from the webapp's chat.",
+      parts: [
+        ["Rule changes", "As today.", "As today.", "same"]
+      ]
+    }
+  },
+
+  break: {
+    SIG: {
+      verdict: "moves", size: "S", where: "The webapp, plus one alarm outside it",
+      lead: "The same alarms, now from the webapp, plus one independent alarm outside it.",
+      today: "The run watchdog, the sweep watchdog, the VKU check, the heartbeat (push), and the bot's emails and pop-ups. They only report.",
+      plan: "The watchers and the bot's alerts come from the webapp. The heartbeat stays outside the webapp.",
+      parts: [
+        ["AI watchers", "In Claude, using the VM.", "In the webapp.", "moves"],
+        ["The bot's own alerts", "From the VM.", "From the webapp.", "moves"],
+        ["Heartbeat", "In Claude's cloud.", "Outside the webapp (see Flow 2).", "open"]
+      ]
+    },
+    DAV7: {
+      verdict: "same", size: "S", where: "As today",
+      lead: "David, or the acting lead, reads the alert and decides.",
+      today: "Reads the alert and decides what to do.",
+      plan: "Unchanged.",
+      parts: [
+        ["Who decides", "David or the acting lead.", "Unchanged.", "same"]
+      ]
+    },
+    FIX: {
+      verdict: "moves", size: "S", where: "The webapp",
+      lead: "Fixing starts in the webapp. Nobody needs to open the Windows computer for daily work.",
+      today: "Remote desktop into the VM: the progress log, the Claude app and its jobs, Revit, and the Procore and Forma sign-ins.",
+      plan: "Run status, logs and job results are in the webapp. Procore and Forma sign-ins are gone. Only rare Revit, Navisworks or Windows problems need someone on the Windows computer, and that is us, not David.",
+      parts: [
+        ["Progress log", "A file on the VM.", "The webapp's run status.", "moves"],
+        ["Claude app and its jobs", "On the VM.", "Gone. The jobs are in the webapp.", "goes"],
+        ["Revit and Navisworks problems", "On the VM.", "On the Windows computer, fixed by us when needed.", "windows"],
+        ["Procore and Forma sign-ins", "Chrome on the VM.", "Gone. Both are APIs.", "goes"]
+      ]
+    },
+    AWS: {
+      verdict: "open", size: "S", where: "The hosting console, or a webapp button",
+      lead: "Restarting the Windows computer: by hand, or a webapp button.",
+      today: "David starts or reboots the VM in Amazon's console.",
+      plan: "Suggested: a 'Restart Windows computer' button in the webapp, through Amazon's API, for the lead and us only, logged. The webapp itself is restarted by hand from its console, since it can't restart itself when it's down.",
+      parts: [
+        ["Windows computer", "Amazon's console, by hand.", "Suggested: a button in the webapp.", "open"]
+      ]
+    },
+    PCFB: {
+      verdict: "open", size: "S", where: "David's PC",
+      lead: "David's PC backup: suggested to drop it.",
+      today: "An old copy of the bot and 8 paused job copies on David's PC, switched on only if the VM can't run. Never both.",
+      plan: "The bot and the jobs now live in the webapp, so the PC can't stand in for them, and keeping it current is a burden. Suggested: drop it and rely on the hosting backups and a quick restore. Risk: a long webapp outage means no runs until it's restored.",
+      parts: [
+        ["The PC's bot and its 8 job copies", "Kept as the last resort.", "Suggested: drop.", "open"]
+      ]
+    },
+    RERUN: {
+      verdict: "moves", size: "S", where: "The webapp's chat",
+      lead: "Re-running a step stays a chat request, only when David asks, outside run times.",
+      today: "A one-off task on the VM. Each step skips itself if it already ran today.",
+      plan: "From the webapp's chat, with the same skip rule.",
+      parts: [
+        ["Re-run a step", "A one-off task on the VM.", "From the webapp's chat.", "moves"]
+      ]
+    }
+  }
+};
+const svgNS = 'http://www.w3.org/2000/svg';
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const bez = (p0, c1, c2, p3) => ({ x: (p0.x + 3 * c1.x + 3 * c2.x + p3.x) / 8, y: (p0.y + 3 * c1.y + 3 * c2.y + p3.y) / 8 });
+const chip = v => '<span class="vd v-' + v + '">' + esc(VERDICTS[v][0]) + '</span>';
+const chips = p => chip(p.verdict) + (p.ab ? chip('ab') : '');
+// Cards here show only their name and tags, so they are much shorter than on the original map, whose card
+// heights set the y positions. Scaling y keeps every card's column and order, and settle() keeps them apart.
+const COMPACT = 0.45;
+
+function diagram(section, flow) {
+  const key = section.id.slice(5);
+  const plan = PLAN[key] || {};
+  const vp = section.querySelector('.viewport');
+  const sizer = section.querySelector('.sizer');
+  const canvas = section.querySelector('.canvas');
+  const zval = section.querySelector('.zoom output');
+  const nodes = flow.nodes.map(n => ({ ...n, y: Math.round(n.y * COMPACT) }));
+  const edges = flow.edges.map(([from, to, label, dashed]) => ({ from, to, label, dashed: !!dashed }));
+  const CW = Math.max(...nodes.map(n => n.x)) + NW + 40;
+  let CH = 600;
+
+  const svg = document.createElementNS(svgNS, 'svg');
+  svg.setAttribute('class', 'edges');
+  svg.innerHTML = '<defs>' + Object.keys(COLOR).map(k => '<marker id="arr-' + section.id + '-' + k + '" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:' + COLOR[k] + '"/></marker>').join('') + '</defs>';
+  canvas.appendChild(svg);
+
+  const byId = {};
+  nodes.forEach(n => {
+    const el = document.createElement('div');
+    el.className = 'node t-' + n.type;
+    el.style.left = n.x + 'px';
+    el.style.top = n.y + 'px';
+    el.tabIndex = 0;
+    el.setAttribute('role', 'button');
+    const se = (flow.start || []).includes(n.id) ? 'START' : (flow.end || []).includes(n.id) ? 'END' : '';
+    const p = plan[n.id];
+    el.setAttribute('aria-label', n.title + ', ' + n.tl + (se ? ', ' + se.toLowerCase() : '') +
+      (p ? ', ' + VERDICTS[p.verdict][0].toLowerCase() : '') + '. Opens its details');
+    const risky = /not in git|claude account|on the vm/i.test(n.where || '');
+    el.innerHTML = (se ? '<span class="se se-' + se.toLowerCase() + '">' + se + '</span>' : '') +
+      (p ? '<span class="vds">' + chips(p) + '</span>' : '') +
+      '<div class="nh"><span class="ic">' + ICONS[n.type] + '</span><span class="ty">' + esc(n.tl) + '</span>' +
+      (n.where ? '<span class="wh' + (risky ? ' risk' : '') + '">' + esc(n.where) + '</span>' : '') + '</div>' +
+      '<div class="nt">' + esc(n.title) + '</div>' +
+      '<div class="go">' + (p ? 'Details and the decision' : 'Details') + ' ›</div>';
+    canvas.appendChild(el);
+    n.el = el;
+    byId[n.id] = n;
+  });
+
+  const labels = [];
+  let focusId = null;
+  function applyFocus(id) {
+    focusId = id;
+    canvas.classList.add('focus');
+    nodes.forEach(n => n.el.classList.toggle('on', n.id === id));
+    edges.forEach(e => {
+      const on = e.from === id || e.to === id;
+      e.path.classList.toggle('on', on);
+      e.lbl.classList.toggle('on', on);
+      e.dot.classList.toggle('on', on);
+      if (on) { byId[e.from].el.classList.add('on'); byId[e.to].el.classList.add('on'); }
+    });
+  }
+  function clearFocus() {
+    focusId = null;
+    canvas.classList.remove('focus');
+    nodes.forEach(n => n.el.classList.remove('on'));
+    edges.forEach(e => { e.path.classList.remove('on'); e.lbl.classList.remove('on'); e.dot.classList.remove('on'); });
+  }
+
+  // Push a card down if the card above it in the same column grew taller than planned.
+  function settle() {
+    const cols = {};
+    nodes.forEach(n => (cols[n.x] = cols[n.x] || []).push(n));
+    Object.values(cols).forEach(list => {
+      list.sort((a, b) => a.y - b.y);
+      for (let i = 1; i < list.length; i++) {
+        const prev = list[i - 1], min = prev.y + prev.el.offsetHeight + 40;
+        if (list[i].y < min) { list[i].y = min; list[i].el.style.top = min + 'px'; }
+      }
+    });
+    CH = Math.max(...nodes.map(n => n.y + n.el.offsetHeight)) + 40;
+    canvas.style.width = CW + 'px';
+    canvas.style.height = CH + 'px';
+    svg.setAttribute('width', CW);
+    svg.setAttribute('height', CH);
+  }
+
+  function draw() {
+    svg.querySelectorAll('path.e, circle.port').forEach(p => p.remove());
+    labels.forEach(l => l.remove());
+    labels.length = 0;
+    const placed = [];
+    const mid = n => n.y + n.el.offsetHeight / 2;
+    // Spread a card's side-to-side links along its edge, ordered by where the other end sits, so they leave and arrive side by side instead of crossing.
+    const outs = {}, ins = {};
+    edges.forEach(e => {
+      e.across = byId[e.to].x >= byId[e.from].x + NW - 10;
+      if (e.across) { (outs[e.from] = outs[e.from] || []).push(e); (ins[e.to] = ins[e.to] || []).push(e); }
+    });
+    const spread = (list, n, other, key) => {
+      list.sort((p, q) => mid(byId[p[other]]) - mid(byId[q[other]]));
+      const step = Math.min(18, (n.el.offsetHeight - 24) / list.length);
+      list.forEach((e, i) => { e[key] = mid(n) + (i - (list.length - 1) / 2) * step; });
+    };
+    Object.entries(outs).forEach(([id, list]) => spread(list, byId[id], 'to', 'y0'));
+    Object.entries(ins).forEach(([id, list]) => spread(list, byId[id], 'from', 'y3'));
+    edges.forEach(e => {
+      const a = byId[e.from], b = byId[e.to];
+      const ah = a.el.offsetHeight, bh = b.el.offsetHeight;
+      let p0, c1, c2, p3;
+      if (e.across) {
+        p0 = { x: a.x + NW, y: e.y0 }; p3 = { x: b.x - 4, y: e.y3 };
+        const dx = Math.max(60, (p3.x - p0.x) / 2);
+        c1 = { x: p0.x + dx, y: p0.y }; c2 = { x: p3.x - dx, y: p3.y };
+      } else if (b.y + bh < a.y) {
+        p0 = { x: a.x + NW / 2, y: a.y }; p3 = { x: b.x + NW / 2, y: b.y + bh };
+        const dy = Math.max(50, (p0.y - p3.y) / 2);
+        c1 = { x: p0.x, y: p0.y - dy }; c2 = { x: p3.x, y: p3.y + dy };
+      } else {
+        p0 = { x: a.x + NW / 2, y: a.y + ah }; p3 = { x: b.x + NW / 2, y: b.y };
+        const dy = Math.max(50, (p3.y - p0.y) / 2);
+        c1 = { x: p0.x, y: p0.y + dy }; c2 = { x: p3.x, y: p3.y - dy };
+      }
+      const path = document.createElementNS(svgNS, 'path');
+      path.setAttribute('d', `M${p0.x},${p0.y} C${c1.x},${c1.y} ${c2.x},${c2.y} ${p3.x},${p3.y}`);
+      path.setAttribute('class', 'e' + (e.dashed ? ' dash' : ''));
+      path.setAttribute('marker-end', 'url(#arr-' + section.id + '-' + a.type + ')');
+      path.style.stroke = COLOR[a.type];
+      svg.appendChild(path);
+      e.path = path;
+      const dot = document.createElementNS(svgNS, 'circle');
+      dot.setAttribute('class', 'port');
+      dot.setAttribute('cx', p0.x);
+      dot.setAttribute('cy', p0.y);
+      dot.setAttribute('r', 4.5);
+      dot.style.stroke = COLOR[a.type];
+      svg.appendChild(dot);
+      e.dot = dot;
+      const m = bez(p0, c1, c2, p3);
+      const l = document.createElement('div');
+      l.className = 'elabel';
+      l.textContent = e.label;
+      l.style.left = m.x + 'px';
+      l.style.top = m.y + 'px';
+      canvas.appendChild(l);
+      // Move a label down until it no longer sits on one placed earlier.
+      const w = l.offsetWidth, h = l.offsetHeight;
+      let y = m.y;
+      const hits = () => placed.some(r => Math.abs(r.x - m.x) < (r.w + w) / 2 + 2 && Math.abs(r.y - y) < (r.h + h) / 2 + 2);
+      for (let i = 0; i < 12 && hits(); i++) y += h + 4;
+      l.style.top = y + 'px';
+      placed.push({ x: m.x, y, w, h });
+      labels.push(l);
+      e.lbl = l;
+    });
+    if (focusId) applyFocus(focusId);
+  }
+
+  // Pointing at a card (or tabbing to it) highlights its links. Clicking it opens its details screen.
+  nodes.forEach(n => {
+    n.el.addEventListener('click', ev => { ev.stopPropagation(); openFromMap(key, n.id); });
+    n.el.addEventListener('keydown', ev => {
+      if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); n.el.click(); }
+      if (ev.key === 'Escape') clearFocus();
+    });
+    n.el.addEventListener('mouseenter', () => applyFocus(n.id));
+    n.el.addEventListener('mouseleave', clearFocus);
+    n.el.addEventListener('focus', () => applyFocus(n.id));
+    n.el.addEventListener('blur', clearFocus);
+  });
+
+  let scale = 1;
+  function setScale(s) {
+    scale = Math.min(1.4, Math.max(0.3, s));
+    canvas.style.transform = `scale(${scale})`;
+    sizer.style.width = CW * scale + 'px';
+    sizer.style.height = CH * scale + 'px';
+    zval.textContent = Math.round(scale * 100) + '%';
+  }
+  section.querySelector('[data-z="in"]').onclick = () => setScale(scale + 0.1);
+  section.querySelector('[data-z="out"]').onclick = () => setScale(scale - 0.1);
+  section.querySelector('[data-z="fit"]').onclick = () => setScale(Math.min(vp.clientWidth / CW, vp.clientHeight / CH));
+
+  let drag = null, moved = false;
+  vp.addEventListener('pointerdown', ev => {
+    if (ev.target.closest('.node') || ev.pointerType === 'touch') return;
+    drag = { x: ev.clientX, y: ev.clientY, l: vp.scrollLeft, t: vp.scrollTop };
+    moved = false;
+    vp.classList.add('dragging');
+    vp.setPointerCapture(ev.pointerId);
+  });
+  vp.addEventListener('pointermove', ev => {
+    if (!drag) return;
+    const dx = ev.clientX - drag.x, dy = ev.clientY - drag.y;
+    if (Math.abs(dx) + Math.abs(dy) > 3) moved = true;
+    vp.scrollLeft = drag.l - dx;
+    vp.scrollTop = drag.t - dy;
+  });
+  const endDrag = () => { drag = null; vp.classList.remove('dragging'); };
+  vp.addEventListener('pointerup', endDrag);
+  vp.addEventListener('pointercancel', endDrag);
+  vp.addEventListener('click', ev => { if (!ev.target.closest('.node') && !moved) clearFocus(); });
+
+  function layout() { settle(); draw(); setScale(scale); }
+  scale = Math.min(1, Math.max(0.55, vp.clientWidth / CW));
+  layout();
+  return layout;
+}
+
+// ---- The details screen: one card, today next to the decision. Its address is #card/<flow>/<card>.
+const main = document.getElementById('main');
+const detail = document.getElementById('detail');
+let fromMap = false, lastY = 0, stale = false;
+
+document.getElementById('vlegend').innerHTML = '<span>Our verdict on each card:</span>' +
+  Object.keys(VERDICTS).map(v => '<span>' + chip(v) + esc(VERDICTS[v][1]) + '</span>').join('') +
+  '<span>Size of the work: ' + Object.keys(SIZES).map(s => '<b>' + esc(s) + '</b> ' + esc(SIZES[s])).join(', ') + '</span>';
+
+function openFromMap(key, id) {
+  lastY = window.scrollY;
+  fromMap = true;
+  location.hash = 'card/' + key + '/' + id;
+}
+
+function backToMap(key) {
+  if (fromMap) { history.back(); return; }
+  lastY = null;
+  location.hash = 'flow-' + key;
+}
+
+const ordered = key => FLOWS[key].nodes.slice().sort((a, b) => a.x - b.x || a.y - b.y);
+const grid = (cls, head, rows, cell) => '<div class="' + cls + '" role="table">' +
+  '<div class="prow ph" role="row">' + head.map(h => '<span role="columnheader">' + esc(h) + '</span>').join('') + '</div>' +
+  rows.map(r => '<div class="prow" role="row">' + r.map((c, i) => '<span role="cell">' + cell(c, i, head[i]) + '</span>').join('') + '</div>').join('') + '</div>';
+const labelled = (c, i, h) => (i ? '<i class="lbl">' + esc(h) + '</i>' : '') + (i ? esc(c) : '<b>' + esc(c) + '</b>');
+const noteBox = (cls, title, list) => list && list.length ?
+  '<section class="note ' + cls + '"><h3>' + title + '</h3><ul>' + list.map(t => '<li>' + esc(t) + '</li>').join('') + '</ul></section>' : '';
+
+function render(key, id) {
+  const n = FLOWS[key].nodes.find(m => m.id === id);
+  const p = (PLAN[key] || {})[id];
+  const sec = document.getElementById('flow-' + key);
+  const list = ordered(key), i = list.indexOf(n);
+  const prev = list[i - 1], next = list[i + 1];
+  const step = (c, text, cls) => '<button type="button" class="btn ' + cls + '" data-go="' + (c ? c.id : '') + '"' + (c ? '' : ' disabled') + '>' + text + '</button>';
+  // The card's own text, word for word as on the original map: description, then items
+  // ([name, note], or for schedulers [name, time, what it does]).
+  const sched = n.type === 'sched';
+  const items = (n.items || []).map(([a, b, c]) => '<li><b>' + esc(a) + '</b>' + (sched && b ? '<small>' + esc(b) + '</small>' : '') +
+    ((sched ? c : b) ? '<em>' + esc(sched ? c : b) + '</em>' : '') + '</li>').join('');
+  const details = '<section class="part"><h2>Details, as on the original map</h2><div class="orig t-' + n.type + '">' +
+    '<div class="oh"><span class="ic">' + ICONS[n.type] + '</span><span class="ty">' + esc(n.tl) + '</span>' +
+    (n.where ? '<span class="wh">' + esc(n.where) + '</span>' : '') + '</div>' +
+    '<p>' + esc(n.desc) + '</p>' + (items ? '<ul>' + items + '</ul>' : '') + '</div></section>';
+  const lives = w => w ? '<p class="lives">Where: ' + esc(w) + '</p>' : '';
+
+  let h = '<nav class="dnav" aria-label="Card navigation">' +
+    '<button type="button" class="btn" data-go="back">‹ Back to the map</button>' +
+    '<span class="pn">' + step(prev, '‹ ' + (prev ? esc(prev.title) : 'Previous'), 'prev') + step(next, (next ? esc(next.title) : 'Next') + ' ›', 'next') + '</span></nav>' +
+    '<header class="dhead"><span class="tag">' + esc(sec.querySelector('.tag').textContent) + ' · card ' + (i + 1) + ' of ' + list.length + '</span>' +
+    '<p class="muted">' + esc(sec.querySelector('h2').textContent) + '</p>' +
+    '<h1 tabindex="-1">' + esc(n.title) + '</h1>' +
+    (p ? '<div class="chips">' + chips(p) + '<span class="size">Size ' + esc(p.size) + ': ' + esc(SIZES[p.size]) + '</span></div>' : '') + '</header>';
+
+  if (p) {
+    h += details +
+      '<section class="part"><h2>Today and what we decided</h2><p class="lead">' + esc(p.lead) + '</p>' +
+      '<div class="cmp">' +
+      '<div class="box today"><h3>Today</h3><p>' + esc(p.today) + '</p>' + lives(n.where) + '</div>' +
+      '<div class="box ours"><h3>Decided</h3><p>' + esc(p.plan) + '</p>' + lives(p.where) + '</div></div></section>' +
+      '<section class="part"><h2>Part by part</h2>' +
+      grid('parts', ['Part', 'Today', 'In the new design', 'Verdict'], p.parts,
+        (c, i, hd) => i === 3 ? chip(c) : labelled(c, i, hd)) + '</section>' +
+      (p.options ? '<section class="part"><h2>' + esc(p.options.title) + '</h2>' +
+        grid('parts opts', p.options.head, p.options.rows, labelled) +
+        '<p class="muted">' + esc(p.options.note) + '</p></section>' : '') +
+      '<div class="notes">' + noteBox('watch', 'Watch out', p.watch) + noteBox('need', 'What we need', p.needs) + noteBox('ask', 'Ask David', p.ask) + '</div>';
+  } else {
+    h += details + '<section class="part"><h2>The decision</h2>' +
+      '<div class="box pending"><p>Not worked out yet. We go through the flows one by one.</p></div></section>';
+  }
+  detail.innerHTML = h;
+  detail.querySelectorAll('[data-go]').forEach(b => b.addEventListener('click', () => {
+    if (b.dataset.go === 'back') backToMap(key);
+    else location.replace('#card/' + key + '/' + b.dataset.go);
+  }));
+}
+
+function route() {
+  const m = /^#card\/(\w+)\/(\w+)$/.exec(location.hash);
+  if (m && FLOWS[m[1]] && FLOWS[m[1]].nodes.some(n => n.id === m[2])) {
+    render(m[1], m[2]);
+    main.hidden = true;
+    detail.hidden = false;
+    window.scrollTo(0, 0);
+    detail.querySelector('h1').focus({ preventScroll: true });
+  } else if (!detail.hidden) {
+    detail.hidden = true;
+    main.hidden = false;
+    fromMap = false;
+    if (stale) { stale = false; relayouts.forEach(f => f()); }
+    const target = lastY === null && document.getElementById(location.hash.slice(1));
+    openTo(target);
+    if (target) target.scrollIntoView(); else window.scrollTo(0, lastY || 0);
+  }
+}
+detail.addEventListener('keydown', ev => {
+  const m = /^#card\/(\w+)\//.exec(location.hash);
+  if (ev.key === 'Escape' && m) backToMap(m[1]);
+});
+
+const relayouts = ['robot', 'ai', 'people', 'change', 'biz', 'setup', 'break'].map(k => diagram(document.getElementById('flow-' + k), FLOWS[k]));
+// Sections are dropdowns. A closed flow can't be measured, so it is laid out again each time it opens,
+// and a link or the Back button opens the dropdown it points into.
+['robot', 'ai', 'people', 'change', 'biz', 'setup', 'break'].forEach((k, i) => {
+  const d = document.getElementById('flow-' + k);
+  d.addEventListener('toggle', () => { if (d.open) relayouts[i](); });
+});
+function openTo(el) {
+  for (let d = el && el.closest('details'); d; d = d.parentElement && d.parentElement.closest('details')) d.open = true;
+}
+window.addEventListener('hashchange', () => openTo(document.getElementById(location.hash.slice(1))));
+openTo(document.getElementById(location.hash.slice(1)));
+// A hidden map can't be measured, so a late font load while a card is open re-lays it out on the way back.
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { if (main.hidden) stale = true; else relayouts.forEach(f => f()); });
+window.addEventListener('hashchange', route);
+route();
+</script>
