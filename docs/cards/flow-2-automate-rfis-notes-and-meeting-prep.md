@@ -111,7 +111,6 @@ All read only.
 | Fireflies | Claude's connector. | Claude account | Fireflies' official tool server, with the lead's key. Never for VKU. | Webapp |
 | GitHub | Signed in as hcg-bim-runner on the VM. | VM | GitHub's API, with the webapp's own access. | Webapp |
 | conduit tools | The Navisworks model, read through conduit on the VM. | VM | Through conduit on the Windows computer, over the private link. | Windows computer |
-| The bot's run log | In ACC, read by the change-log job and the watchers. | ACC | Still in ACC, read through the API next to the webapp's run status. | ACC |
 | Claude's task list | The watchers check in it that the other jobs ran. | Claude account | The webapp's own job records. | Webapp |
 
 **Watch out:**
@@ -158,7 +157,6 @@ Claude, signed in as the lead. Seven jobs run in the Claude app on the VM, the h
 |---|---|---|---|---|
 | Claude app and keep-alive | On the VM. | VM | Could be removed. Claude would run in the webapp on Anthropic's Agent SDK. | Not needed |
 | The jobs' send logs and saved state | On the VM. | VM | Copied into the webapp, so no job starts fresh and sends duplicates. | Webapp |
-| 8 paused job copies on the lead's PC | The emergency backup. | Lead's PC | Depends on what happens with the PC backup (Flow 4). | To explore |
 | Windows-MCP | Lets Claude read the VM's files, logs and Task Scheduler. | VM | Could be removed. The webapp's own tools read the same data, with no open access to a computer. | Not needed |
 | Project Manifest | Every folder path the jobs use comes from it, read from the synced folder. | VM | The same file, read from ACC through the API. | Webapp |
 

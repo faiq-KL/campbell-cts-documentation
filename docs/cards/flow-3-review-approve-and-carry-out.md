@@ -22,9 +22,9 @@ Unusual results the bot or AI did not write. Listed in run summaries, notes and 
 
 | Part | Currently | Runs on now | Can be optimized | Would run on |
 |---|---|---|---|---|
-| Release a held register change (approve-regression) | Run on the VM. | VM | Run by the webapp. | Webapp |
-| Release held page data (site-feed-approve) | Run on the VM. | VM | Run by the webapp. | Webapp |
-| Release a held scan result (scan-approve) | Run on the VM. | VM | Run by the webapp. | Webapp |
+| Register rows | A drawing status went down or a revision disappeared. Held, listed in the run summary and emails, released with approve-regression on the VM. | VM | Held the same way, shown in the webapp's run status and emails, released by the webapp after approval. | Webapp |
+| Scan results | Progress measured from a new scan. Held until approved, released with scan-approve on the VM. | VM | Held the same way, released by the webapp after approval. | Webapp |
+| Broken page data | For example, zero Forma issues. Held and released with site-feed-approve on the VM. Big jumps are published with a warning instead (a rule the lead set). | VM | The same checks and rule, released by the webapp after approval. | Webapp |
 | Finish dates with no PDF yet | The bot waits until the drawing PDF is in Forma, then writes the date itself. | VM | The same wait, with Forma's date read through the API. | Webapp |
 | TimeLiner re-dates | Proposed by the sweep, approved by the lead in chat. | Claude + VM | Proposed by the webapp's sweep, approved in the webapp's chat. | Webapp |
 | Proposed Forma issues | Suggested in meeting follow-up emails, created in chat after the lead approves. | Claude + VM | Suggested the same way, created through Autodesk's Issues API after approval. | Webapp |
@@ -147,7 +147,6 @@ People working with Claude in the Nova BIM Schedule and VKU projects. Shared cha
 | Claude app extras (phone app, voice, artifacts) | In the Claude app. | Claude account | The lead lists what they use, so the webapp can match it. | To explore |
 | Other chat work | Task Board claims, issue drafts and the Monday expectation-gap check. | Claude + VM | The same work in the webapp's chat. Task Board claims go through the portal's API. | Webapp |
 | Run-time rule | Shared changes are claimed on the Task Board first and kept out of the bot's run times (09:00 to 10:15 and 16:00 to 17:15). | Claude + VM | The same rule, checked by the webapp before any shared write. | Webapp |
-| Claude's sandbox | Some tools ran on uploaded copies, not the real files. | Claude account | Could be removed. The webapp's tools work on the real files through the APIs. | Not needed |
 
 **Chat options, as weighed**
 
@@ -202,6 +201,7 @@ Commands that publish what the bot held, once approved.
 
 | Part | Currently | Runs on now | Can be optimized | Would run on |
 |---|---|---|---|---|
+| Release a held register change (approve-regression) | On the VM. | VM | In the webapp. | Webapp |
 | Release held page data (site-feed-approve) | On the VM. | VM | In the webapp. | Webapp |
 | Release a held scan result (scan-approve) | On the VM. | VM | In the webapp. | Webapp |
 
