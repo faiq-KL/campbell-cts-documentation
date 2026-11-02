@@ -23,8 +23,8 @@ Windows Task Scheduler. A manual re-run (only when the client asks) uses a one-o
 |---|---|---|---|---|
 | Daily run | Weekdays 09:00 and 16:00 CT, plus a catch-up at sign-in. NOVA102 then VKU, each slot at most once a day. Since the clock change it likely fires an hour early. | Yes, the webapp starts it. | The webapp's timer, in Chicago time, with the same order and limits. A missed run starts when the webapp is back. | Webapp |
 | The 30-minute morning wait | A leftover from the client's laptop. | Yes, morning results come 30 minutes sooner. | Could be removed, so results arrive 30 minutes earlier. One setting brings it back. | Not needed |
-| Pop-up clicker | Answers Revit and Navisworks pop-ups so runs don't stall. Its script is not in git. | Yes, we save its code to GitHub. | Can stay on the VM, with its script saved to a repo first. | VM |
-| Desktop-session keeper | Keeps the screen session alive for Revit and Navisworks. Its script is not in git. | Yes, we save its code to GitHub. | Can stay on the VM, with its script saved to a repo first. | VM |
+| Pop-up clicker | Answers Revit and Navisworks pop-ups so runs don't stall. Its script is not in git. | No, Revit and Navisworks still need it. | No change needed. Stays on the VM, with its script saved to a repo as a backup. | VM |
+| Desktop-session keeper | Keeps the screen session alive for Revit and Navisworks. Its script is not in git. | No, Revit and Navisworks still need it. | No change needed. Stays on the VM, with its script saved to a repo as a backup. | VM |
 | Claude keep-alive | Reopens the Claude app and Chrome. | Yes, the Claude app and Chrome won't be needed. | Could be removed. No Claude app or Chrome would be needed on the VM. | Not needed |
 | Manual runs | A one-off task, only when the client asks. It counts as that day's most recent run time, or as the 09:00 run if it starts before 09:00. | Yes, started from the webapp's chat. | From the webapp's chat, with the same rule. | Webapp |
 
@@ -85,7 +85,7 @@ The company's software that lets the bot (and the AI) open and read Revit and Na
 | Part | Currently | Can be optimized | Suggestion | Tag |
 |---|---|---|---|---|
 | Revit add-in and tool | The bot opens and reads the models through it. Chats in the Claude app on the VM use it too. | Yes, the webapp connects through a private link. | Reached by the webapp's bot and chat over the private link. | VM |
-| Navisworks bridge | Lets the bot's morning step drive Navisworks. The VM runs a newer build than the repo. | Yes, we save its newest code to GitHub. | Stays as it is, with its source saved to a repo. | VM |
+| Navisworks bridge | Lets the bot's morning step drive Navisworks. The VM runs a newer build than the repo. | No, Navisworks still needs it. | No change needed. Stays on the VM, with its newest source saved to a repo as a backup. | VM |
 | Point cloud and fabrication tools | Used by chats. | Yes, the webapp connects through a private link. | Reached from the webapp over the private link. | VM |
 
 **What we need:**
